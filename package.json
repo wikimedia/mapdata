@@ -1,0 +1,13 @@
+{
+  "name": "wikimedia-mapdata",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Wikimedia map data manager for Kartographer's extension and Kartotherian.",
+  "scripts": {
+    "test": "jshint . && jscs ."
+  },
+  "devDependencies": {
+  },
+  "dependencies": {
+  }
+}
