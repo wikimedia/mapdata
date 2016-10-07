@@ -5,7 +5,7 @@
  * @class Kartographer.Data.Group.HybridGroup
  * @extends Kartographer.Data.Group
  */
-module.exports = ( function ( extend, createPromise, isPlainObject, isArray, whenAllPromises, Group, ExternalGroup, DataLoader, DataStore ) {
+module.exports = function ( extend, createPromise, isPlainObject, isArray, whenAllPromises, Group, ExternalGroup, DataLoader, DataStore ) {
 
 	var HybridGroup = function () {
 		// call the constructor
@@ -96,4 +96,4 @@ module.exports = ( function ( extend, createPromise, isPlainObject, isArray, whe
 	};
 
 	return HybridGroup;
-} );
+};

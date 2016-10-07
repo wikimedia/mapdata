@@ -5,7 +5,7 @@
  * @class Kartographer.Data.Group.Internal
  * @extends Kartographer.Data.Group.HybridGroup
  */
-module.exports = ( function ( extend, createPromise, HybridGroup, ExternalGroup, DataLoader ) {
+module.exports = function ( extend, createPromise, HybridGroup, ExternalGroup, DataLoader ) {
 
 	var InternalGroup = function () {
 		// call the constructor
@@ -38,4 +38,4 @@ module.exports = ( function ( extend, createPromise, HybridGroup, ExternalGroup,
 		return group.promise;
 	};
 	return InternalGroup;
-} );
+};

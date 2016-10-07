@@ -5,7 +5,7 @@
  * @class Kartographer.Data.Group.External
  * @extends Kartographer.Data.Group
  */
-module.exports = ( function ( extend, createPromise, isEmptyObject, isArray, getJSON, mwMsg, mwUri, Group ) {
+module.exports = function ( extend, createPromise, isEmptyObject, isArray, getJSON, mwMsg, mwUri, Group ) {
 
 	var ExternalGroup = function () {
 		// call the constructor
@@ -153,4 +153,4 @@ module.exports = ( function ( extend, createPromise, isEmptyObject, isArray, get
 	};
 
 	return ExternalGroup;
-} );
+};

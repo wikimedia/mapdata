@@ -4,7 +4,7 @@
  *
  * @class Kartographer.Data.DataLoader
  */
-module.exports = ( function ( createPromise, mwApi, clientStore, title, debounce, bind ) {
+module.exports = function ( createPromise, mwApi, clientStore, title, debounce, bind ) {
 
 	var DataLoader = function () {
 		/**
@@ -78,4 +78,4 @@ module.exports = ( function ( createPromise, mwApi, clientStore, title, debounce
 	};
 
 	return new DataLoader();
-} );
+};
