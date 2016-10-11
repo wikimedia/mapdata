@@ -7,28 +7,28 @@
  */
 module.exports = function ( extend, HybridGroup, ExternalGroup, DataLoader ) {
 
-	var InternalGroup = function () {
-		// call the constructor
-		this.initialize.apply( this, arguments );
-	};
+  var InternalGroup = function () {
+    // call the constructor
+    this.initialize.apply( this, arguments );
+  };
 
-	extend( InternalGroup.prototype, HybridGroup.prototype );
+  extend( InternalGroup.prototype, HybridGroup.prototype );
 
-	/**
-	 * @return {Promise}
-	 */
-	InternalGroup.prototype.fetch = function () {
-		var group = this;
+  /**
+   * @return {Promise}
+   */
+  InternalGroup.prototype.fetch = function () {
+    var group = this;
 
-		if ( group.promise ) {
-			return group.promise;
-		}
+    if ( group.promise ) {
+      return group.promise;
+    }
 
-		return DataLoader.fetchGroup( group.id ).then( function ( apiGeoJSON ) {
-			return group.parse( apiGeoJSON ).then( function ( group ) {
-				return group.fetchExternalGroups();
-			} );
-		} );
-	};
-	return InternalGroup;
+    return DataLoader.fetchGroup( group.id ).then( function ( apiGeoJSON ) {
+      return group.parse( apiGeoJSON ).then( function ( group ) {
+        return group.fetchExternalGroups();
+      } );
+    } );
+  };
+  return InternalGroup;
 };

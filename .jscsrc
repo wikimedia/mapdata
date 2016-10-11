@@ -1,5 +1,6 @@
 {
 	"preset": "wikimedia",
+	"validateIndentation": 2,
 
 	"jsDoc": {
 		"checkAnnotations": {
