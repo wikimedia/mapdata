@@ -34,10 +34,17 @@ npm install juliengirault/wikimedia-mapdata --save
 var dataManager = require( './DataManager' )( {
 
 	/**
-     * @required
+     * @required same as JS6 new Promise:
+     * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
      */
-	createPromise() {
-		return $.Deferred();
+	createPromise: function ( callback ) {
+		var promise = $.Deferred();
+		try {
+			callback( promise.resolve.bind( promise ), promise.reject.bind( promise ) );
+		} catch (err) {
+			promise.reject( err );
+		}
+		return promise;
 	},
 
 	/**

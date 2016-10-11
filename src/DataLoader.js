@@ -4,7 +4,7 @@
  *
  * @class Kartographer.Data.DataLoader
  */
-module.exports = function ( createPromise, mwApi, clientStore, title, debounce, bind ) {
+module.exports = function ( createPromise, createResolvedPromise, mwApi, clientStore, title, debounce, bind ) {
 
 	var DataLoader = function () {
 		/**
@@ -29,52 +29,76 @@ module.exports = function ( createPromise, mwApi, clientStore, title, debounce, 
 
 	/**
 	 * @param {string} groupId
-	 * @return {jQuery.Promise}
+	 * @return {Promise}
 	 */
 	DataLoader.prototype.fetchGroup = function ( groupId ) {
-		var promise = this.promiseByGroup[ groupId ];
+		var promise = this.promiseByGroup[ groupId ],
+			resolveFunc, rejectFunc;
 		if ( !promise ) {
-			promise = this.promiseByGroup[ groupId ] = createPromise();
-
-			if ( clientStore[ groupId ] ) {
-				promise.resolve( clientStore[ groupId ] );
+			if ( clientStore[groupId] ) {
+				promise = createResolvedPromise( clientStore[groupId] );
 			} else {
+				// FIXME: this is a horrible hack
+				// The resolve and reject functions are attached to the promise object's instance
+				// so that they can be called from the fetch function later
 				this.nextFetch.push( groupId );
+				promise = createPromise( function ( resolve, reject ) {
+					resolveFunc = resolve;
+					rejectFunc = reject;
+				} );
+				promise.wmResolve = resolveFunc;
+				promise.wmReject = rejectFunc;
 			}
+
+			this.promiseByGroup[groupId] = promise;
 		}
 		return promise;
 	};
 
 	/**
-	 * @return {jQuery.Promise}
+	 * @return {Promise}
 	 */
 	DataLoader.prototype.fetch = function () {
-		var groupsToLoad = this.nextFetch,
-			loader = this,
-			deferred = createPromise();
+		var loader = this,
+			groupsToLoad = loader.nextFetch;
 
-		this.nextFetch = [];
-
-		if ( groupsToLoad.length ) {
-			mwApi( 'get', {
-				action: 'query',
-				formatversion: '2',
-				titles: title,
-				prop: 'mapdata',
-				mpdgroups: groupsToLoad.join( '|' )
-			} ).then( function ( data ) {
-				var rawMapData = data.query.pages[ 0 ].mapdata,
-					i;
-
-				rawMapData = rawMapData && JSON.parse( rawMapData ) || {};
-
-				for ( i = 0; i < groupsToLoad.length; i++ ) {
-					loader.promiseByGroup[ groupsToLoad[ i ] ].resolve( rawMapData[ groupsToLoad[ i ] ] );
-				}
-				deferred.resolve();
-			} );
+		if ( !groupsToLoad.length ) {
+			return createResolvedPromise();
 		}
-		return deferred;
+
+		loader.nextFetch = [];
+
+		// FIXME: we need to fix this horrid hack
+		// http://stackoverflow.com/questions/39970101/combine-multiple-debounce-promises-in-js
+		function setPromises( groupsToLoad, values, err ) {
+			var i, promise;
+
+			for ( i = 0; i < groupsToLoad.length; i++ ) {
+				promise = loader.promiseByGroup[ groupsToLoad[ i ] ];
+				if ( promise.mwResolve ) {
+					if ( err ) {
+						promise.mwReject( err );
+					} else {
+						promise.mwResolve( values[ groupsToLoad[ i ] ] );
+					}
+					delete promise.mwResolve;
+					delete promise.mwReject;
+				}
+			}
+		}
+
+		return mwApi( 'get', {
+			action: 'query',
+			formatversion: '2',
+			titles: title,
+			prop: 'mapdata',
+			mpdgroups: groupsToLoad.join( '|' )
+		} ).then( function ( data ) {
+			var rawMapData = data.query.pages[ 0 ].mapdata;
+			setPromises( groupsToLoad, rawMapData && JSON.parse( rawMapData ) || {} );
+		}, function ( err ) {
+			setPromises( groupsToLoad, undefined, err );
+		} );
 	};
 
 	return new DataLoader();

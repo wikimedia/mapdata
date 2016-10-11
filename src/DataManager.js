@@ -7,18 +7,24 @@
 
 module.exports = function ( wrappers ) {
 
-	var DataLoader = require( './DataLoader' )(
-		wrappers.createPromise,
-		wrappers.mwApi,
-		wrappers.clientStore,
-		wrappers.title,
-		wrappers.debounce,
-		wrappers.bind
+	var
+		createResolvedPromise = function ( value ) {
+			return wrappers.createPromise( function ( resolve ) {
+				resolve( value );
+			} );
+		},
+		DataLoader = require( './DataLoader' )(
+			wrappers.createPromise,
+			createResolvedPromise,
+			wrappers.mwApi,
+			wrappers.clientStore,
+			wrappers.title,
+			wrappers.debounce,
+			wrappers.bind
 		),
 		Group = require( './Group.js' ),
 		ExternalGroup = require( './Group.External' )(
 			wrappers.extend,
-			wrappers.createPromise,
 			wrappers.isEmptyObject,
 			wrappers.isArray,
 			wrappers.getJSON,
@@ -29,7 +35,7 @@ module.exports = function ( wrappers ) {
 		DataStore = require( './DataStore' ),
 		HybridGroup = require( './Group.Hybrid' )(
 			wrappers.extend,
-			wrappers.createPromise,
+			createResolvedPromise,
 			wrappers.isPlainObject,
 			wrappers.isArray,
 			wrappers.whenAllPromises,
@@ -40,7 +46,6 @@ module.exports = function ( wrappers ) {
 		),
 		InternalGroup = require( './Group.Internal' )(
 			wrappers.extend,
-			wrappers.createPromise,
 			HybridGroup,
 			ExternalGroup,
 			DataLoader
@@ -49,12 +54,10 @@ module.exports = function ( wrappers ) {
 
 	/**
 	 * @param {string[]} groupIds List of group ids to load.
-	 * @return {jQuery.Promise}
+	 * @return {Promise}
 	 */
 	DataManager.prototype.loadGroups = function ( groupIds ) {
 		var promises = [],
-			groupList = [],
-			deferred = wrappers.createPromise(),
 			group,
 			i;
 
@@ -65,7 +68,11 @@ module.exports = function ( wrappers ) {
 
 		DataLoader.fetch();
 
-		wrappers.whenAllPromises( promises ).then( function () {
+		return wrappers.whenAllPromises( promises ).then( function () {
+			var groupList = [],
+				group,
+				i;
+
 			for ( i = 0; i < groupIds.length; i++ ) {
 
 				group = DataStore.get( groupIds[ i ] );
@@ -75,30 +82,26 @@ module.exports = function ( wrappers ) {
 				groupList = groupList.concat( group.externals );
 			}
 
-			return deferred.resolve( groupList );
+			return groupList;
 		} );
-		return deferred;
 	};
 
 	/**
 	 * @param {Object} geoJSON
-	 * @return {jQuery.Promise}
+	 * @return {Promise}
 	 */
 	DataManager.prototype.load = function ( geoJSON ) {
-		var groupList = [],
-			group = new HybridGroup( null, geoJSON ),
-			deferred = wrappers.createPromise();
+		var group = new HybridGroup( null, geoJSON );
 
-		group.load().then( function () {
+		return group.load().then( function () {
+			var groupList = [];
 
 			if ( !wrappers.isEmptyObject( group.getGeoJSON() ) ) {
 				groupList = groupList.concat( group );
 			}
-			groupList = groupList.concat( group.externals );
 
-			return deferred.resolve( groupList );
+			return groupList.concat( group.externals );
 		} );
-		return deferred;
 	};
 
 	return new DataManager();

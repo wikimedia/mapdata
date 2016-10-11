@@ -5,7 +5,7 @@
  * @class Kartographer.Data.Group.Internal
  * @extends Kartographer.Data.Group.HybridGroup
  */
-module.exports = function ( extend, createPromise, HybridGroup, ExternalGroup, DataLoader ) {
+module.exports = function ( extend, HybridGroup, ExternalGroup, DataLoader ) {
 
 	var InternalGroup = function () {
 		// call the constructor
@@ -15,27 +15,20 @@ module.exports = function ( extend, createPromise, HybridGroup, ExternalGroup, D
 	extend( InternalGroup.prototype, HybridGroup.prototype );
 
 	/**
-	 * @return {jQuery.Promise}
+	 * @return {Promise}
 	 */
 	InternalGroup.prototype.fetch = function () {
-		var group = this,
-			deferred;
+		var group = this;
 
 		if ( group.promise ) {
 			return group.promise;
 		}
 
-		group.promise = deferred = createPromise();
-
-		DataLoader.fetchGroup( group.id ).then( function ( apiGeoJSON ) {
-			group.parse( apiGeoJSON ).then( function ( group ) {
+		return DataLoader.fetchGroup( group.id ).then( function ( apiGeoJSON ) {
+			return group.parse( apiGeoJSON ).then( function ( group ) {
 				return group.fetchExternalGroups();
-			} ).then( function () {
-				deferred.resolve();
 			} );
 		} );
-
-		return group.promise;
 	};
 	return InternalGroup;
 };

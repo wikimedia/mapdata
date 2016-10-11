@@ -19,10 +19,9 @@ var Group = function ( ) {
 };
 
 Group.prototype.initialize = function ( groupId, geoJSON, options ) {
-	options = options || {};
-
 	this.id = groupId;
 	this.geoJSON = geoJSON || null;
+	this.options = options || {};
 };
 
 /**

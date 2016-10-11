@@ -5,7 +5,7 @@
  * @class Kartographer.Data.Group.HybridGroup
  * @extends Kartographer.Data.Group
  */
-module.exports = function ( extend, createPromise, isPlainObject, isArray, whenAllPromises, Group, ExternalGroup, DataLoader, DataStore ) {
+module.exports = function ( extend, createResolvedPromise, isPlainObject, isArray, whenAllPromises, Group, ExternalGroup, DataLoader, DataStore ) {
 
 	var HybridGroup = function () {
 		// call the constructor
@@ -22,12 +22,11 @@ module.exports = function ( extend, createPromise, isPlainObject, isArray, whenA
 		options = options || {};
 
 		Group.prototype.initialize.call( this, groupId, geoJSON, options );
-		this.isExternal = false;
 		this.externals = [];
 	};
 
 	/**
-	 * @return {jQuery.Promise}
+	 * @return {Promise}
 	 */
 	HybridGroup.prototype.load = function () {
 		var group = this;
@@ -38,11 +37,10 @@ module.exports = function ( extend, createPromise, isPlainObject, isArray, whenA
 	};
 
 	/**
-	 * @return {jQuery.Promise}
+	 * @return {Promise}
 	 */
 	HybridGroup.prototype.fetchExternalGroups = function () {
 		var promises = [],
-			deferred = createPromise(),
 			group = this,
 			key,
 			externals = group.externals;
@@ -52,16 +50,15 @@ module.exports = function ( extend, createPromise, isPlainObject, isArray, whenA
 		}
 
 		return whenAllPromises( promises ).then( function () {
-			return deferred.resolve( group ).promise();
+			return group;
 		} );
 	};
 
 	/**
-	 * @return {jQuery.Promise}
+	 * @return {Promise}
 	 */
 	HybridGroup.prototype.parse = function ( apiGeoJSON ) {
 		var group = this,
-			deferred = createPromise(),
 			geoJSON,
 			externalKey,
 			i;
@@ -92,7 +89,7 @@ module.exports = function ( extend, createPromise, isPlainObject, isArray, whenA
 
 		group.geoJSON = geoJSON;
 
-		return deferred.resolve( group ).promise();
+		return createResolvedPromise( group );
 	};
 
 	return HybridGroup;
