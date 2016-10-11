@@ -46,8 +46,8 @@ module.exports = function ( createPromise, createResolvedPromise, mwApi, clientS
 					resolveFunc = resolve;
 					rejectFunc = reject;
 				} );
-				promise.wmResolve = resolveFunc;
-				promise.wmReject = rejectFunc;
+				promise.mwResolve = resolveFunc;
+				promise.mwReject = rejectFunc;
 			}
 
 			this.promiseByGroup[groupId] = promise;
