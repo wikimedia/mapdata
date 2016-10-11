@@ -35,8 +35,8 @@ module.exports = function ( createPromise, createResolvedPromise, mwApi, clientS
     var promise = this.promiseByGroup[ groupId ],
         resolveFunc, rejectFunc;
     if ( !promise ) {
-      if ( clientStore[groupId] ) {
-        promise = createResolvedPromise( clientStore[groupId] );
+      if ( clientStore[ groupId ] ) {
+        promise = createResolvedPromise( clientStore[ groupId ] );
       } else {
         // FIXME: this is a horrible hack
         // The resolve and reject functions are attached to the promise object's instance
@@ -50,7 +50,7 @@ module.exports = function ( createPromise, createResolvedPromise, mwApi, clientS
         promise.mwReject = rejectFunc;
       }
 
-      this.promiseByGroup[groupId] = promise;
+      this.promiseByGroup[ groupId ] = promise;
     }
     return promise;
   };

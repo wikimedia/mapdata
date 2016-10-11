@@ -39,30 +39,30 @@ module.exports = function ( extend, isEmptyObject, isArray, getJSON, mwMsg, mwUr
       var baseProps = data.properties,
           i;
 
-        switch ( data.service ) {
-          case 'geoshape':
-          case 'geoline':
+      switch ( data.service ) {
+        case 'geoshape':
+        case 'geoline':
 
-            // HACK: workaround for T144777 - we should be using topojson instead
-            extend( data, geodata );
+          // HACK: workaround for T144777 - we should be using topojson instead
+          extend( data, geodata );
 
-            // data.type = 'FeatureCollection';
-            // data.features = [];
-            // $.each( geodata.objects, function ( key ) {
-            // 	data.features.push( topojson.feature( geodata, geodata.objects[ key ] ) );
-            // } );
+          // data.type = 'FeatureCollection';
+          // data.features = [];
+          // $.each( geodata.objects, function ( key ) {
+          // 	data.features.push( topojson.feature( geodata, geodata.objects[ key ] ) );
+          // } );
 
-            // Each feature returned from geoshape service may contain "properties"
-            // If externalData element has properties, merge it with properties in the feature
-            if ( baseProps ) {
-              for ( i = 0; i < data.features.length; i++ ) {
-                if ( isEmptyObject( data.features[ i ].properties ) ) {
-                  data.features[ i ].properties = baseProps;
-                } else {
-                  data.features[ i ].properties = extend( {}, baseProps, data.features[ i ].properties );
-                }
+          // Each feature returned from geoshape service may contain "properties"
+          // If externalData element has properties, merge it with properties in the feature
+          if ( baseProps ) {
+            for ( i = 0; i < data.features.length; i++ ) {
+              if ( isEmptyObject( data.features[ i ].properties ) ) {
+                data.features[ i ].properties = baseProps;
+              } else {
+                data.features[ i ].properties = extend( {}, baseProps, data.features[ i ].properties );
               }
             }
+          }
           break;
 
         default:
@@ -87,20 +87,28 @@ module.exports = function ( extend, isEmptyObject, isArray, getJSON, mwMsg, mwUr
     switch ( group.geoJSON.service ) {
       case 'geoshape':
       case 'geoline':
-        if (uri.query.query) {
-          links.push('<a target="_blank" href="//query.wikidata.org/#' + encodeURI(uri.query.query) + '">' + mwMsg('kartographer-attribution-externaldata-query') + '</a>');
+        if ( uri.query.query ) {
+          links.push( '<a target="_blank" href="//query.wikidata.org/#' +
+              encodeURI( uri.query.query ) +
+              '">' +
+              mwMsg( 'kartographer-attribution-externaldata-query' ) +
+              '</a>' );
         }
 
-        if (uri.query.ids) {
-          ids = uri.query.ids.split(',');
+        if ( uri.query.ids ) {
+          ids = uri.query.ids.split( ',' );
 
-          for (i = 0; i < ids.length; i++) {
-            links.push('<a target="_blank" href="//www.wikidata.org/wiki/' + encodeURI(ids[i]) + '">' + encodeURI(ids[i]) + '</a>');
+          for ( i = 0; i < ids.length; i++ ) {
+            links.push( '<a target="_blank" href="//www.wikidata.org/wiki/' +
+                encodeURI( ids[ i ] ) +
+                '">' +
+                encodeURI( ids[ i ] ) +
+                '</a>' );
           }
         }
         group.attribution = mwMsg(
           'kartographer-attribution-externaldata',
-          mwMsg('project-localized-name-wikidatawiki'),
+          mwMsg( 'project-localized-name-wikidatawiki' ),
           links
         );
         break;
