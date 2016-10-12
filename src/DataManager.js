@@ -5,6 +5,13 @@
  * @class Kartographer.Data.DataManager
  */
 
+var dataLoaderLib = require( './DataLoader' ),
+    Group = require( './Group.js' ),
+    externalGroupLib = require( './Group.External' ),
+    dataStoreLib = require( './DataStore' ),
+    hybridGroupLib = require( './Group.Hybrid' ),
+    internalGroupLib = require( './Group.Internal' );
+
 module.exports = function ( wrappers ) {
 
   var
@@ -13,7 +20,7 @@ module.exports = function ( wrappers ) {
         resolve( value );
       } );
     },
-    DataLoader = require( './DataLoader' )(
+    DataLoader = dataLoaderLib(
       wrappers.createPromise,
       createResolvedPromise,
       wrappers.mwApi,
@@ -22,8 +29,7 @@ module.exports = function ( wrappers ) {
       wrappers.debounce,
       wrappers.bind
     ),
-    Group = require( './Group.js' ),
-    ExternalGroup = require( './Group.External' )(
+    ExternalGroup = externalGroupLib(
       wrappers.extend,
       wrappers.isEmptyObject,
       wrappers.isArray,
@@ -32,8 +38,8 @@ module.exports = function ( wrappers ) {
       wrappers.mwUri,
       Group
     ),
-    DataStore = require( './DataStore' ),
-    HybridGroup = require( './Group.Hybrid' )(
+    DataStore = dataStoreLib(),
+    HybridGroup = hybridGroupLib(
       wrappers.extend,
       createResolvedPromise,
       wrappers.isPlainObject,
@@ -44,7 +50,7 @@ module.exports = function ( wrappers ) {
       DataLoader,
       DataStore
     ),
-    InternalGroup = require( './Group.Internal' )(
+    InternalGroup = internalGroupLib(
       wrappers.extend,
       HybridGroup,
       ExternalGroup,
@@ -61,6 +67,9 @@ module.exports = function ( wrappers ) {
         group,
         i;
 
+    if ( !wrappers.isArray( groupIds ) ) {
+      groupIds = [ groupIds ];
+    }
     for ( i = 0; i < groupIds.length; i++ ) {
       group = DataStore.get( groupIds[ i ] ) || DataStore.add( new InternalGroup( groupIds[ i ] ) );
       promises.push( group.fetch() );

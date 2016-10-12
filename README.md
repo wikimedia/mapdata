@@ -85,28 +85,28 @@ var dataManager = require( './DataManager' )( {
 	/**
      * @required
      */
-	getJSON: function () {
-		return $.getJSON.apply( $, arguments );
+	getJSON: function ( url ) {
+		return $.getJSON( url );
 	},
 
 	/**
      * @required
      */
-	mwApi: function ( method, data ) {
-		return new mw.Api()[ method ]( data );
-	},
-
-	/**
-     * @required
-     */
-	mwUri: function ( data ) {
-		return new mw.Uri( data );
+	mwApi: function ( data ) {
+		return new mw.Api()[ 'get' ]( data );
 	},
 
 	/**
      * @required
      */
 	title: mw.config.get( 'wgPageName' ),
+
+	/**
+     * @optional
+     */
+	mwUri: function ( data ) {
+		return new mw.Uri( data );
+	},
 
 	/**
      * @optional

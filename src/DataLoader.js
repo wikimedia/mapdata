@@ -87,11 +87,12 @@ module.exports = function ( createPromise, createResolvedPromise, mwApi, clientS
       }
     }
 
-    return mwApi( 'get', {
+    return mwApi( {
       action: 'query',
       formatversion: '2',
       titles: title,
       prop: 'mapdata',
+      mpdlimit: 'max',
       mpdgroups: groupsToLoad.join( '|' )
     } ).then( function ( data ) {
       var rawMapData = data.query.pages[ 0 ].mapdata;

@@ -4,7 +4,7 @@
  *
  * @class Kartographer.Data.DataStore
  */
-module.exports = ( function () {
+module.exports = function () {
 
   var DataStore = function () {
     this.groups = {};
@@ -34,4 +34,4 @@ module.exports = ( function () {
   };
 
   return new DataStore();
-} )();
+};
