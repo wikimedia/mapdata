@@ -24,11 +24,12 @@ module.exports = function ( extend, HybridGroup, ExternalGroup, DataLoader ) {
       return group.promise;
     }
 
-    return DataLoader.fetchGroup( group.id ).then( function ( apiGeoJSON ) {
+    group.promise = DataLoader.fetchGroup( group.id ).then( function ( apiGeoJSON ) {
       return group.parse( apiGeoJSON ).then( function ( group ) {
         return group.fetchExternalGroups();
       } );
     } );
+    return group.promise;
   };
   return InternalGroup;
 };
