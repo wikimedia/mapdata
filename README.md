@@ -34,10 +34,17 @@ npm install juliengirault/wikimedia-mapdata --save
 var dataManager = require( './DataManager' )( {
 
 	/**
-     * @required
+     * @required same as JS6 new Promise:
+     * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
      */
-	createPromise() {
-		return $.Deferred();
+	createPromise: function ( callback ) {
+		var promise = $.Deferred();
+		try {
+			callback( promise.resolve.bind( promise ), promise.reject.bind( promise ) );
+		} catch (err) {
+			promise.reject( err );
+		}
+		return promise;
 	},
 
 	/**
@@ -78,28 +85,28 @@ var dataManager = require( './DataManager' )( {
 	/**
      * @required
      */
-	getJSON: function () {
-		return $.getJSON.apply( $, arguments );
+	getJSON: function ( url ) {
+		return $.getJSON( url );
 	},
 
 	/**
      * @required
      */
-	mwApi: function ( method, data ) {
-		return new mw.Api()[ method ]( data );
-	},
-
-	/**
-     * @required
-     */
-	mwUri: function ( data ) {
-		return new mw.Uri( data );
+	mwApi: function ( data ) {
+		return new mw.Api()[ 'get' ]( data );
 	},
 
 	/**
      * @required
      */
 	title: mw.config.get( 'wgPageName' ),
+
+	/**
+     * @optional
+     */
+	mwUri: function ( data ) {
+		return new mw.Uri( data );
+	},
 
 	/**
      * @optional

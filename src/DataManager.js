@@ -5,101 +5,113 @@
  * @class Kartographer.Data.DataManager
  */
 
+var dataLoaderLib = require( './DataLoader' ),
+    Group = require( './Group.js' ),
+    externalGroupLib = require( './Group.External' ),
+    dataStoreLib = require( './DataStore' ),
+    hybridGroupLib = require( './Group.Hybrid' ),
+    internalGroupLib = require( './Group.Internal' );
+
 module.exports = function ( wrappers ) {
 
-	var DataLoader = require( './DataLoader' )(
-		wrappers.createPromise,
-		wrappers.mwApi,
-		wrappers.clientStore,
-		wrappers.title,
-		wrappers.debounce,
-		wrappers.bind
-		),
-		Group = require( './Group.js' ),
-		ExternalGroup = require( './Group.External' )(
-			wrappers.extend,
-			wrappers.createPromise,
-			wrappers.isEmptyObject,
-			wrappers.isArray,
-			wrappers.getJSON,
-			wrappers.mwMsg,
-			wrappers.mwUri,
-			Group
-		),
-		DataStore = require( './DataStore' ),
-		HybridGroup = require( './Group.Hybrid' )(
-			wrappers.extend,
-			wrappers.createPromise,
-			wrappers.isPlainObject,
-			wrappers.isArray,
-			wrappers.whenAllPromises,
-			Group,
-			ExternalGroup,
-			DataLoader,
-			DataStore
-		),
-		InternalGroup = require( './Group.Internal' )(
-			wrappers.extend,
-			wrappers.createPromise,
-			HybridGroup,
-			ExternalGroup,
-			DataLoader
-		),
-		DataManager = function () {};
+  var
+    createResolvedPromise = function ( value ) {
+      return wrappers.createPromise( function ( resolve ) {
+        resolve( value );
+      } );
+    },
+    DataLoader = dataLoaderLib(
+      wrappers.createPromise,
+      createResolvedPromise,
+      wrappers.mwApi,
+      wrappers.clientStore,
+      wrappers.title,
+      wrappers.debounce,
+      wrappers.bind
+    ),
+    ExternalGroup = externalGroupLib(
+      wrappers.extend,
+      wrappers.isEmptyObject,
+      wrappers.isArray,
+      wrappers.getJSON,
+      wrappers.mwMsg,
+      wrappers.mwUri,
+      Group
+    ),
+    DataStore = dataStoreLib(),
+    HybridGroup = hybridGroupLib(
+      wrappers.extend,
+      createResolvedPromise,
+      wrappers.isPlainObject,
+      wrappers.isArray,
+      wrappers.whenAllPromises,
+      Group,
+      ExternalGroup,
+      DataLoader,
+      DataStore
+    ),
+    InternalGroup = internalGroupLib(
+      wrappers.extend,
+      HybridGroup,
+      ExternalGroup,
+      DataLoader
+    ),
+    DataManager = function () {};
 
-	/**
-	 * @param {string[]} groupIds List of group ids to load.
-	 * @return {jQuery.Promise}
-	 */
-	DataManager.prototype.loadGroups = function ( groupIds ) {
-		var promises = [],
-			groupList = [],
-			deferred = wrappers.createPromise(),
-			group,
-			i;
+  /**
+   * @param {string[]} groupIds List of group ids to load.
+   * @return {Promise}
+   */
+  DataManager.prototype.loadGroups = function ( groupIds ) {
+    var promises = [],
+        group,
+        i;
 
-		for ( i = 0; i < groupIds.length; i++ ) {
-			group = DataStore.get( groupIds[ i ] ) || DataStore.add( new InternalGroup( groupIds[ i ] ) );
-			promises.push( group.fetch() );
-		}
+    if ( !wrappers.isArray( groupIds ) ) {
+      groupIds = [ groupIds ];
+    }
+    for ( i = 0; i < groupIds.length; i++ ) {
+      group = DataStore.get( groupIds[ i ] ) || DataStore.add( new InternalGroup( groupIds[ i ] ) );
+      promises.push( group.fetch() );
+    }
 
-		DataLoader.fetch();
+    DataLoader.fetch();
 
-		wrappers.whenAllPromises( promises ).then( function () {
-			for ( i = 0; i < groupIds.length; i++ ) {
+    return wrappers.whenAllPromises( promises ).then( function () {
+      var groupList = [],
+          group,
+          i;
 
-				group = DataStore.get( groupIds[ i ] );
-				if ( !wrappers.isEmptyObject( group.getGeoJSON() ) ) {
-					groupList = groupList.concat( group );
-				}
-				groupList = groupList.concat( group.externals );
-			}
+      for ( i = 0; i < groupIds.length; i++ ) {
 
-			return deferred.resolve( groupList );
-		} );
-		return deferred;
-	};
+        group = DataStore.get( groupIds[ i ] );
+        if ( !wrappers.isEmptyObject( group.getGeoJSON() ) ) {
+          groupList = groupList.concat( group );
+        }
+        groupList = groupList.concat( group.externals );
+      }
 
-	/**
-	 * @param {Object} geoJSON
-	 * @return {jQuery.Promise}
-	 */
-	DataManager.prototype.load = function ( geoJSON ) {
-		var groupList = [],
-			group = new HybridGroup( null, geoJSON ),
-			deferred = wrappers.createPromise();
+      return groupList;
+    } );
+  };
 
-		group.load().then( function () {
+  /**
+   * @param {Object} geoJSON
+   * @return {Promise}
+   */
+  DataManager.prototype.load = function ( geoJSON ) {
+    var group = new HybridGroup( null, geoJSON );
 
-			if ( !wrappers.isEmptyObject( group.getGeoJSON() ) ) {
-				groupList = groupList.concat( group );
-			}
-			groupList = groupList.concat( group.externals );
+    return group.load().then( function () {
+      var groupList = [];
 
-			return deferred.resolve( groupList );
-		} );
-		return deferred;
-	};
+      if ( !wrappers.isEmptyObject( group.getGeoJSON() ) ) {
+        groupList = groupList.concat( group );
+      }
 
-	return new DataManager();
+      return groupList.concat( group.externals );
+    } );
+  };
+
+  return new DataManager();
 };
