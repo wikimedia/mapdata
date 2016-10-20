@@ -10,6 +10,7 @@ module.exports = function ( extend, isEmptyObject, isArray, getJSON, mwMsg, mwUr
   var ExternalGroup = function () {
     // call the constructor
     this.initialize.apply( this, arguments );
+    this.isExternal = true;
   };
 
   extend( ExternalGroup.prototype, Group.prototype );
