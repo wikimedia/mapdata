@@ -1,6 +1,10 @@
 /* globals module */
 /**
- * Internal Data Group.
+ * A hybrid group is a group that is not considered as a {@link Kartographer.Data.Group.HybridGroup}
+ * because it does not implement a `fetch` method.
+ *
+ * This abstraction is useful for the Developer API: the data is passed directly but still needs to
+ * be parsed to extract the external sub-groups.
  *
  * @class Kartographer.Data.Group.HybridGroup
  * @extends Kartographer.Data.Group
@@ -23,6 +27,7 @@ module.exports = function ( extend, createResolvedPromise, isPlainObject, isArra
 
     Group.prototype.initialize.call( this, groupId, geoJSON, options );
     this.externals = [];
+    this.isExternal = false;
   };
 
   /**
