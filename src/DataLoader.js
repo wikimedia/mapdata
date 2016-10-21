@@ -79,7 +79,7 @@ module.exports = function ( createPromise, createResolvedPromise, mwApi, clientS
           if ( err ) {
             promise.mwReject( err );
           } else {
-            promise.mwResolve( values[ groupsToLoad[ i ] ] );
+            promise.mwResolve( values[ groupsToLoad[ i ] ] || {} );
           }
           delete promise.mwResolve;
           delete promise.mwReject;

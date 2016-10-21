@@ -1,6 +1,6 @@
 {
   "name": "wikimedia-mapdata",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "private": true,
   "description": "Wikimedia map data manager for Kartographer's extension and Kartotherian.",
   "main": "src/index.js",
