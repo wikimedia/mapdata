@@ -38,9 +38,40 @@ module.exports = function ( extend, isEmptyObject, isArray, getJSON, mwMsg, mwUr
 
     group.promise = getJSON( data.url ).then( function ( geodata ) {
       var baseProps = data.properties,
-          i;
+          geometry,
+          coordinates,
+          i, j;
 
       switch ( data.service ) {
+
+        case 'geomask':
+          // Mask-out the entire world 10 times east and west,
+          // and add each result geometry as a hole
+          coordinates = [ [ [ 3600, -180 ], [ 3600, 180 ], [ -3600, 180 ], [ -3600, -180 ], [ 3600, -180 ] ] ];
+          for ( i = 0; i < geodata.features.length; i++ ) {
+            geometry = geodata.features[ i ].geometry;
+            if ( !geometry ) {
+              continue;
+            }
+            // Only add the very first (outer) polygon
+            switch ( geometry.type ) {
+              case 'Polygon':
+                coordinates.push( geometry.coordinates[ 0 ] );
+                break;
+              case 'MultiPolygon':
+                for ( j = 0; j < geometry.coordinates.length; j++ ) {
+                  coordinates.push( geometry.coordinates[ j ][ 0 ] );
+                }
+                break;
+            }
+          }
+          data.type = 'Feature';
+          data.geometry = {
+            type: 'Polygon',
+            coordinates: coordinates
+          };
+          break;
+
         case 'geoshape':
         case 'geoline':
 
@@ -69,6 +100,9 @@ module.exports = function ( extend, isEmptyObject, isArray, getJSON, mwMsg, mwUr
         default:
           throw new Error( 'Unknown externalData service ' + data.service );
       }
+
+      delete data.service;
+      delete data.url;
 
       if ( mwMsg ) {
         group.parseAttribution();
@@ -108,9 +142,9 @@ module.exports = function ( extend, isEmptyObject, isArray, getJSON, mwMsg, mwUr
           }
         }
         group.attribution = mwMsg(
-          'kartographer-attribution-externaldata',
-          mwMsg( 'project-localized-name-wikidatawiki' ),
-          links
+            'kartographer-attribution-externaldata',
+            mwMsg( 'project-localized-name-wikidatawiki' ),
+            links
         );
         break;
     }
