@@ -101,9 +101,6 @@ module.exports = function ( extend, isEmptyObject, isArray, getJSON, mwMsg, mwUr
           throw new Error( 'Unknown externalData service ' + data.service );
       }
 
-      delete data.service;
-      delete data.url;
-
       if ( mwMsg ) {
         group.parseAttribution();
       }
