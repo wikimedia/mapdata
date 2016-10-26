@@ -28,6 +28,8 @@ module.exports = function ( extend, HybridGroup, ExternalGroup, DataLoader ) {
       return group.parse( apiGeoJSON ).then( function ( group ) {
         return group.fetchExternalGroups();
       } );
+    }, function () {
+      group.failed = true;
     } );
     return group.promise;
   };

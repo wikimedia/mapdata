@@ -72,7 +72,15 @@ module.exports = function ( wrappers ) {
     }
     for ( i = 0; i < groupIds.length; i++ ) {
       group = DataStore.get( groupIds[ i ] ) || DataStore.add( new InternalGroup( groupIds[ i ] ) );
-      promises.push( group.fetch() );
+      /* jshint loopfunc:true */
+      promises.push( wrappers.createPromise( function ( resolve ) {
+        group.fetch().then( function () {
+          return resolve();
+        }, function () {
+          return resolve();
+        } );
+      } ) );
+      /* jshint loopfunc:false */
     }
 
     DataLoader.fetch();
@@ -85,7 +93,7 @@ module.exports = function ( wrappers ) {
       for ( i = 0; i < groupIds.length; i++ ) {
 
         group = DataStore.get( groupIds[ i ] );
-        if ( !wrappers.isEmptyObject( group.getGeoJSON() ) ) {
+        if ( group.failed || !wrappers.isEmptyObject( group.getGeoJSON() ) ) {
           groupList = groupList.concat( group );
         }
         groupList = groupList.concat( group.externals );
