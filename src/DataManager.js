@@ -74,11 +74,7 @@ module.exports = function ( wrappers ) {
       group = DataStore.get( groupIds[ i ] ) || DataStore.add( new InternalGroup( groupIds[ i ] ) );
       /* jshint loopfunc:true */
       promises.push( wrappers.createPromise( function ( resolve ) {
-        group.fetch().then( function () {
-          return resolve();
-        }, function () {
-          return resolve();
-        } );
+        group.fetch().then( resolve, resolve );
       } ) );
       /* jshint loopfunc:false */
     }
