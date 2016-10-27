@@ -104,6 +104,8 @@ module.exports = function ( extend, isEmptyObject, isArray, getJSON, mwMsg, mwUr
       if ( mwMsg ) {
         group.parseAttribution();
       }
+    }, function () {
+      group.failed = true;
     } );
 
     return group.promise;
