@@ -44,6 +44,13 @@ module.exports = function ( extend, isEmptyObject, isArray, getJSON, mwMsg, mwUr
 
       switch ( data.service ) {
 
+        case 'page':
+          if ( geodata.jsondata && geodata.jsondata.data ) {
+            extend( data, geodata.jsondata.data );
+          }
+          // FIXME: error reporting, at least to console.log
+          break;
+
         case 'geomask':
           // Mask-out the entire world 10 times east and west,
           // and add each result geometry as a hole
@@ -119,6 +126,10 @@ module.exports = function ( extend, isEmptyObject, isArray, getJSON, mwMsg, mwUr
         uri = mwUri( group.geoJSON.url );
 
     switch ( group.geoJSON.service ) {
+      case 'page':
+        // FIXME: add link to commons page
+        break;
+
       case 'geoshape':
       case 'geoline':
         if ( uri.query.query ) {
