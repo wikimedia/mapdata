@@ -1,9 +1,9 @@
-/* globals module */
 /**
  * Data loader.
  *
  * @class Kartographer.Data.DataLoader
  */
+ // eslint-disable-next-line valid-jsdoc
 module.exports = function ( createPromise, createResolvedPromise, mwApi, clientStore, title, debounce, bind ) {
 
   var DataLoader = function () {

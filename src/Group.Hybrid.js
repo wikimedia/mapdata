@@ -1,4 +1,3 @@
-/* globals module */
 /**
  * A hybrid group is a group that is not considered as a {@link Kartographer.Data.Group.HybridGroup}
  * because it does not implement a `fetch` method.
@@ -9,6 +8,7 @@
  * @class Kartographer.Data.Group.HybridGroup
  * @extends Kartographer.Data.Group
  */
+ // eslint-disable-next-line valid-jsdoc
 module.exports = function ( extend, createResolvedPromise, isPlainObject, isArray, whenAllPromises, Group, ExternalGroup, DataLoader, DataStore ) {
 
   var HybridGroup = function () {
@@ -60,6 +60,12 @@ module.exports = function ( extend, createResolvedPromise, isPlainObject, isArra
   };
 
   /**
+   * Parses the GeoJSON to extract the external data sources.
+   *
+   * Creates {@link Kartographer.Data.Group.External external data groups} and
+   * keeps references of them in {@link #externals}.
+   *
+   * @param {Object|Array} apiGeoJSON The GeoJSON as returned by the API.
    * @return {Promise}
    */
   HybridGroup.prototype.parse = function ( apiGeoJSON ) {

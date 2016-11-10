@@ -1,4 +1,3 @@
-/* globals module */
 /**
  * Data Manager.
  *
@@ -14,49 +13,48 @@ var dataLoaderLib = require( './DataLoader' ),
 
 module.exports = function ( wrappers ) {
 
-  var
-    createResolvedPromise = function ( value ) {
-      return wrappers.createPromise( function ( resolve ) {
-        resolve( value );
-      } );
-    },
-    DataLoader = dataLoaderLib(
-      wrappers.createPromise,
-      createResolvedPromise,
-      wrappers.mwApi,
-      wrappers.clientStore,
-      wrappers.title,
-      wrappers.debounce,
-      wrappers.bind
-    ),
-    ExternalGroup = externalGroupLib(
-      wrappers.extend,
-      wrappers.isEmptyObject,
-      wrappers.isArray,
-      wrappers.getJSON,
-      wrappers.mwMsg,
-      wrappers.mwUri,
-      Group
-    ),
-    DataStore = dataStoreLib(),
-    HybridGroup = hybridGroupLib(
-      wrappers.extend,
-      createResolvedPromise,
-      wrappers.isPlainObject,
-      wrappers.isArray,
-      wrappers.whenAllPromises,
-      Group,
-      ExternalGroup,
-      DataLoader,
-      DataStore
-    ),
-    InternalGroup = internalGroupLib(
-      wrappers.extend,
-      HybridGroup,
-      ExternalGroup,
-      DataLoader
-    ),
-    DataManager = function () {};
+  var createResolvedPromise = function ( value ) {
+        return wrappers.createPromise( function ( resolve ) {
+          resolve( value );
+        } );
+      },
+      DataLoader = dataLoaderLib(
+        wrappers.createPromise,
+        createResolvedPromise,
+        wrappers.mwApi,
+        wrappers.clientStore,
+        wrappers.title,
+        wrappers.debounce,
+        wrappers.bind
+      ),
+      ExternalGroup = externalGroupLib(
+        wrappers.extend,
+        wrappers.isEmptyObject,
+        wrappers.isArray,
+        wrappers.getJSON,
+        wrappers.mwMsg,
+        wrappers.mwUri,
+        Group
+      ),
+      DataStore = dataStoreLib(),
+      HybridGroup = hybridGroupLib(
+        wrappers.extend,
+        createResolvedPromise,
+        wrappers.isPlainObject,
+        wrappers.isArray,
+        wrappers.whenAllPromises,
+        Group,
+        ExternalGroup,
+        DataLoader,
+        DataStore
+      ),
+      InternalGroup = internalGroupLib(
+        wrappers.extend,
+        HybridGroup,
+        ExternalGroup,
+        DataLoader
+      ),
+      DataManager = function () {};
 
   /**
    * @param {string[]} groupIds List of group ids to load.
@@ -72,11 +70,10 @@ module.exports = function ( wrappers ) {
     }
     for ( i = 0; i < groupIds.length; i++ ) {
       group = DataStore.get( groupIds[ i ] ) || DataStore.add( new InternalGroup( groupIds[ i ] ) );
-      /* jshint loopfunc:true */
+      // eslint-disable-next-line no-loop-func
       promises.push( wrappers.createPromise( function ( resolve ) {
         group.fetch().then( resolve, resolve );
       } ) );
-      /* jshint loopfunc:false */
     }
 
     DataLoader.fetch();

@@ -1,4 +1,3 @@
-/* globals module */
 /**
  * Group parent class.
  *
@@ -13,7 +12,7 @@
  * @param {Object} [options]
  * @constructor
  */
-var Group = function ( ) {
+var Group = function () {
   // call the constructor
   this.initialize.apply( this, arguments );
 };

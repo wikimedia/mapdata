@@ -1,4 +1,3 @@
-/* globals module */
 /**
  * Data store.
  *
@@ -20,6 +19,7 @@ module.exports = function () {
   };
 
   /**
+   * @param {string} groupId
    * @return {Kartographer.Data.Group}
    */
   DataStore.prototype.get = function ( groupId ) {
@@ -27,6 +27,7 @@ module.exports = function () {
   };
 
   /**
+   * @param {string} groupId
    * @return {boolean}
    */
   DataStore.prototype.has = function ( groupId ) {

@@ -1,10 +1,10 @@
-/* globals module */
 /**
  * Internal Data Group.
  *
  * @class Kartographer.Data.Group.Internal
  * @extends Kartographer.Data.Group.HybridGroup
  */
+ // eslint-disable-next-line valid-jsdoc
 module.exports = function ( extend, HybridGroup, ExternalGroup, DataLoader ) {
 
   var InternalGroup = function () {

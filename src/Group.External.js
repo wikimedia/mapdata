@@ -1,10 +1,10 @@
-/* globals module */
 /**
  * External Data Group.
  *
  * @class Kartographer.Data.Group.External
  * @extends Kartographer.Data.Group
  */
+ // eslint-disable-next-line valid-jsdoc
 module.exports = function ( extend, isEmptyObject, isArray, getJSON, mwMsg, mwUri, Group ) {
 
   var ExternalGroup = function () {
