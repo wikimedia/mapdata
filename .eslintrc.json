@@ -8,8 +8,7 @@
     "require": false
   },
   "rules": {
-    "dot-notation": 0,
-    "indent": [ "error", 2, { "SwitchCase": 1, "VariableDeclarator": 2 } ],
-    "wrap-iife": 0
+    "dot-notation": [ "error", { "allowKeywords": true } ],
+    "indent": [ "error", 2, { "SwitchCase": 1, "VariableDeclarator": 2 } ]
   }
 }
