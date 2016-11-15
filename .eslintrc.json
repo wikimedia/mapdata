@@ -1,15 +1,15 @@
 {
-	"extends": "wikimedia",
-	"env": {
-		"browser": true
-	},
-	"globals": {
+  "extends": "wikimedia",
+  "env": {
+    "browser": true
+  },
+  "globals": {
     "module": false,
     "require": false
-	},
-	"rules": {
-		"dot-notation": 0,
+  },
+  "rules": {
+    "dot-notation": 0,
     "indent": [ "error", 2, { "SwitchCase": 1, "VariableDeclarator": 2 } ],
-		"wrap-iife": 0
-	}
+    "wrap-iife": 0
+  }
 }
