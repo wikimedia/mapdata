@@ -47,11 +47,11 @@ module.exports = function ( extend, createResolvedPromise, isPlainObject, isArra
   HybridGroup.prototype.fetchExternalGroups = function () {
     var promises = [],
         group = this,
-        key,
+        i,
         externals = group.externals;
 
-    for ( key in externals ) {
-      promises.push( externals[ key ].fetch() );
+    for ( i = 0; i < externals.length; i++ ) {
+      promises.push( externals[ i ].fetch() );
     }
 
     return whenAllPromises( promises ).then( function () {
