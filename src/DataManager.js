@@ -34,6 +34,7 @@ module.exports = function ( wrappers ) {
         wrappers.getJSON,
         wrappers.mwMsg,
         wrappers.mwUri,
+        wrappers.mwHtmlElement,
         Group
       ),
       DataStore = dataStoreLib(),

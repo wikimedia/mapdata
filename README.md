@@ -11,7 +11,7 @@ The library first requires wrapper methods to be passed in order to be used both
 ## Install
 
 ```
-npm install juliengirault/wikimedia-mapdata --save
+npm install git+https://gerrit.wikimedia.org/r/mapdata --save
 ```
 
 ## Required wrapper methods
@@ -24,6 +24,7 @@ npm install juliengirault/wikimedia-mapdata --save
 * `extend`
 * `getJSON`
 * `mwApi`
+* `mwHtmlElement`
 * `mwUri`
 * `title`
 
@@ -33,121 +34,128 @@ npm install juliengirault/wikimedia-mapdata --save
 // Configure data manager with wrapper methods
 var dataManager = require( './DataManager' )( {
 
-	/**
-     * @required same as JS6 new Promise:
-     * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
-     */
-	createPromise: function ( callback ) {
-		var promise = $.Deferred();
-		try {
-			callback( promise.resolve.bind( promise ), promise.reject.bind( promise ) );
-		} catch (err) {
-			promise.reject( err );
-		}
-		return promise;
-	},
+  /**
+   * @required same as JS6 new Promise:
+   * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
+   */
+  createPromise: function ( callback ) {
+    var promise = $.Deferred();
+    try {
+      callback( promise.resolve.bind( promise ), promise.reject.bind( promise ) );
+    } catch (err) {
+      promise.reject( err );
+    }
+    return promise;
+  },
 
-	/**
-     * @required
-     */
-	whenAllPromises( promises ) {
-		return $.when.apply( $, promises );
-	},
+  /**
+   * @required
+   */
+  whenAllPromises( promises ) {
+    return $.when.apply( $, promises );
+  },
 
-	/**
-     * @required
-     */
-	isEmptyObject: function () {
-		return $.isEmptyObject.apply( $, arguments );
-	},
+  /**
+   * @required
+   */
+  isEmptyObject: function () {
+    return $.isEmptyObject.apply( $, arguments );
+  },
 
-	/**
-     * @required
-     */
-	isPlainObject: function () {
-		return $.isPlainObject.apply( $, arguments );
-	},
+  /**
+   * @required
+   */
+  isPlainObject: function () {
+    return $.isPlainObject.apply( $, arguments );
+  },
 
-	/**
-     * @required
-     */
-	isArray: function () {
-		return $.isArray.apply( $, arguments );
-	},
+  /**
+   * @required
+   */
+  isArray: function () {
+    return $.isArray.apply( $, arguments );
+  },
 
-	/**
-     * @required
-     */
-	extend: function () {
-		return $.extend.apply( $, arguments );
-	},
+  /**
+   * @required
+   */
+  extend: function () {
+    return $.extend.apply( $, arguments );
+  },
 
-	/**
-     * @required
-     */
-	getJSON: function ( url ) {
-		return $.getJSON( url );
-	},
+  /**
+   * @required
+   */
+  getJSON: function ( url ) {
+    return $.getJSON( url );
+  },
 
-	/**
-     * @required
-     */
-	mwApi: function ( data ) {
-		return new mw.Api()[ 'get' ]( data );
-	},
+  /**
+   * @required
+   */
+  mwApi: function ( data ) {
+    return new mw.Api()[ 'get' ]( data );
+  },
 
-	/**
-     * @required
-     */
-	title: mw.config.get( 'wgPageName' ),
+  /**
+   * @required
+   */
+  title: mw.config.get( 'wgPageName' ),
 
-	/**
-     * @optional
-     */
-	mwUri: function ( data ) {
-		return new mw.Uri( data );
-	},
+  /**
+   * @optional
+   */
+  mwHtmlElement: function () {
+    return mw.html.element.apply( mw.html, arguments );
+  },
 
-	/**
-     * @optional
-     */
-	clientStore: mw.config.get( 'wgKartographerLiveData' ),
+  /**
+   * @optional
+   */
+  mwUri: function ( data ) {
+    return new mw.Uri( data );
+  },
 
-	/**
-     * @optional
-     */
-	debounce: function () {
-		return $.debounce.apply( $, arguments );
-	},
+  /**
+   * @optional
+   */
+  clientStore: mw.config.get( 'wgKartographerLiveData' ),
 
-	/**
-     * @optional
-     */
-	bind: function () {
-		return $.proxy.apply( $, arguments );
-	},
+  /**
+   * @optional
+   */
+  debounce: function () {
+    return $.debounce.apply( $, arguments );
+  },
 
-	/**
-     * @optional
-     */
-	mwMsg: function () {
-		return mw.msg.apply( mw.msg, arguments );
-	}
+  /**
+   * @optional
+   */
+  bind: function () {
+    return $.proxy.apply( $, arguments );
+  },
+
+  /**
+   * @optional
+   */
+  mwMsg: function () {
+    return mw.msg.apply( mw.msg, arguments );
+  }
 } );
 
 // Download and build map geojson for a list of groups:
 DataManager.loadGroups( groupIds ).then( function ( dataGroups ) {
-	var mapGeoJSON, group;
+  var mapGeoJSON, group;
 
-	for (var i = 0; i < dataGroups.length; i++ ) {
-		group = dataGroups[ i ];
+  for (var i = 0; i < dataGroups.length; i++ ) {
+    group = dataGroups[ i ];
 
-		if (dataGroups.length > 1) {
-			mapGeoJSON = mapGeoJSON || [];
-			mapGeoJSON.push( group.getGeoJSON() );
-		} else {
-			mapGeoJSON = group.getGeoJSON();
-		}
-	}
+    if (dataGroups.length > 1) {
+      mapGeoJSON = mapGeoJSON || [];
+      mapGeoJSON.push( group.getGeoJSON() );
+    } else {
+      mapGeoJSON = group.getGeoJSON();
+    }
+  }
 } );
 ```

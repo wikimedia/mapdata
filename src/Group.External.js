@@ -5,7 +5,7 @@
  * @extends Kartographer.Data.Group
  */
  // eslint-disable-next-line valid-jsdoc
-module.exports = function ( extend, isEmptyObject, isArray, getJSON, mwMsg, mwUri, Group ) {
+module.exports = function ( extend, isEmptyObject, isArray, getJSON, mwMsg, mwUri, mwHtmlElement, Group ) {
 
   var ExternalGroup = function () {
     // call the constructor
@@ -127,29 +127,50 @@ module.exports = function ( extend, isEmptyObject, isArray, getJSON, mwMsg, mwUr
 
     switch ( group.geoJSON.service ) {
       case 'page':
-        // FIXME: add link to commons page
+        links.push(
+          mwHtmlElement( 'a',
+            {
+              target: '_blank',
+              href: '//commons.wikimedia.org/wiki/Data:' + encodeURI( uri.query.title )
+            },
+            uri.query.title
+          )
+        );
+        group.attribution = mwMsg(
+          'kartographer-attribution-externaldata',
+          mwMsg( 'project-localized-name-commonswiki' ),
+          links
+        );
         break;
 
       case 'geoline':
       case 'geomask':
       case 'geoshape':
         if ( uri.query.query ) {
-          links.push( '<a target="_blank" href="//query.wikidata.org/#' +
-              encodeURI( uri.query.query ) +
-              '">' +
-              mwMsg( 'kartographer-attribution-externaldata-query' ) +
-              '</a>' );
+          links.push(
+            mwHtmlElement( 'a',
+              {
+                target: '_blank',
+                href: '//query.wikidata.org/#' + encodeURI( uri.query.query )
+              },
+              mwMsg( 'kartographer-attribution-externaldata-query' )
+            )
+          );
         }
 
         if ( uri.query.ids ) {
           ids = uri.query.ids.split( ',' );
 
           for ( i = 0; i < ids.length; i++ ) {
-            links.push( '<a target="_blank" href="//www.wikidata.org/wiki/' +
-                encodeURI( ids[ i ] ) +
-                '">' +
-                encodeURI( ids[ i ] ) +
-                '</a>' );
+            links.push(
+              mwHtmlElement( 'a',
+                {
+                  target: '_blank',
+                  href: '//www.wikidata.org/wiki/' + encodeURI( ids[ i ] )
+                },
+                ids[ i ]
+              )
+            );
           }
         }
         group.attribution = mwMsg(
