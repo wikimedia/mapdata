@@ -130,8 +130,9 @@ module.exports = function ( extend, isEmptyObject, isArray, getJSON, mwMsg, mwUr
         // FIXME: add link to commons page
         break;
 
-      case 'geoshape':
       case 'geoline':
+      case 'geomask':
+      case 'geoshape':
         if ( uri.query.query ) {
           links.push( '<a target="_blank" href="//query.wikidata.org/#' +
               encodeURI( uri.query.query ) +
