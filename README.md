@@ -1,6 +1,6 @@
 # wikimedia-mapdata
 
-Wikimedia map data is a library for use in the mediawiki [Kartographer extension](https://www.mediawiki.org/wiki/Extension:Kartographer)  and [Kartotherian snapshot](https://github.com/kartotherian/kartotherian-snapshot) service.
+Wikimedia map data is a library for use in the mediawiki [Kartographer extension](https://www.mediawiki.org/wiki/Extension:Kartographer)  and [Kartotherian snapshot](https://github.com/kartotherian/snapshot) service.
 
 ## Introduction
 
