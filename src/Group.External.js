@@ -119,66 +119,25 @@ module.exports = function ( extend, isEmptyObject, isArray, getJSON, mwMsg, mwUr
 	};
 
 	ExternalGroup.prototype.parseAttribution = function () {
-		var i,
-			group = this,
-			ids = [],
+		var group = this,
 			links = [],
 			uri = mwUri( group.geoJSON.url );
 
-		switch ( group.geoJSON.service ) {
-			case 'page':
-				links.push(
-					mwHtmlElement( 'a',
-						{
-							target: '_blank',
-							href: '//commons.wikimedia.org/wiki/Data:' + encodeURI( uri.query.title )
-						},
-						uri.query.title
-					)
-				);
-				group.attribution = mwMsg(
-					'kartographer-attribution-externaldata',
-					mwMsg( 'project-localized-name-commonswiki' ),
-					links
-				);
-				break;
-
-			case 'geoline':
-			case 'geomask':
-			case 'geoshape':
-				if ( uri.query.query ) {
-					links.push(
-						mwHtmlElement( 'a',
-							{
-								target: '_blank',
-								href: '//query.wikidata.org/#' + encodeURI( uri.query.query )
-							},
-							mwMsg( 'kartographer-attribution-externaldata-query' )
-						)
-					);
-				}
-
-				if ( uri.query.ids ) {
-					ids = uri.query.ids.split( ',' );
-
-					for ( i = 0; i < ids.length; i++ ) {
-						links.push(
-							mwHtmlElement( 'a',
-								{
-									target: '_blank',
-									href: '//www.wikidata.org/wiki/' + encodeURI( ids[ i ] )
-								},
-								ids[ i ]
-							)
-						);
-					}
-				}
-				group.attribution = mwMsg(
-					'kartographer-attribution-externaldata',
-					mwMsg( 'project-localized-name-wikidatawiki' ),
-					links
-				);
-				break;
+		if ( group.geoJSON.service === 'page' ) {
+			links.push(
+				mwHtmlElement( 'a',
+					{
+						target: '_blank',
+						href: '//commons.wikimedia.org/wiki/Data:' + encodeURI( uri.query.title )
+					},
+					uri.query.title
+				)
+			);
+			group.attribution = mwMsg(
+				'kartographer-attribution-externaldata',
+				mwMsg( 'project-localized-name-commonswiki' ),
+				links
+			);
 		}
 	};
 
