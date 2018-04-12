@@ -5,11 +5,13 @@
   "description": "Wikimedia map data manager for Kartographer's extension and Kartotherian.",
   "main": "src/index.js",
   "scripts": {
-    "test": "eslint ."
+    "test": "grunt test"
   },
   "devDependencies": {
     "eslint": "^3.9.1",
-    "eslint-config-wikimedia": "^0.3.0"
+    "eslint-config-wikimedia": "^0.3.0",
+    "grunt": "1.0.2",
+    "grunt-eslint": "20.1.0"
   },
   "dependencies": {}
 }

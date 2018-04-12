@@ -6,9 +6,5 @@
   "globals": {
     "module": false,
     "require": false
-  },
-  "rules": {
-    "dot-notation": [ "error", { "allowKeywords": true } ],
-    "indent": [ "error", 2, { "SwitchCase": 1, "VariableDeclarator": 2 } ]
   }
 }

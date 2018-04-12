@@ -13,28 +13,28 @@
  * @constructor
  */
 var Group = function () {
-  // call the constructor
-  this.initialize.apply( this, arguments );
+	// call the constructor
+	this.initialize.apply( this, arguments );
 };
 
 Group.prototype.initialize = function ( groupId, geoJSON, options ) {
-  this.id = groupId;
-  this.geoJSON = geoJSON || null;
-  this.options = options || {};
+	this.id = groupId;
+	this.geoJSON = geoJSON || null;
+	this.options = options || {};
 };
 
 /**
  * @return {Object} Group GeoJSON
  */
 Group.prototype.getGeoJSON = function () {
-  return this.geoJSON;
+	return this.geoJSON;
 };
 
 /**
  * @return {string} Group annotation
  */
 Group.prototype.getAttribution = function () {
-  return this.options.attribution;
+	return this.options.attribution;
 };
 
 module.exports = Group;
