@@ -9,7 +9,7 @@
  * @extends Kartographer.Data.Group
  */
 // eslint-disable-next-line valid-jsdoc
-module.exports = function ( extend, createResolvedPromise, isPlainObject, isArray, whenAllPromises, Group, ExternalGroup, DataLoader, DataStore ) {
+module.exports = function ( extend, createResolvedPromise, isPlainObject, whenAllPromises, Group, ExternalGroup, DataLoader, DataStore ) {
 
 	var HybridGroup = function () {
 		// call the constructor
@@ -76,7 +76,7 @@ module.exports = function ( extend, createResolvedPromise, isPlainObject, isArra
 
 		group.apiGeoJSON = apiGeoJSON;
 		apiGeoJSON = JSON.parse( JSON.stringify( apiGeoJSON ) );
-		if ( isArray( apiGeoJSON ) ) {
+		if ( Array.isArray( apiGeoJSON ) ) {
 			geoJSON = [];
 			for ( i = 0; i < apiGeoJSON.length; i++ ) {
 				if ( isExternalDataGroup( apiGeoJSON[ i ] ) ) {

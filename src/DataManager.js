@@ -30,7 +30,6 @@ module.exports = function ( wrappers ) {
 		ExternalGroup = externalGroupLib(
 			wrappers.extend,
 			wrappers.isEmptyObject,
-			wrappers.isArray,
 			wrappers.getJSON,
 			wrappers.mwMsg,
 			wrappers.mwUri,
@@ -42,7 +41,6 @@ module.exports = function ( wrappers ) {
 			wrappers.extend,
 			createResolvedPromise,
 			wrappers.isPlainObject,
-			wrappers.isArray,
 			wrappers.whenAllPromises,
 			Group,
 			ExternalGroup,
@@ -66,7 +64,7 @@ module.exports = function ( wrappers ) {
 			group,
 			i;
 
-		if ( !wrappers.isArray( groupIds ) ) {
+		if ( !Array.isArray( groupIds ) ) {
 			groupIds = [ groupIds ];
 		}
 		for ( i = 0; i < groupIds.length; i++ ) {

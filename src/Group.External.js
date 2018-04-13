@@ -5,7 +5,7 @@
  * @extends Kartographer.Data.Group
  */
 // eslint-disable-next-line valid-jsdoc
-module.exports = function ( extend, isEmptyObject, isArray, getJSON, mwMsg, mwUri, mwHtmlElement, Group ) {
+module.exports = function ( extend, isEmptyObject, getJSON, mwMsg, mwUri, mwHtmlElement, Group ) {
 
 	var ExternalGroup = function () {
 		// call the constructor
