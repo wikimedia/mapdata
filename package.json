@@ -8,8 +8,8 @@
     "test": "eslint ."
   },
   "devDependencies": {
-    "eslint": "^3.9.1",
-    "eslint-config-wikimedia": "^0.3.0",
+    "eslint": "^4.0.0",
+    "eslint-config-wikimedia": "^0.5.0",
     "grunt": "1.0.2",
     "grunt-eslint": "20.1.0"
   },

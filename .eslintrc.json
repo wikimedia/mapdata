@@ -6,5 +6,8 @@
   "globals": {
     "module": false,
     "require": false
+  },
+  "rules": {
+    "no-implicit-globals": "off"
   }
 }

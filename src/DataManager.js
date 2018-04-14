@@ -3,7 +3,6 @@
  *
  * @class Kartographer.Data.DataManager
  */
-
 var dataLoaderLib = require( './DataLoader' ),
 	Group = require( './Group.js' ),
 	externalGroupLib = require( './Group.External' ),
