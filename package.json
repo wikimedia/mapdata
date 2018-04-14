@@ -5,7 +5,7 @@
   "description": "Wikimedia map data manager for Kartographer's extension and Kartotherian.",
   "main": "src/index.js",
   "scripts": {
-    "test": "grunt test"
+    "test": "eslint ."
   },
   "devDependencies": {
     "eslint": "^3.9.1",
