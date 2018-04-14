@@ -128,7 +128,7 @@ module.exports = function ( extend, isEmptyObject, getJSON, mwMsg, mwUri, mwHtml
 				mwHtmlElement( 'a',
 					{
 						target: '_blank',
-						href: '//commons.wikimedia.org/wiki/Data:' + encodeURI( uri.query.title )
+						href: '//commons.wikimedia.org/wiki/Data:' + encodeURIComponent( uri.query.title )
 					},
 					uri.query.title
 				)
