@@ -4,7 +4,7 @@
  * @class Kartographer.Data.DataLoader
  */
 // eslint-disable-next-line valid-jsdoc
-module.exports = function ( createPromise, createResolvedPromise, mwApi, clientStore, title, debounce, bind ) {
+module.exports = function ( createPromise, createResolvedPromise, mwApi, clientStore, title, debounce ) {
 
 	var DataLoader = function () {
 		/**
@@ -20,8 +20,8 @@ module.exports = function ( createPromise, createResolvedPromise, mwApi, clientS
      */
 		this.nextFetch = [];
 
-		if ( debounce && bind ) {
-			this.fetch = debounce( 100, bind( this.fetch, this ) );
+		if ( debounce ) {
+			this.fetch = debounce( 100, this.fetch.bind( this ) );
 		}
 	};
 

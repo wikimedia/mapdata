@@ -131,13 +131,6 @@ var dataManager = require( './DataManager' )( {
   /**
    * @optional
    */
-  bind: function () {
-    return $.proxy.apply( $, arguments );
-  },
-
-  /**
-   * @optional
-   */
   mwMsg: function () {
     return mw.msg.apply( mw.msg, arguments );
   }
