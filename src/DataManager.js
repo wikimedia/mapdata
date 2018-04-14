@@ -23,8 +23,7 @@ module.exports = function ( wrappers ) {
 			wrappers.mwApi,
 			wrappers.clientStore,
 			wrappers.title,
-			wrappers.debounce,
-			wrappers.bind
+			wrappers.debounce
 		),
 		ExternalGroup = externalGroupLib(
 			wrappers.extend,
