@@ -20,7 +20,6 @@ npm install git+https://gerrit.wikimedia.org/r/mapdata --save
 * `whenAllPromises`
 * `isEmptyObject`
 * `isPlainObject`
-* `isArray`
 * `extend`
 * `getJSON`
 * `mwApi`
@@ -67,13 +66,6 @@ var dataManager = require( './DataManager' )( {
    */
   isPlainObject: function () {
     return $.isPlainObject.apply( $, arguments );
-  },
-
-  /**
-   * @required
-   */
-  isArray: function () {
-    return $.isArray.apply( $, arguments );
   },
 
   /**
