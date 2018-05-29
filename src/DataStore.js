@@ -10,26 +10,33 @@ module.exports = function () {
 	};
 
 	/**
-   * @param {Kartographer.Data.Group} group
-   * @return {Kartographer.Data.Group}
-   */
+	 * @param {Kartographer.Data.Group} group
+	 * @return {Kartographer.Data.Group}
+	 */
 	DataStore.prototype.add = function ( group ) {
 		this.groups[ group.id ] = group;
 		return group;
 	};
 
 	/**
-   * @param {string} groupId
-   * @return {Kartographer.Data.Group}
-   */
+	 * @param {string} groupId
+	 * @return {Kartographer.Data.Group}
+	 */
 	DataStore.prototype.get = function ( groupId ) {
 		return this.groups[ groupId ];
 	};
 
 	/**
-   * @param {string} groupId
-   * @return {boolean}
-   */
+	 * @return {Map<string, Kartographer.Data.Group>}
+	 */
+	DataStore.prototype.getAll = function () {
+		return this.groups;
+	};
+
+	/**
+	 * @param {string} groupId
+	 * @return {boolean}
+	 */
 	DataStore.prototype.has = function ( groupId ) {
 		return ( groupId in this.groups );
 	};
