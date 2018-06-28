@@ -1,3 +1,5 @@
+[![npm](https://img.shields.io/npm/v/@wikimedia/mapdata.svg?style=flat)](https://www.npmjs.com/package/@wikimedia/mapdata)
+
 # wikimedia-mapdata
 
 Wikimedia map data is a library for use in the mediawiki [Kartographer extension](https://www.mediawiki.org/wiki/Extension:Kartographer)  and [Kartotherian snapshot](https://github.com/kartotherian/snapshot) service.
