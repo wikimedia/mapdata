@@ -17,21 +17,13 @@ module.exports = function ( wrappers ) {
 				resolve( value );
 			} );
 		},
-		getGroupIdsToExclude = function ( groupIds ) {
-			return groupIds.filter( function ( groupId ) {
-				return groupId.indexOf( '-' ) === 0;
-			} ).map( function ( groupId ) {
-				return groupId.slice( 1 );
-			} );
-		},
 		DataLoader = dataLoaderLib(
 			wrappers.createPromise,
 			createResolvedPromise,
 			wrappers.mwApi,
 			wrappers.clientStore,
 			wrappers.title,
-			wrappers.debounce,
-			getGroupIdsToExclude
+			wrappers.debounce
 		),
 		ExternalGroup = externalGroupLib(
 			wrappers.extend,
@@ -68,33 +60,17 @@ module.exports = function ( wrappers ) {
 	DataManager.prototype.loadGroups = function ( groupIds ) {
 		var promises = [],
 			group,
-			groupId,
-			allGroups,
-			groupIdsToExclude,
 			i;
-
-		function pushPromiseForGroup( group ) {
-			promises.push( wrappers.createPromise( function ( resolve ) {
-				group.fetch().then( resolve, resolve );
-			} ) );
-		}
 
 		if ( !Array.isArray( groupIds ) ) {
 			groupIds = [ groupIds ];
 		}
-		if ( groupIds.indexOf( 'all' ) === -1 ) {
-			for ( i = 0; i < groupIds.length; i++ ) {
-				group = DataStore.get( groupIds[ i ] ) || DataStore.add( new InternalGroup( groupIds[ i ] ) );
-				pushPromiseForGroup( group );
-			}
-		} else {
-			groupIdsToExclude = getGroupIdsToExclude( groupIds );
-			allGroups = DataStore.getAll();
-			for ( groupId in allGroups ) {
-				if ( allGroups.hasOwnProperty( groupId ) && groupIdsToExclude.indexOf( groupId ) === -1 ) {
-					pushPromiseForGroup( allGroups[ groupId ] );
-				}
-			}
+		for ( i = 0; i < groupIds.length; i++ ) {
+			group = DataStore.get( groupIds[ i ] ) || DataStore.add( new InternalGroup( groupIds[ i ] ) );
+			// eslint-disable-next-line no-loop-func
+			promises.push( wrappers.createPromise( function ( resolve ) {
+				group.fetch().then( resolve, resolve );
+			} ) );
 		}
 
 		DataLoader.fetch();

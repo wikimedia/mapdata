@@ -4,7 +4,7 @@
  * @class Kartographer.Data.DataLoader
  */
 // eslint-disable-next-line valid-jsdoc
-module.exports = function ( createPromise, createResolvedPromise, mwApi, clientStore, title, debounce, getGroupIdsToExclude ) {
+module.exports = function ( createPromise, createResolvedPromise, mwApi, clientStore, title, debounce ) {
 
 	var DataLoader = function () {
 		/**
@@ -98,7 +98,11 @@ module.exports = function ( createPromise, createResolvedPromise, mwApi, clientS
 		if ( groupsToLoad.indexOf( 'all' ) === -1 ) {
 			query.mpdgroups = groupsToLoad.join( '|' );
 		} else {
-			groupsToExclude = getGroupIdsToExclude( groupsToLoad );
+			groupsToExclude = groupsToLoad.filter( function ( group ) {
+				return group.indexOf( '-' ) === 0;
+			} ).map( function ( group ) {
+				return group.slice( 1 );
+			} );
 		}
 
 		return mwApi( query ).then( function ( data ) {
