@@ -60,15 +60,7 @@ module.exports = function ( createPromise, createResolvedPromise, mwApi, clientS
    */
 	DataLoader.prototype.fetch = function () {
 		var loader = this,
-			groupsToLoad = loader.nextFetch,
-			groupsToExclude = [],
-			query = {
-				action: 'query',
-				formatversion: '2',
-				titles: title,
-				prop: 'mapdata',
-				mpdlimit: 'max'
-			};
+			groupsToLoad = loader.nextFetch;
 
 		if ( !groupsToLoad.length ) {
 			return createResolvedPromise();
@@ -95,21 +87,15 @@ module.exports = function ( createPromise, createResolvedPromise, mwApi, clientS
 			}
 		}
 
-		if ( groupsToLoad.indexOf( 'all' ) === -1 ) {
-			query.mpdgroups = groupsToLoad.join( '|' );
-		} else {
-			groupsToExclude = groupsToLoad.filter( function ( group ) {
-				return group.indexOf( '-' ) === 0;
-			} ).map( function ( group ) {
-				return group.slice( 1 );
-			} );
-		}
-
-		return mwApi( query ).then( function ( data ) {
+		return mwApi( {
+			action: 'query',
+			formatversion: '2',
+			titles: title,
+			prop: 'mapdata',
+			mpdlimit: 'max',
+			mpdgroups: groupsToLoad.join( '|' )
+		} ).then( function ( data ) {
 			var rawMapData = data.query.pages[ 0 ].mapdata;
-			groupsToExclude.forEach( function ( group ) {
-				delete rawMapData[ group ];
-			} );
 			setPromises( groupsToLoad, rawMapData && JSON.parse( rawMapData ) || {} );
 		}, function ( err ) {
 			setPromises( groupsToLoad, undefined, err );
