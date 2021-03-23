@@ -65,7 +65,7 @@ module.exports = function ( extend, createResolvedPromise, isPlainObject, whenAl
 	 * Creates {@link Kartographer.Data.Group.External external data groups} and
 	 * keeps references of them in {@link #externals}.
 	 *
-	 * @param {Object|Array} apiGeoJSON The GeoJSON as returned by the API.
+	 * @param {Object[]|Object} apiGeoJSON The GeoJSON as returned by the API.
 	 * @return {Promise}
 	 */
 	HybridGroup.prototype.parse = function ( apiGeoJSON ) {
@@ -89,11 +89,11 @@ module.exports = function ( extend, createResolvedPromise, isPlainObject, whenAl
 					geoJSON.push( apiGeoJSON[ i ] );
 				}
 			}
-		} else if ( isExternalDataGroup( geoJSON ) ) {
-			externalKey = JSON.stringify( geoJSON );
+		} else if ( isExternalDataGroup( apiGeoJSON ) ) {
+			externalKey = JSON.stringify( apiGeoJSON );
 			group.externals.push(
 				DataStore.get( externalKey ) ||
-				DataStore.add( new ExternalGroup( externalKey, geoJSON ) )
+				DataStore.add( new ExternalGroup( externalKey, apiGeoJSON ) )
 			);
 			geoJSON = {};
 		}
