@@ -1,7 +1,6 @@
 /**
- * Data store.
- *
  * @class Kartographer.Data.DataStore
+ * @constructor
  */
 module.exports = function () {
 

@@ -1,8 +1,3 @@
-/**
- * Data Manager.
- *
- * @class Kartographer.Data.DataManager
- */
 var dataLoaderLib = require( './DataLoader' ),
 	Group = require( './Group.js' ),
 	externalGroupLib = require( './Group.External' ),
@@ -10,6 +5,24 @@ var dataLoaderLib = require( './DataLoader' ),
 	hybridGroupLib = require( './Group.Hybrid' ),
 	internalGroupLib = require( './Group.Internal' );
 
+/**
+ * @class Kartographer.Data.DataManager
+ * @param {Object} wrappers
+ * @param {Object} [wrappers.clientStore]
+ * @param {Function} wrappers.createPromise
+ * @param {Function} [wrappers.debounce]
+ * @param {Function} wrappers.extend
+ * @param {Function} wrappers.getJSON
+ * @param {Function} wrappers.isEmptyObject
+ * @param {Function} wrappers.isPlainObject
+ * @param {Function} wrappers.mwApi
+ * @param {Function} wrappers.mwHtmlElement
+ * @param {Function} [wrappers.mwMsg]
+ * @param {Function} wrappers.mwUri
+ * @param {string} wrappers.title
+ * @param {Function} wrappers.whenAllPromises
+ * @constructor
+ */
 module.exports = function ( wrappers ) {
 
 	var createResolvedPromise = function ( value ) {

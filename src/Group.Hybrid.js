@@ -7,8 +7,16 @@
  *
  * @class Kartographer.Data.Group.HybridGroup
  * @extends Kartographer.Data.Group
+ * @param {Function} extend
+ * @param {Function} createResolvedPromise
+ * @param {Function} isPlainObject
+ * @param {Function} whenAllPromises
+ * @param {Function} Group
+ * @param {Function} ExternalGroup
+ * @param {Kartographer.Data.DataLoader} DataLoader (unused)
+ * @param {Kartographer.Data.DataStore} DataStore
+ * @return {Function}
  */
-// eslint-disable-next-line valid-jsdoc
 module.exports = function ( extend, createResolvedPromise, isPlainObject, whenAllPromises, Group, ExternalGroup, DataLoader, DataStore ) {
 
 	var HybridGroup = function () {

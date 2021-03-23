@@ -1,10 +1,15 @@
 /**
- * External Data Group.
- *
  * @class Kartographer.Data.Group.External
  * @extends Kartographer.Data.Group
+ * @param {Function} extend
+ * @param {Function} isEmptyObject
+ * @param {Function} getJSON
+ * @param {Function} [mwMsg]
+ * @param {Function} mwUri
+ * @param {Function} mwHtmlElement
+ * @param {Function} Group
+ * @return {Function}
  */
-// eslint-disable-next-line valid-jsdoc
 module.exports = function ( extend, isEmptyObject, getJSON, mwMsg, mwUri, mwHtmlElement, Group ) {
 
 	var ExternalGroup = function () {
