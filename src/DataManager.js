@@ -54,9 +54,9 @@ module.exports = function ( wrappers ) {
 		DataManager = function () {};
 
 	/**
-   * @param {string[]} groupIds List of group ids to load.
-   * @return {Promise}
-   */
+	 * @param {string[]|string} groupIds List of group ids to load.
+	 * @return {Promise}
+	 */
 	DataManager.prototype.loadGroups = function ( groupIds ) {
 		var promises = [],
 			group,
