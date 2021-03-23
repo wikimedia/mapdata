@@ -15,8 +15,8 @@ module.exports = function ( extend, HybridGroup, ExternalGroup, DataLoader ) {
 	extend( InternalGroup.prototype, HybridGroup.prototype );
 
 	/**
-   * @return {Promise}
-   */
+	 * @return {Promise}
+	 */
 	InternalGroup.prototype.fetch = function () {
 		var group = this;
 

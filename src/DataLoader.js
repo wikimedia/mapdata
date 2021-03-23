@@ -8,16 +8,16 @@ module.exports = function ( createPromise, createResolvedPromise, mwApi, clientS
 
 	var DataLoader = function () {
 		/**
-     * @type {Object} Hash of group ids and associated promises.
-     * @private
-     */
+		 * @type {Object} Hash of group ids and associated promises.
+		 * @private
+		 */
 		this.promiseByGroup = {};
 		/**
-     * @type {string[]} List of group ids to fetch next time
-     *   {@link #fetch} is called.
-     *
-     * @private
-     */
+		 * @type {string[]} List of group ids to fetch next time
+		 *   {@link #fetch} is called.
+		 *
+		 * @private
+		 */
 		this.nextFetch = [];
 
 		if ( debounce ) {
@@ -28,9 +28,9 @@ module.exports = function ( createPromise, createResolvedPromise, mwApi, clientS
 	clientStore = clientStore || {};
 
 	/**
-   * @param {string} groupId
-   * @return {Promise}
-   */
+	 * @param {string} groupId
+	 * @return {Promise}
+	 */
 	DataLoader.prototype.fetchGroup = function ( groupId ) {
 		var promise = this.promiseByGroup[ groupId ],
 			resolveFunc, rejectFunc;
@@ -56,8 +56,8 @@ module.exports = function ( createPromise, createResolvedPromise, mwApi, clientS
 	};
 
 	/**
-   * @return {Promise}
-   */
+	 * @return {Promise}
+	 */
 	DataLoader.prototype.fetch = function () {
 		var loader = this,
 			groupsToLoad = loader.nextFetch;

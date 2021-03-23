@@ -22,8 +22,8 @@ module.exports = function ( extend, isEmptyObject, getJSON, mwMsg, mwUri, mwHtml
 	};
 
 	/**
-   * @return {Promise}
-   */
+	 * @return {Promise}
+	 */
 	ExternalGroup.prototype.fetch = function () {
 		var group = this,
 			data = group.geoJSON;

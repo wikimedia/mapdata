@@ -31,8 +31,8 @@ module.exports = function ( extend, createResolvedPromise, isPlainObject, whenAl
 	};
 
 	/**
-   * @return {Promise}
-   */
+	 * @return {Promise}
+	 */
 	HybridGroup.prototype.load = function () {
 		var group = this;
 
@@ -42,8 +42,8 @@ module.exports = function ( extend, createResolvedPromise, isPlainObject, whenAl
 	};
 
 	/**
-   * @return {Promise}
-   */
+	 * @return {Promise}
+	 */
 	HybridGroup.prototype.fetchExternalGroups = function () {
 		var promises = [],
 			group = this,
@@ -60,14 +60,14 @@ module.exports = function ( extend, createResolvedPromise, isPlainObject, whenAl
 	};
 
 	/**
-   * Parses the GeoJSON to extract the external data sources.
-   *
-   * Creates {@link Kartographer.Data.Group.External external data groups} and
-   * keeps references of them in {@link #externals}.
-   *
-   * @param {Object|Array} apiGeoJSON The GeoJSON as returned by the API.
-   * @return {Promise}
-   */
+	 * Parses the GeoJSON to extract the external data sources.
+	 *
+	 * Creates {@link Kartographer.Data.Group.External external data groups} and
+	 * keeps references of them in {@link #externals}.
+	 *
+	 * @param {Object|Array} apiGeoJSON The GeoJSON as returned by the API.
+	 * @return {Promise}
+	 */
 	HybridGroup.prototype.parse = function ( apiGeoJSON ) {
 		var group = this,
 			geoJSON,
@@ -83,7 +83,7 @@ module.exports = function ( extend, createResolvedPromise, isPlainObject, whenAl
 					externalKey = JSON.stringify( apiGeoJSON[ i ] );
 					group.externals.push(
 						DataStore.get( externalKey ) ||
-            DataStore.add( new ExternalGroup( externalKey, apiGeoJSON[ i ] ) )
+						DataStore.add( new ExternalGroup( externalKey, apiGeoJSON[ i ] ) )
 					);
 				} else {
 					geoJSON.push( apiGeoJSON[ i ] );
@@ -93,7 +93,7 @@ module.exports = function ( extend, createResolvedPromise, isPlainObject, whenAl
 			externalKey = JSON.stringify( geoJSON );
 			group.externals.push(
 				DataStore.get( externalKey ) ||
-        DataStore.add( new ExternalGroup( externalKey, geoJSON ) )
+				DataStore.add( new ExternalGroup( externalKey, geoJSON ) )
 			);
 			geoJSON = {};
 		}

@@ -94,9 +94,9 @@ module.exports = function ( wrappers ) {
 	};
 
 	/**
-   * @param {Object} geoJSON
-   * @return {Promise}
-   */
+	 * @param {Object} geoJSON
+	 * @return {Promise}
+	 */
 	DataManager.prototype.load = function ( geoJSON ) {
 		var group = new HybridGroup( null, geoJSON );
 
