@@ -13,11 +13,10 @@
  * @param {Function} whenAllPromises
  * @param {Function} Group
  * @param {Function} ExternalGroup
- * @param {Kartographer.Data.DataLoader} DataLoader (unused)
  * @param {Kartographer.Data.DataStore} DataStore
  * @return {Function}
  */
-module.exports = function ( extend, createResolvedPromise, isPlainObject, whenAllPromises, Group, ExternalGroup, DataLoader, DataStore ) {
+module.exports = function ( extend, createResolvedPromise, isPlainObject, whenAllPromises, Group, ExternalGroup, DataStore ) {
 
 	var HybridGroup = function () {
 		// call the constructor

@@ -3,11 +3,10 @@
  * @extends Kartographer.Data.Group.HybridGroup
  * @param {Function} extend
  * @param {Function} HybridGroup
- * @param {Function} ExternalGroup (unused)
  * @param {Kartographer.Data.DataLoader} DataLoader
  * @return {Function}
  */
-module.exports = function ( extend, HybridGroup, ExternalGroup, DataLoader ) {
+module.exports = function ( extend, HybridGroup, DataLoader ) {
 
 	var InternalGroup = function () {
 		// call the constructor

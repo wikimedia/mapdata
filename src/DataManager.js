@@ -55,13 +55,11 @@ module.exports = function ( wrappers ) {
 			wrappers.whenAllPromises,
 			Group,
 			ExternalGroup,
-			DataLoader,
 			DataStore
 		),
 		InternalGroup = internalGroupLib(
 			wrappers.extend,
 			HybridGroup,
-			ExternalGroup,
 			DataLoader
 		),
 		DataManager = function () {};
