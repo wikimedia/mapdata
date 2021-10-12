@@ -4,11 +4,12 @@
  * @param {Function} createResolvedPromise
  * @param {Function} mwApi
  * @param {Object} [clientStore]
- * @param {string} title
+ * @param {string} [title] Will be ignored if revid is set and not zero
+ * @param {string} [revid] Either title or revid must be set
  * @param {Function} [debounce]
  * @constructor
  */
-module.exports = function ( createPromise, createResolvedPromise, mwApi, clientStore, title, debounce ) {
+module.exports = function ( createPromise, createResolvedPromise, mwApi, clientStore, title, revid, debounce ) {
 
 	var DataLoader = function () {
 		/**
@@ -64,7 +65,8 @@ module.exports = function ( createPromise, createResolvedPromise, mwApi, clientS
 	 */
 	DataLoader.prototype.fetch = function () {
 		var loader = this,
-			groupsToLoad = loader.nextFetch;
+			groupsToLoad = loader.nextFetch,
+			params;
 
 		if ( !groupsToLoad.length ) {
 			return createResolvedPromise();
@@ -91,14 +93,18 @@ module.exports = function ( createPromise, createResolvedPromise, mwApi, clientS
 			}
 		}
 
-		return mwApi( {
+		params = {
 			action: 'query',
 			formatversion: '2',
 			titles: title,
+			revids: revid,
 			prop: 'mapdata',
 			mpdlimit: 'max',
 			mpdgroups: groupsToLoad.join( '|' )
-		} ).then( function ( data ) {
+		};
+		delete params[ revid ? 'titles' : 'revids' ];
+
+		return mwApi( params ).then( function ( data ) {
 			var rawMapData = data.query.pages[ 0 ].mapdata;
 			setPromises( groupsToLoad, rawMapData && JSON.parse( rawMapData ) || {} );
 		}, function ( err ) {
