@@ -4,8 +4,9 @@
  * @param {Function} createResolvedPromise
  * @param {Function} mwApi
  * @param {Object} [clientStore]
- * @param {string} [title] Will be ignored if revid is set and not zero
- * @param {string} [revid] Either title or revid must be set
+ * @param {string} [title] Will be ignored if revid is supplied.
+ * @param {string|boolean} [revid] Either title or revid must be set.  If false,
+ *     falls back to a title-only request.
  * @param {Function} [debounce]
  * @constructor
  */
