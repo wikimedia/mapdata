@@ -20,6 +20,7 @@ var dataLoaderLib = require( './DataLoader' ),
  * @param {Function} [wrappers.mwMsg]
  * @param {Function} wrappers.mwUri
  * @param {string} wrappers.title
+ * @param {string} wrappers.revid
  * @param {Function} wrappers.whenAllPromises
  * @constructor
  */
@@ -36,6 +37,7 @@ module.exports = function ( wrappers ) {
 			wrappers.mwApi,
 			wrappers.clientStore,
 			wrappers.title,
+			wrappers.revid,
 			wrappers.debounce
 		),
 		ExternalGroup = externalGroupLib(
