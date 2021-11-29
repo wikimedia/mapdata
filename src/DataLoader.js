@@ -5,8 +5,8 @@
  * @param {Function} mwApi Reference to the {@see mw.Api} constructor
  * @param {Object} [clientStore]
  * @param {string} [title] Will be ignored if revid is supplied.
- * @param {string|boolean} [revid] Either title or revid must be set.  If false,
- *     falls back to a title-only request.
+ * @param {string|false} [revid] Either title or revid must be set. If false or missing, falls back
+ *  to a title-only request.
  * @param {Function} [debounce] Reference to e.g. {@see jQuery.debounce}
  * @constructor
  */

@@ -19,8 +19,9 @@ var dataLoaderLib = require( './DataLoader' ),
  * @param {Function} wrappers.mwHtmlElement Reference to the {@see mw.html.element} function
  * @param {Function} [wrappers.mwMsg] Reference to the {@see mw.msg} function
  * @param {Function} wrappers.mwUri Reference to the {@see mw.Uri} constructor
- * @param {string} wrappers.title
- * @param {string} wrappers.revid
+ * @param {string} [wrappers.title] Will be ignored when revid is supplied
+ * @param {string|false} [wrappers.revid] Either title or revid must be set. If false or missing,
+ *  falls back to a title-only request.
  * @param {Function} wrappers.whenAllPromises Reference to e.g. {@see jQuery.when}
  * @param {Function} [wrappers.log]
  * @constructor
