@@ -85,6 +85,7 @@ module.exports = function ( extend, isEmptyObject, getJSON, mwMsg, mwUri, mwHtml
 					break;
 
 				case 'geoshape':
+				case 'geopoint':
 				case 'geoline':
 
 					// HACK: workaround for T144777 - we should be using topojson instead
