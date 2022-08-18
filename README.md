@@ -1,12 +1,12 @@
 [![npm](https://img.shields.io/npm/v/@wikimedia/mapdata.svg?style=flat)](https://www.npmjs.com/package/@wikimedia/mapdata)
 
-# wikimedia-mapdata
+# Wikimedia MapData
 
-Wikimedia map data is a library for use in the mediawiki [Kartographer extension](https://www.mediawiki.org/wiki/Extension:Kartographer)  and [Kartotherian snapshot](https://github.com/kartotherian/snapshot) service.
+Wikimedia MapData is a library for use in the MediaWiki [Kartographer extension](https://www.mediawiki.org/wiki/Extension:Kartographer) and [Kartotherian snapshot](https://github.com/kartotherian/snapshot) service.
 
 ## Introduction
 
-The library takes a list of ids, downloads the map data from the mediawiki API, parses map data, extracts the external data, and downloads the external data. Once the process is complete, a list of internal and external data groups is returned. The geoJson for each groups is returned with `group.getGeoJSON()`.
+The library takes a list of ids, downloads the map data from the MediaWiki API, parses map data, extracts the external data, and downloads the external data. Once the process is complete, a list of internal and external data groups is returned. The geoJson for each groups is returned with `group.getGeoJSON()`.
 
 The library first requires wrapper methods to be passed in order to be used both on client-side and server-side.
 
