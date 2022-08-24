@@ -1,7 +1,8 @@
 # Wikimedia MapData release notes
 
-### Version 0.7.0 (2022-08-18)
-`6189f444..9e85ee14`
+### Version 0.7.0 (2022-08-24)
+`6189f444..db825a12`
+* Add basic jest tests for Group.External.js
 * Added geopoints
 
 ### Version 0.6.0 (2021-11-29)
