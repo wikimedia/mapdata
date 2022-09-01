@@ -14,9 +14,10 @@
  * @param {Function} Group Reference to the {@see Kartographer.Data.Group} class
  * @param {Function} ExternalGroup Reference to the {@see Kartographer.Data.Group.External} constructor
  * @param {Kartographer.Data.DataStore} DataStore
+ * @param {Function} [log]
  * @return {Function}
  */
-module.exports = function ( extend, createResolvedPromise, isPlainObject, whenAllPromises, Group, ExternalGroup, DataStore ) {
+module.exports = function ( extend, createResolvedPromise, isPlainObject, whenAllPromises, Group, ExternalGroup, DataStore, log ) {
 
 	var HybridGroup = function () {
 		// call the constructor
@@ -45,6 +46,10 @@ module.exports = function ( extend, createResolvedPromise, isPlainObject, whenAl
 
 		return group.parse( group.getGeoJSON() ).then( function ( group ) {
 			return group.fetchExternalGroups();
+		}, function () {
+			if ( log ) {
+				log( 'warn', 'HybridGroup getGeoJSON failed: ' + JSON.stringify( arguments ) );
+			}
 		} );
 	};
 
@@ -63,6 +68,10 @@ module.exports = function ( extend, createResolvedPromise, isPlainObject, whenAl
 
 		return whenAllPromises( promises ).then( function () {
 			return group;
+		}, function () {
+			if ( log ) {
+				log( 'warn', 'HybridGroup fetchExternalGroups failed: ' + JSON.stringify( arguments ) );
+			}
 		} );
 	};
 

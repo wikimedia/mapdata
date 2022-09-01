@@ -22,6 +22,7 @@ var dataLoaderLib = require( './DataLoader' ),
  * @param {string} wrappers.title
  * @param {string} wrappers.revid
  * @param {Function} wrappers.whenAllPromises Reference to e.g. {@see jQuery.when}
+ * @param {Function} [wrappers.log]
  * @constructor
  */
 module.exports = function ( wrappers ) {
@@ -47,7 +48,8 @@ module.exports = function ( wrappers ) {
 			wrappers.mwMsg,
 			wrappers.mwUri,
 			wrappers.mwHtmlElement,
-			Group
+			Group,
+			wrappers.log
 		),
 		DataStore = dataStoreLib(),
 		HybridGroup = hybridGroupLib(
@@ -57,12 +59,14 @@ module.exports = function ( wrappers ) {
 			wrappers.whenAllPromises,
 			Group,
 			ExternalGroup,
-			DataStore
+			DataStore,
+			wrappers.log
 		),
 		InternalGroup = internalGroupLib(
 			wrappers.extend,
 			HybridGroup,
-			DataLoader
+			DataLoader,
+			wrappers.log
 		),
 		DataManager = function () {};
 
@@ -103,6 +107,10 @@ module.exports = function ( wrappers ) {
 			}
 
 			return groupList;
+		}, function () {
+			if ( wrappers.log ) {
+				wrappers.log( 'warn', 'DataManager loadGroups failed: ' + JSON.stringify( arguments ) );
+			}
 		} );
 	};
 
@@ -121,6 +129,10 @@ module.exports = function ( wrappers ) {
 			}
 
 			return groupList.concat( group.externals );
+		}, function () {
+			if ( wrappers.log ) {
+				wrappers.log( 'warn', 'DataManager load failed: ' + JSON.stringify( arguments ) );
+			}
 		} );
 	};
 

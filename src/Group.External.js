@@ -8,9 +8,10 @@
  * @param {Function} mwUri Reference to the {@see mw.Uri} constructor
  * @param {Function} mwHtmlElement Reference to the {@see mw.html.element} function
  * @param {Function} Group Reference to the {@see Kartographer.Data.Group} class
+ * @param {Function} [log]
  * @return {Function}
  */
-module.exports = function ( extend, isEmptyObject, getJSON, mwMsg, mwUri, mwHtmlElement, Group ) {
+module.exports = function ( extend, isEmptyObject, getJSON, mwMsg, mwUri, mwHtmlElement, Group, log ) {
 
 	var ExternalGroup = function () {
 		// call the constructor
@@ -118,6 +119,9 @@ module.exports = function ( extend, isEmptyObject, getJSON, mwMsg, mwUri, mwHtml
 				group.parseAttribution();
 			}
 		}, function () {
+			if ( log ) {
+				log( 'warn', 'ExternalGroup getJSON failed: ' + JSON.stringify( arguments ) );
+			}
 			group.failed = true;
 		} );
 
