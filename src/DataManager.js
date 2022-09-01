@@ -10,18 +10,18 @@ var dataLoaderLib = require( './DataLoader' ),
  * @param {Object} wrappers
  * @param {Object} [wrappers.clientStore]
  * @param {Function} wrappers.createPromise
- * @param {Function} [wrappers.debounce]
- * @param {Function} wrappers.extend
- * @param {Function} wrappers.getJSON
- * @param {Function} wrappers.isEmptyObject
- * @param {Function} wrappers.isPlainObject
- * @param {Function} wrappers.mwApi
- * @param {Function} wrappers.mwHtmlElement
- * @param {Function} [wrappers.mwMsg]
- * @param {Function} wrappers.mwUri
+ * @param {Function} [wrappers.debounce] Reference to e.g. {@see jQuery.debounce}
+ * @param {Function} wrappers.extend Reference to e.g. {@see jQuery.extend}
+ * @param {Function} wrappers.getJSON Reference to e.g. {@see jQuery.getJSON}
+ * @param {Function} wrappers.isEmptyObject Reference to e.g. {@see jQuery.isEmptyObject}
+ * @param {Function} wrappers.isPlainObject Reference to e.g. {@see jQuery.isPlainObject}
+ * @param {Function} wrappers.mwApi Reference to the {@see mw.Api} constructor
+ * @param {Function} wrappers.mwHtmlElement Reference to the {@see mw.html.element} function
+ * @param {Function} [wrappers.mwMsg] Reference to the {@see mw.msg} function
+ * @param {Function} wrappers.mwUri Reference to the {@see mw.Uri} constructor
  * @param {string} wrappers.title
  * @param {string} wrappers.revid
- * @param {Function} wrappers.whenAllPromises
+ * @param {Function} wrappers.whenAllPromises Reference to e.g. {@see jQuery.when}
  * @constructor
  */
 module.exports = function ( wrappers ) {

@@ -19,7 +19,7 @@ module.exports = function () {
 
 	/**
 	 * @param {string} groupId
-	 * @return {Kartographer.Data.Group}
+	 * @return {Kartographer.Data.Group|undefined}
 	 */
 	DataStore.prototype.get = function ( groupId ) {
 		return this.groups[ groupId ];
