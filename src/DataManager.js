@@ -32,7 +32,7 @@ module.exports = function ( wrappers ) {
 				resolve( value );
 			} );
 		},
-		DataLoader = dataLoaderLib(
+		dataLoader = dataLoaderLib(
 			wrappers.createPromise,
 			createResolvedPromise,
 			wrappers.mwApi,
@@ -51,7 +51,7 @@ module.exports = function ( wrappers ) {
 			Group,
 			wrappers.log
 		),
-		DataStore = dataStoreLib(),
+		dataStore = dataStoreLib(),
 		HybridGroup = hybridGroupLib(
 			wrappers.extend,
 			createResolvedPromise,
@@ -59,13 +59,13 @@ module.exports = function ( wrappers ) {
 			wrappers.whenAllPromises,
 			Group,
 			ExternalGroup,
-			DataStore,
+			dataStore,
 			wrappers.log
 		),
 		InternalGroup = internalGroupLib(
 			wrappers.extend,
 			HybridGroup,
-			DataLoader,
+			dataLoader,
 			wrappers.log
 		),
 		DataManager = function () {};
@@ -75,31 +75,26 @@ module.exports = function ( wrappers ) {
 	 * @return {Promise}
 	 */
 	DataManager.prototype.loadGroups = function ( groupIds ) {
-		var promises = [],
-			group,
-			i;
+		var promises = [];
 
 		if ( !Array.isArray( groupIds ) ) {
 			groupIds = [ groupIds ];
 		}
-		for ( i = 0; i < groupIds.length; i++ ) {
-			group = DataStore.get( groupIds[ i ] ) || DataStore.add( new InternalGroup( groupIds[ i ] ) );
+		for ( var i = 0; i < groupIds.length; i++ ) {
+			var group = dataStore.get( groupIds[ i ] ) || dataStore.add( new InternalGroup( groupIds[ i ] ) );
 			// eslint-disable-next-line no-loop-func
 			promises.push( wrappers.createPromise( function ( resolve ) {
 				group.fetch().then( resolve, resolve );
 			} ) );
 		}
 
-		DataLoader.fetch();
+		dataLoader.fetch();
 
 		return wrappers.whenAllPromises( promises ).then( function () {
-			var groupList = [],
-				group,
-				i;
+			var groupList = [];
 
-			for ( i = 0; i < groupIds.length; i++ ) {
-
-				group = DataStore.get( groupIds[ i ] );
+			for ( var i = 0; i < groupIds.length; i++ ) {
+				var group = dataStore.get( groupIds[ i ] );
 				if ( group.failed || !wrappers.isEmptyObject( group.getGeoJSON() ) ) {
 					groupList = groupList.concat( group );
 				}

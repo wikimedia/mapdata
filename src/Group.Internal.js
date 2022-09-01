@@ -3,11 +3,11 @@
  * @extends Kartographer.Data.Group.HybridGroup
  * @param {Function} extend Reference to e.g. {@see jQuery.extend}
  * @param {Function} HybridGroup Reference to the {@see Kartographer.Data.Group.HybridGroup} class
- * @param {Kartographer.Data.DataLoader} DataLoader
+ * @param {Kartographer.Data.DataLoader} dataLoader
  * @param {Function} [log]
  * @return {Function}
  */
-module.exports = function ( extend, HybridGroup, DataLoader, log ) {
+module.exports = function ( extend, HybridGroup, dataLoader, log ) {
 
 	var InternalGroup = function () {
 		// call the constructor
@@ -26,7 +26,7 @@ module.exports = function ( extend, HybridGroup, DataLoader, log ) {
 			return group.promise;
 		}
 
-		group.promise = DataLoader.fetchGroup( group.id ).then( function ( apiGeoJSON ) {
+		group.promise = dataLoader.fetchGroup( group.id ).then( function ( apiGeoJSON ) {
 			return group.parse( apiGeoJSON ).then( function ( group ) {
 				return group.fetchExternalGroups();
 			} );

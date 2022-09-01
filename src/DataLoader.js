@@ -65,8 +65,7 @@ module.exports = function ( createPromise, createResolvedPromise, mwApi, clientS
 	 */
 	DataLoader.prototype.fetch = function () {
 		var loader = this,
-			groupsToLoad = loader.nextFetch,
-			params;
+			groupsToLoad = loader.nextFetch;
 
 		if ( !groupsToLoad.length ) {
 			return createResolvedPromise();
@@ -83,10 +82,8 @@ module.exports = function ( createPromise, createResolvedPromise, mwApi, clientS
 		 * @param {Object} err MediaWiki API error
 		 */
 		function setPromises( groupsToLoad, values, err ) {
-			var i, promise;
-
-			for ( i = 0; i < groupsToLoad.length; i++ ) {
-				promise = loader.promiseByGroup[ groupsToLoad[ i ] ];
+			for ( var i = 0; i < groupsToLoad.length; i++ ) {
+				var promise = loader.promiseByGroup[ groupsToLoad[ i ] ];
 				if ( promise.mwResolve ) {
 					if ( err ) {
 						promise.mwReject( err );
@@ -99,7 +96,7 @@ module.exports = function ( createPromise, createResolvedPromise, mwApi, clientS
 			}
 		}
 
-		params = {
+		var params = {
 			action: 'query',
 			formatversion: '2',
 			titles: title,

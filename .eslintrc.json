@@ -8,6 +8,8 @@
 		"require": false
 	},
 	"rules": {
-		"no-implicit-globals": "off"
+		"no-implicit-globals": "off",
+		"one-var": "off",
+		"vars-on-top": "off"
 	}
 }
