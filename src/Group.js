@@ -24,7 +24,7 @@ Group.prototype.initialize = function ( groupId, geoJSON, options ) {
 };
 
 /**
- * @return {Object} Group GeoJSON
+ * @return {Object|null} Group GeoJSON
  */
 Group.prototype.getGeoJSON = function () {
 	return this.geoJSON;
