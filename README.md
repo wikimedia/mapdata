@@ -19,14 +19,14 @@ npm install git+https://gerrit.wikimedia.org/r/mapdata --save
 ## Required wrapper methods
 
 * `createPromise`
-* `whenAllPromises`
-* `isEmptyObject`
-* `isPlainObject`
-* `extend`
-* `getJSON`
-* `mwApi`
-* `mwHtmlElement`
-* `mwUri`
+* `whenAllPromises`: A reference to e.g. `jQuery.when`
+* `isEmptyObject`: A reference to e.g. `jQuery.isEmptyObject`
+* `isPlainObject`: A reference to e.g. `jQuery.isPlainObject`
+* `extend`: A reference to e.g. `jQuery.extend`
+* `getJSON`: A reference to e.g. `jQuery.getJSON`
+* `mwApi`: A reference to the `mw.Api` constructor
+* `mwHtmlElement`: A reference to the `mw.html.element` function
+* `mwUri`: A reference to the `mw.Uri` constructor
 * `title`
 
 ## Example for use on client-side

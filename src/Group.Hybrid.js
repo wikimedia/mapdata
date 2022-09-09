@@ -7,12 +7,12 @@
  *
  * @class Kartographer.Data.Group.HybridGroup
  * @extends Kartographer.Data.Group
- * @param {Function} extend
+ * @param {Function} extend Reference to e.g. {@see jQuery.extend}
  * @param {Function} createResolvedPromise
- * @param {Function} isPlainObject
- * @param {Function} whenAllPromises
- * @param {Function} Group
- * @param {Function} ExternalGroup
+ * @param {Function} isPlainObject Reference to e.g. {@see jQuery.isPlainObject}
+ * @param {Function} whenAllPromises Reference to e.g. {@see jQuery.when}
+ * @param {Function} Group Reference to the {@see Kartographer.Data.Group} class
+ * @param {Function} ExternalGroup Reference to the {@see Kartographer.Data.Group.External} constructor
  * @param {Kartographer.Data.DataStore} DataStore
  * @return {Function}
  */

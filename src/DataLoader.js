@@ -2,26 +2,25 @@
  * @class Kartographer.Data.DataLoader
  * @param {Function} createPromise
  * @param {Function} createResolvedPromise
- * @param {Function} mwApi
+ * @param {Function} mwApi Reference to the {@see mw.Api} constructor
  * @param {Object} [clientStore]
  * @param {string} [title] Will be ignored if revid is supplied.
  * @param {string|boolean} [revid] Either title or revid must be set.  If false,
  *     falls back to a title-only request.
- * @param {Function} [debounce]
+ * @param {Function} [debounce] Reference to e.g. {@see jQuery.debounce}
  * @constructor
  */
 module.exports = function ( createPromise, createResolvedPromise, mwApi, clientStore, title, revid, debounce ) {
 
 	var DataLoader = function () {
 		/**
-		 * @type {Object} Hash of group ids and associated promises.
+		 * @type {Object.<string,Promise>} Hash of group ids and associated promises
 		 * @private
 		 */
 		this.promiseByGroup = {};
+
 		/**
-		 * @type {string[]} List of group ids to fetch next time
-		 *   {@link #fetch} is called.
-		 *
+		 * @type {string[]} List of group ids to fetch next time {@link #fetch} is called
 		 * @private
 		 */
 		this.nextFetch = [];
@@ -75,8 +74,14 @@ module.exports = function ( createPromise, createResolvedPromise, mwApi, clientS
 
 		loader.nextFetch = [];
 
-		// FIXME: we need to fix this horrid hack
-		// http://stackoverflow.com/questions/39970101/combine-multiple-debounce-promises-in-js
+		/**
+		 * FIXME: we need to fix this horrid hack
+		 * http://stackoverflow.com/questions/39970101/combine-multiple-debounce-promises-in-js
+		 *
+		 * @param {string[]} groupsToLoad
+		 * @param {Object.<string,Object>} values Map of group id to GeoJSON
+		 * @param {Object} err MediaWiki API error
+		 */
 		function setPromises( groupsToLoad, values, err ) {
 			var i, promise;
 

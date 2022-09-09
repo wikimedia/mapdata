@@ -1,13 +1,13 @@
 /**
  * @class Kartographer.Data.Group.External
  * @extends Kartographer.Data.Group
- * @param {Function} extend
- * @param {Function} isEmptyObject
- * @param {Function} getJSON
- * @param {Function} [mwMsg]
- * @param {Function} mwUri
- * @param {Function} mwHtmlElement
- * @param {Function} Group
+ * @param {Function} extend Reference to e.g. {@see jQuery.extend}
+ * @param {Function} isEmptyObject Reference to e.g. {@see jQuery.isEmptyObject}
+ * @param {Function} getJSON Reference to e.g. {@see jQuery.getJSON}
+ * @param {Function} [mwMsg] Reference to the {@see mw.msg} function
+ * @param {Function} mwUri Reference to the {@see mw.Uri} constructor
+ * @param {Function} mwHtmlElement Reference to the {@see mw.html.element} function
+ * @param {Function} Group Reference to the {@see Kartographer.Data.Group} class
  * @return {Function}
  */
 module.exports = function ( extend, isEmptyObject, getJSON, mwMsg, mwUri, mwHtmlElement, Group ) {

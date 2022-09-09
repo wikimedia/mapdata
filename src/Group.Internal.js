@@ -1,8 +1,8 @@
 /**
  * @class Kartographer.Data.Group.Internal
  * @extends Kartographer.Data.Group.HybridGroup
- * @param {Function} extend
- * @param {Function} HybridGroup
+ * @param {Function} extend Reference to e.g. {@see jQuery.extend}
+ * @param {Function} HybridGroup Reference to the {@see Kartographer.Data.Group.HybridGroup} class
  * @param {Kartographer.Data.DataLoader} DataLoader
  * @return {Function}
  */
