@@ -1,12 +1,6 @@
 {
-	"extends": [
-		"wikimedia"
-	],
+	"extends": "wikimedia/server",
 	"env": {
-		"es6": true,
 		"jest": true
-	},
-	"rules": {
-		"one-var": "off"
 	}
 }

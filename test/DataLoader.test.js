@@ -23,7 +23,13 @@ describe( 'DataLoader', function () {
 		const title = 'A title';
 		const groupId = '123abc';
 
-		const loader = new DataLoader( createPromise, createResolvedPromise, mwApi, undefined, title );
+		const loader = new DataLoader(
+			createPromise,
+			createResolvedPromise,
+			mwApi,
+			undefined,
+			title
+		);
 		loader.fetchGroup( groupId );
 		loader.fetch();
 
@@ -46,7 +52,14 @@ describe( 'DataLoader', function () {
 		const groupId = '123abc';
 		const revid = '123';
 
-		const loader = new DataLoader( createPromise, createResolvedPromise, mwApi, undefined, title, revid );
+		const loader = new DataLoader(
+			createPromise,
+			createResolvedPromise,
+			mwApi,
+			undefined,
+			title,
+			revid
+		);
 		loader.fetchGroup( groupId );
 		loader.fetch();
 

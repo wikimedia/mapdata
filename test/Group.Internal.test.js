@@ -5,7 +5,7 @@ const hybridGroupLib = require( '../src/Group.Hybrid' );
 const Group = require( '../src/Group' );
 
 const extend = ( target, ...sources ) => {
-	for ( let i in sources ) {
+	for ( const i in sources ) {
 		for ( const key in sources[ i ] ) {
 			target[ key ] = sources[ i ][ key ];
 		}

@@ -5,7 +5,7 @@ const externalGroupLib = require( '../src/Group.External' );
 
 const isEmptyObject = ( obj ) => !Object.keys( obj ).length;
 const extend = ( target, ...sources ) => {
-	for ( let i in sources ) {
+	for ( const i in sources ) {
 		for ( const key in sources[ i ] ) {
 			target[ key ] = sources[ i ][ key ];
 		}
@@ -32,7 +32,9 @@ describe( 'ExternalGroup', function () {
 				{ properties: { featureProperty: true } }
 			]
 		};
-		const getJSON = () => { return { then: ( fn ) => fn( geodata ) }; };
+		const getJSON = () => {
+			return { then: ( fn ) => fn( geodata ) };
+		};
 		const ExternalGroup = externalGroupLib(
 			extend,
 			isEmptyObject,

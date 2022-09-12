@@ -95,7 +95,7 @@ module.exports = function ( extend, isEmptyObject, getJSON, mwMsg, mwUri, mwHtml
 					// data.type = 'FeatureCollection';
 					// data.features = [];
 					// $.each( geodata.objects, function ( key ) {
-					// 	data.features.push( topojson.feature( geodata, geodata.objects[ key ] ) );
+					// data.features.push( topojson.feature( geodata, geodata.objects[ key ] ) );
 					// } );
 
 					// Each feature returned from geoshape service may contain "properties"

@@ -1,15 +1,12 @@
 {
-	"extends": "wikimedia",
-	"env": {
-		"browser": true
-	},
+	"extends": "wikimedia/client",
 	"globals": {
 		"module": false,
 		"require": false
 	},
 	"rules": {
+		"max-len": "off",
 		"no-implicit-globals": "off",
-		"one-var": "off",
-		"vars-on-top": "off"
+		"no-shadow": "off"
 	}
 }
