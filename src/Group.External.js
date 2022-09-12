@@ -11,7 +11,16 @@
  * @param {Function} [log]
  * @return {Function}
  */
-module.exports = function ( extend, isEmptyObject, getJSON, mwMsg, mwUri, mwHtmlElement, Group, log ) {
+module.exports = function (
+	extend,
+	isEmptyObject,
+	getJSON,
+	mwMsg,
+	mwUri,
+	mwHtmlElement,
+	Group,
+	log
+) {
 
 	var ExternalGroup = function () {
 		// call the constructor
@@ -60,7 +69,13 @@ module.exports = function ( extend, isEmptyObject, getJSON, mwMsg, mwUri, mwHtml
 				case 'geomask':
 					// Mask-out the entire world 10 times east and west,
 					// and add each result geometry as a hole
-					coordinates = [ [ [ 3600, -180 ], [ 3600, 180 ], [ -3600, 180 ], [ -3600, -180 ], [ 3600, -180 ] ] ];
+					coordinates = [ [
+						[ 3600, -180 ],
+						[ 3600, 180 ],
+						[ -3600, 180 ],
+						[ -3600, -180 ],
+						[ 3600, -180 ]
+					] ];
 					for ( i = 0; i < geodata.features.length; i++ ) {
 						geometry = geodata.features[ i ].geometry;
 						if ( !geometry ) {
@@ -99,13 +114,14 @@ module.exports = function ( extend, isEmptyObject, getJSON, mwMsg, mwUri, mwHtml
 					// } );
 
 					// Each feature returned from geoshape service may contain "properties"
-					// If externalData element has properties, merge it with properties in the feature
+					// If externalData element has properties, merge with properties in the feature
 					if ( baseProps ) {
 						for ( i = 0; i < data.features.length; i++ ) {
 							if ( isEmptyObject( data.features[ i ].properties ) ) {
 								data.features[ i ].properties = baseProps;
 							} else {
-								data.features[ i ].properties = extend( {}, baseProps, data.features[ i ].properties );
+								data.features[ i ].properties = extend( {}, baseProps,
+									data.features[ i ].properties );
 							}
 						}
 					}

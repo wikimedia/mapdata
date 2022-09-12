@@ -81,7 +81,8 @@ module.exports = function ( wrappers ) {
 			groupIds = [ groupIds ];
 		}
 		for ( var i = 0; i < groupIds.length; i++ ) {
-			var group = dataStore.get( groupIds[ i ] ) || dataStore.add( new InternalGroup( groupIds[ i ] ) );
+			var group = dataStore.get( groupIds[ i ] ) ||
+				dataStore.add( new InternalGroup( groupIds[ i ] ) );
 			// eslint-disable-next-line no-loop-func
 			promises.push( wrappers.createPromise( function ( resolve ) {
 				group.fetch().then( resolve, resolve );

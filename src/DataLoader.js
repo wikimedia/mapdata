@@ -10,7 +10,15 @@
  * @param {Function} [debounce] Reference to e.g. {@see jQuery.debounce}
  * @constructor
  */
-module.exports = function ( createPromise, createResolvedPromise, mwApi, clientStore, title, revid, debounce ) {
+module.exports = function (
+	createPromise,
+	createResolvedPromise,
+	mwApi,
+	clientStore,
+	title,
+	revid,
+	debounce
+) {
 
 	var DataLoader = function () {
 		/**

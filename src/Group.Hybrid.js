@@ -12,12 +12,22 @@
  * @param {Function} isPlainObject Reference to e.g. {@see jQuery.isPlainObject}
  * @param {Function} whenAllPromises Reference to e.g. {@see jQuery.when}
  * @param {Function} Group Reference to the {@see Kartographer.Data.Group} class
- * @param {Function} ExternalGroup Reference to the {@see Kartographer.Data.Group.External} constructor
+ * @param {Function} ExternalGroup Reference to the {@see Kartographer.Data.Group.External}
+ *  constructor
  * @param {Kartographer.Data.DataStore} dataStore
  * @param {Function} [log]
  * @return {Function}
  */
-module.exports = function ( extend, createResolvedPromise, isPlainObject, whenAllPromises, Group, ExternalGroup, dataStore, log ) {
+module.exports = function (
+	extend,
+	createResolvedPromise,
+	isPlainObject,
+	whenAllPromises,
+	Group,
+	ExternalGroup,
+	dataStore,
+	log
+) {
 
 	var HybridGroup = function () {
 		// call the constructor
@@ -42,9 +52,7 @@ module.exports = function ( extend, createResolvedPromise, isPlainObject, whenAl
 	 * @return {Promise}
 	 */
 	HybridGroup.prototype.load = function () {
-		var group = this;
-
-		return group.parse( group.getGeoJSON() ).then( function ( group ) {
+		return this.parse( this.getGeoJSON() ).then( function ( group ) {
 			return group.fetchExternalGroups();
 		}, function () {
 			if ( log ) {

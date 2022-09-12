@@ -20,13 +20,12 @@ module.exports = function ( extend, HybridGroup, dataLoader, log ) {
 	 * @return {Promise}
 	 */
 	InternalGroup.prototype.fetch = function () {
-		var group = this;
-
-		if ( group.promise ) {
-			return group.promise;
+		if ( this.promise ) {
+			return this.promise;
 		}
 
-		group.promise = dataLoader.fetchGroup( group.id ).then( function ( apiGeoJSON ) {
+		var group = this;
+		this.promise = dataLoader.fetchGroup( this.id ).then( function ( apiGeoJSON ) {
 			return group.parse( apiGeoJSON ).then( function ( group ) {
 				return group.fetchExternalGroups();
 			} );
@@ -36,7 +35,7 @@ module.exports = function ( extend, HybridGroup, dataLoader, log ) {
 			}
 			group.failed = true;
 		} );
-		return group.promise;
+		return this.promise;
 	};
 	return InternalGroup;
 };

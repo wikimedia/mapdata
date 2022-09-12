@@ -1,12 +1,13 @@
 {
 	"extends": "wikimedia/client",
 	"globals": {
-		"module": false,
-		"require": false
+		"Kartographer": "readonly",
+		"module": "readonly",
+		"Promise": "readonly",
+		"require": "readonly"
 	},
 	"rules": {
-		"max-len": "off",
 		"no-implicit-globals": "off",
-		"no-shadow": "off"
+		"no-shadow": [ "error", { "allow": [ "group", "groupsToLoad", "i" ] } ]
 	}
 }
