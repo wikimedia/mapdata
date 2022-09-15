@@ -1,5 +1,10 @@
 # Wikimedia MapData release notes
 
+### Version 0.7.1 (2022-09-15)
+`db825a12..1f8041d`
+* Log failing promises everywhere
+* Add basic jest tests for all classes
+
 ### Version 0.7.0 (2022-08-24)
 `6189f444..db825a12`
 * Add basic jest tests for Group.External.js
