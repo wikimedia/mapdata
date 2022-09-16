@@ -8,6 +8,7 @@
  * @param {string|boolean} [revid] Either title or revid must be set.  If false,
  *     falls back to a title-only request.
  * @param {Function} [debounce] Reference to e.g. {@see jQuery.debounce}
+ * @param {Function} [log]
  * @constructor
  */
 module.exports = function (
@@ -17,9 +18,9 @@ module.exports = function (
 	clientStore,
 	title,
 	revid,
-	debounce
+	debounce,
+	log
 ) {
-
 	var DataLoader = function () {
 		/**
 		 * @type {Object.<string,Promise>} Hash of group ids and associated promises
@@ -87,7 +88,7 @@ module.exports = function (
 		 *
 		 * @param {string[]} groupsToLoad
 		 * @param {Object.<string,Object>} values Map of group id to GeoJSON
-		 * @param {Object} err MediaWiki API error
+		 * @param {Object} [err] MediaWiki API error
 		 */
 		function setPromises( groupsToLoad, values, err ) {
 			for ( var i = 0; i < groupsToLoad.length; i++ ) {
@@ -116,9 +117,19 @@ module.exports = function (
 		delete params[ revid ? 'titles' : 'revids' ];
 
 		return mwApi( params ).then( function ( data ) {
-			var rawMapData = data.query.pages[ 0 ].mapdata;
-			setPromises( groupsToLoad, rawMapData && JSON.parse( rawMapData ) || {} );
+			if ( !data.query || !data.query.pages || !data.query.pages[ 0 ] ) {
+				if ( log ) {
+					log( 'warn', 'DataLoader retrieved incomplete results: ' + JSON.stringify( data ) );
+				}
+				setPromises( groupsToLoad, {} );
+			} else {
+				var rawMapData = data.query.pages[ 0 ].mapdata;
+				setPromises( groupsToLoad, rawMapData && JSON.parse( rawMapData ) || {} );
+			}
 		}, function ( err ) {
+			if ( log ) {
+				log( 'error', 'DataLoader request failed: ' + err.message + err.stack );
+			}
 			setPromises( groupsToLoad, undefined, err );
 		} );
 	};

@@ -39,7 +39,8 @@ module.exports = function ( wrappers ) {
 			wrappers.clientStore,
 			wrappers.title,
 			wrappers.revid,
-			wrappers.debounce
+			wrappers.debounce,
+			wrappers.log
 		),
 		ExternalGroup = externalGroupLib(
 			wrappers.extend,
