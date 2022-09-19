@@ -1,5 +1,9 @@
 # Wikimedia MapData release notes
 
+### Version 0.7.2 (2022-09-19)
+`1f8041d..c0f48fd`
+* Fix failure when API gives incomplete results
+
 ### Version 0.7.1 (2022-09-15)
 `db825a12..1f8041d`
 * Log failing promises everywhere
