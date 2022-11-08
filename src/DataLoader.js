@@ -7,7 +7,7 @@
  * @param {string} [title] Will be ignored if revid is supplied.
  * @param {string|false} [revid] Either title or revid must be set. If false or missing, falls back
  *  to a title-only request.
- * @param {Function} [debounce] Reference to e.g. {@see jQuery.debounce}
+ * @param {Function} [debounce] Reference to e.g. {@see mw.util.debounce}
  * @param {Function} [log]
  * @constructor
  */
