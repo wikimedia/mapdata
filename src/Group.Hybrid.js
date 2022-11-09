@@ -5,6 +5,8 @@
  * This abstraction is useful for the Developer API: the data is passed directly but still needs to
  * be parsed to extract the external sub-groups.
  *
+ * All parameters are dependency injections and should be removed in the future, see T322722.
+ *
  * @class Kartographer.Data.Group.HybridGroup
  * @extends Kartographer.Data.Group
  * @param {Function} extend Reference to e.g. {@see jQuery.extend}

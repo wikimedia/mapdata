@@ -1,6 +1,9 @@
 /**
  * @class Kartographer.Data.Group.External
  * @extends Kartographer.Data.Group
+ *
+ * All parameters are dependency injections and should be removed in the future, see T322722.
+ *
  * @param {Function} extend Reference to e.g. {@see jQuery.extend}
  * @param {Function} isEmptyObject Reference to e.g. {@see jQuery.isEmptyObject}
  * @param {Function} getJSON Reference to e.g. {@see jQuery.getJSON}

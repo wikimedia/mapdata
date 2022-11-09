@@ -1,15 +1,18 @@
 /**
  * Group parent class.
  *
+ * Contains the data fields common to every subclass of Group.
+ *
  * @class Kartographer.Data.Group
- * @extends L.Class
  * @abstract
  */
 
 /**
- * @param {string} groupId
- * @param {Object} [geoJSON]
- * @param {Object} [options]
+ * @param {string} groupId Either a group name defined in the mapframe, or an
+ *   automatically-generated hash of the group's contents.
+ * @param {Object} [geoJSON=null] Geometry as an object.
+ * @param {Object} [options={}] Additional options for the group.
+ * @param {string} [options.attribution] Attribution to display on the map layer.
  * @constructor
  */
 var Group = function ( groupId, geoJSON, options ) {

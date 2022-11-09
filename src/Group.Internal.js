@@ -1,6 +1,9 @@
 /**
  * @class Kartographer.Data.Group.Internal
  * @extends Kartographer.Data.Group.HybridGroup
+ *
+ * All parameters are dependency injections and should be removed in the future, see T322722.
+ *
  * @param {Function} extend Reference to e.g. {@see jQuery.extend}
  * @param {Function} HybridGroup Reference to the {@see Kartographer.Data.Group.HybridGroup} class
  * @param {Kartographer.Data.DataLoader} dataLoader
