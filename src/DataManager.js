@@ -87,7 +87,20 @@ module.exports = function ( wrappers ) {
 				dataStore.add( new InternalGroup( groupIds[ i ] ) );
 			// eslint-disable-next-line no-loop-func
 			promises.push( wrappers.createPromise( function ( resolve ) {
-				group.fetch().then( resolve, resolve );
+				group.fetch().then(
+					resolve,
+					function ( err ) {
+						if ( wrappers.log ) {
+							wrappers.log( 'warn',
+								'mapdata group load failed with error ' + err +
+								' for group ' + groupIds[ i ] );
+						}
+						// Note that we never reject the promise, so failed
+						// groups are merged into the result array with a
+						// `failed` property set to true.
+						return resolve();
+					}
+				);
 			} ) );
 		}
 
