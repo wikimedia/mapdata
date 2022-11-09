@@ -23,18 +23,12 @@ module.exports = function (
 ) {
 
 	var ExternalGroup = function () {
-		// call the constructor
-		this.initialize.apply( this, arguments );
+		Group.prototype.constructor.apply( this, arguments );
+
 		this.isExternal = true;
 	};
 
 	extend( ExternalGroup.prototype, Group.prototype );
-
-	ExternalGroup.prototype.initialize = function ( groupId, geoJSON, options ) {
-		options = options || {};
-
-		Group.prototype.initialize.call( this, groupId, geoJSON, options );
-	};
 
 	/**
 	 * @return {Promise}

@@ -10,8 +10,7 @@
 module.exports = function ( extend, HybridGroup, dataLoader, log ) {
 
 	var InternalGroup = function () {
-		// call the constructor
-		this.initialize.apply( this, arguments );
+		HybridGroup.prototype.constructor.apply( this, arguments );
 	};
 
 	extend( InternalGroup.prototype, HybridGroup.prototype );

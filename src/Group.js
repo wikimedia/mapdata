@@ -12,12 +12,7 @@
  * @param {Object} [options]
  * @constructor
  */
-var Group = function () {
-	// call the constructor
-	this.initialize.apply( this, arguments );
-};
-
-Group.prototype.initialize = function ( groupId, geoJSON, options ) {
+var Group = function ( groupId, geoJSON, options ) {
 	this.id = groupId;
 	this.geoJSON = geoJSON || null;
 	this.options = options || {};

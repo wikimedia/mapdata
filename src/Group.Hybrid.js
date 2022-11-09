@@ -30,23 +30,17 @@ module.exports = function (
 ) {
 
 	var HybridGroup = function () {
-		// call the constructor
-		this.initialize.apply( this, arguments );
+		Group.prototype.constructor.apply( this, arguments );
+
+		this.externals = [];
+		this.isExternal = false;
 	};
+
+	extend( HybridGroup.prototype, Group.prototype );
 
 	function isExternalDataGroup( data ) {
 		return isPlainObject( data ) && data.type && data.type === 'ExternalData';
 	}
-
-	extend( HybridGroup.prototype, Group.prototype );
-
-	HybridGroup.prototype.initialize = function ( groupId, geoJSON, options ) {
-		options = options || {};
-
-		Group.prototype.initialize.call( this, groupId, geoJSON, options );
-		this.externals = [];
-		this.isExternal = false;
-	};
 
 	/**
 	 * @return {Promise}
