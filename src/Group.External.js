@@ -125,7 +125,7 @@ module.exports = function (
 					break;
 
 				default:
-					throw new Error( 'Unknown externalData service ' + data.service );
+					throw new Error( 'Unknown externalData service "' + data.service + '"' );
 			}
 
 			if ( mwMsg ) {

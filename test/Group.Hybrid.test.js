@@ -1,8 +1,8 @@
 'use strict';
 
+const _ = require( 'underscore' );
 const hybridGroupLib = require( '../src/Group.Hybrid' );
-const Group = require( '../src/Group.js' );
-
+const Group = require( '../src/Group' );
 const extend = ( target, ...sources ) => {
 	for ( const i in sources ) {
 		for ( const key in sources[ i ] ) {
@@ -11,6 +11,27 @@ const extend = ( target, ...sources ) => {
 	}
 	return target;
 };
+const createResolvedPromise = ( value ) => {
+	return new Promise( function ( resolve ) {
+		resolve( value );
+	} );
+};
+const mockExternalDataClass = function ( key, geoJSON ) {
+	return { mock: true, key, geoJSON };
+};
+const dataStoreLib = require( '../src/DataStore' );
+const createHybridGroup = ( id, geoJSON, options ) => {
+	const HybridGroup = hybridGroupLib(
+		extend,
+		createResolvedPromise,
+		_.isObject,
+		Promise.all.bind( Promise ),
+		Group,
+		mockExternalDataClass,
+		dataStoreLib()
+	);
+	return new HybridGroup( id, geoJSON, options );
+};
 
 describe( 'HybridGroup', function () {
 	test( 'basic functionality', () => {
@@ -18,14 +39,7 @@ describe( 'HybridGroup', function () {
 			geoJSON = { id },
 			options = { attribution: 'Example attribution' };
 
-		const HybridGroup = hybridGroupLib(
-			extend,
-			undefined,
-			undefined,
-			undefined,
-			Group
-		);
-		const hybridGroup = new HybridGroup( id, geoJSON, options );
+		const hybridGroup = createHybridGroup( id, geoJSON, options );
 
 		expect( hybridGroup.id ).toBe( id );
 		expect( hybridGroup.getGeoJSON() ).toBe( geoJSON );
@@ -35,5 +49,72 @@ describe( 'HybridGroup', function () {
 		expect( hybridGroup ).toHaveProperty( 'parse' );
 
 		// TODO: Test actual business logic
+	} );
+
+	test( 'parse empty data', async () => {
+		const group = createHybridGroup( null, {} );
+		await group.parse( {} );
+
+		expect( group.externals ).toStrictEqual( [] );
+	} );
+
+	test( 'parse singular external', async () => {
+		const geoJSON = {};
+		const group = createHybridGroup( null, geoJSON );
+		const fetchedGeodata = {
+			type: 'ExternalData',
+			url: '/',
+			service: 'geoshape'
+		};
+		await group.parse( fetchedGeodata );
+		expect( group.externals.length ).toBe( 1 );
+		expect( group.externals[ 0 ].mock ).toBe( true );
+	} );
+
+	test( 'parse multiple external', async () => {
+		const geoJSON = {};
+		const group = createHybridGroup( null, geoJSON );
+		const fetchedGeodata = [
+			{
+				type: 'ExternalData',
+				url: '/1',
+				service: 'geoshape'
+			},
+			{
+				type: 'ExternalData',
+				url: '/2',
+				service: 'geoshape'
+			}
+		];
+		await group.parse( fetchedGeodata );
+		expect( group.externals.length ).toBe( 2 );
+		expect( group.externals[ 0 ].geoJSON.url ).toBe( '/1' );
+		expect( group.externals[ 1 ].geoJSON.url ).toBe( '/2' );
+	} );
+
+	test( 'fetchExternalGroups fetches each group', async () => {
+		const geoJSON = {};
+		const group = createHybridGroup( null, geoJSON );
+		await group.parse( {} );
+
+		const fetch = jest.fn( async () => {} );
+		const external = { fetch };
+		// Inject a mock group, circumventing the module's interface.
+		group.externals = [ external ];
+		expect( group.fetchExternalGroups() ).resolves.toBe( group );
+		expect( fetch ).toHaveBeenCalled();
+	} );
+
+	test.skip( 'fetchExternalGroups bubbles errors up', async () => {
+		const geoJSON = {};
+		const group = createHybridGroup( null, geoJSON );
+		await group.parse( {} );
+
+		const fetch = jest.fn().mockRejectedValue( 'foo' );
+
+		const external = { fetch };
+		// Inject a mock group, circumventing the module's interface.
+		group.externals = [ external ];
+		expect( group.fetchExternalGroups() ).rejects.toBe( 'foo' );
 	} );
 } );

@@ -12,6 +12,18 @@ const extend = ( target, ...sources ) => {
 	}
 	return target;
 };
+const createExternalGroup = ( geoJSON, fetchedGeodata ) => {
+	const ExternalGroup = externalGroupLib(
+		extend,
+		isEmptyObject,
+		() => ( { then: ( fn ) => fn( fetchedGeodata ) } ),
+		undefined,
+		undefined,
+		undefined,
+		Group
+	);
+	return new ExternalGroup( '', geoJSON );
+};
 
 describe( 'ExternalGroup', function () {
 	const services = [
@@ -25,27 +37,14 @@ describe( 'ExternalGroup', function () {
 			service,
 			properties: { baseProperty: 'fromBase' }
 		};
-		const geodata = {
+		const fetchedGeodata = {
 			features: [
 				{ properties: {} },
 				{ properties: { baseProperty: 'fromFeature' } },
 				{ properties: { featureProperty: true } }
 			]
 		};
-		const getJSON = () => {
-			return { then: ( fn ) => fn( geodata ) };
-		};
-		const ExternalGroup = externalGroupLib(
-			extend,
-			isEmptyObject,
-			getJSON,
-			undefined,
-			undefined,
-			undefined,
-			Group
-		);
-
-		const group = new ExternalGroup( '', geoJSON );
+		const group = createExternalGroup( geoJSON, fetchedGeodata );
 		group.fetch();
 
 		expect( group.failed ).not.toBe( true );
@@ -58,5 +57,12 @@ describe( 'ExternalGroup', function () {
 
 		expect( group.geoJSON.features[ 0 ].properties.baseProperty ).toBe( 'fromBase' );
 		expect( group.geoJSON.features[ 1 ].properties.baseProperty ).toBe( 'fromFeature' );
+	} );
+
+	test( 'bubbles errors up', () => {
+		const group = createExternalGroup( {}, { features: {} } );
+		expect( () => group.fetch() )
+			.toThrow( 'ExternalData has no url' );
+		expect( group.geoJSON ).not.toHaveProperty( 'features' );
 	} );
 } );

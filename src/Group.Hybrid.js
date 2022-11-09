@@ -96,6 +96,10 @@ module.exports = function (
 
 		group.apiGeoJSON = apiGeoJSON;
 		apiGeoJSON = JSON.parse( JSON.stringify( apiGeoJSON ) );
+		// TODO: Use recursion to DRY the plural and singular conditions.
+		// FIXME: Why is the entire json being used as a key?  Could accomplish
+		// the same thing with a native Set--if this is really what we want to
+		// do.
 		if ( Array.isArray( apiGeoJSON ) ) {
 			geoJSON = [];
 			for ( i = 0; i < apiGeoJSON.length; i++ ) {
@@ -120,6 +124,7 @@ module.exports = function (
 
 		group.geoJSON = geoJSON;
 
+		// FIXME: Why return a promise rather than the completed group?
 		return createResolvedPromise( group );
 	};
 
