@@ -1,21 +1,8 @@
 'use strict';
 
-const _ = require( 'underscore' );
 const hybridGroupLib = require( '../src/Group.Hybrid' );
 const Group = require( '../src/Group' );
-const extend = ( target, ...sources ) => {
-	for ( const i in sources ) {
-		for ( const key in sources[ i ] ) {
-			target[ key ] = sources[ i ][ key ];
-		}
-	}
-	return target;
-};
-const createResolvedPromise = ( value ) => {
-	return new Promise( function ( resolve ) {
-		resolve( value );
-	} );
-};
+const { extend, createResolvedPromise, isPlainObject, whenAllPromises } = require( './util' );
 const mockExternalDataClass = function ( key, geoJSON ) {
 	return { mock: true, key, geoJSON };
 };
@@ -24,8 +11,8 @@ const createHybridGroup = ( id, geoJSON, options ) => {
 	const HybridGroup = hybridGroupLib(
 		extend,
 		createResolvedPromise,
-		_.isObject,
-		Promise.all.bind( Promise ),
+		isPlainObject,
+		whenAllPromises,
 		Group,
 		mockExternalDataClass,
 		dataStoreLib()
@@ -47,8 +34,6 @@ describe( 'HybridGroup', function () {
 		expect( hybridGroup ).toHaveProperty( 'load' );
 		expect( hybridGroup ).toHaveProperty( 'fetchExternalGroups' );
 		expect( hybridGroup ).toHaveProperty( 'parse' );
-
-		// TODO: Test actual business logic
 	} );
 
 	test( 'parse empty data', async () => {

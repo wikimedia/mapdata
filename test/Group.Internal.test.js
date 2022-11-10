@@ -1,17 +1,9 @@
 'use strict';
 
+const { extend } = require( './util' );
 const internalGroupLib = require( '../src/Group.Internal' );
 const hybridGroupLib = require( '../src/Group.Hybrid' );
 const Group = require( '../src/Group' );
-
-const extend = ( target, ...sources ) => {
-	for ( const i in sources ) {
-		for ( const key in sources[ i ] ) {
-			target[ key ] = sources[ i ][ key ];
-		}
-	}
-	return target;
-};
 
 describe( 'InternalGroup', function () {
 	test( 'basic functionality', () => {

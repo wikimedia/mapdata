@@ -2,21 +2,14 @@
 
 const Group = require( '../src/Group.js' );
 const externalGroupLib = require( '../src/Group.External' );
+const { extend, isEmptyObject } = require( './util' );
 
-const isEmptyObject = ( obj ) => !Object.keys( obj ).length;
-const extend = ( target, ...sources ) => {
-	for ( const i in sources ) {
-		for ( const key in sources[ i ] ) {
-			target[ key ] = sources[ i ][ key ];
-		}
-	}
-	return target;
-};
 const createExternalGroup = ( geoJSON, fetchedGeodata ) => {
+	const getJSON = () => ( { then: ( fn ) => fn( fetchedGeodata ) } );
 	const ExternalGroup = externalGroupLib(
 		extend,
 		isEmptyObject,
-		() => ( { then: ( fn ) => fn( fetchedGeodata ) } ),
+		getJSON,
 		undefined,
 		undefined,
 		undefined,

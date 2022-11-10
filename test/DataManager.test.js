@@ -1,15 +1,7 @@
 'use strict';
 
+const { extend } = require( './util' );
 const dataManagerLib = require( '../src/DataManager' );
-
-const extend = ( target, ...sources ) => {
-	for ( const i in sources ) {
-		for ( const key in sources[ i ] ) {
-			target[ key ] = sources[ i ][ key ];
-		}
-	}
-	return target;
-};
 
 describe( 'DataManager', function () {
 	test( 'basic functionality', () => {

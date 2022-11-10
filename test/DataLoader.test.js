@@ -1,9 +1,7 @@
 'use strict';
 
+const { createPromise, createResolvedPromise } = require( './util' );
 const DataLoader = require( '../src/DataLoader' );
-
-const createPromise = jest.fn( () => jest.fn() );
-const createResolvedPromise = jest.fn();
 
 describe( 'DataLoader', function () {
 	test( 'fetch ignores when groups are empty', () => {
