@@ -1,17 +1,33 @@
 'use strict';
 
-const { extend } = require( './util' );
+const wrappers = require( './util' );
 const dataManagerLib = require( '../src/DataManager' );
 
 describe( 'DataManager', function () {
-	test( 'basic functionality', () => {
+	test( 'basic functionality', async () => {
+		const feature = [ {
+			type: 'Feature',
+			geometry: {
+				coordinates: [ 13, 47 ],
+				type: 'Point'
+			}
+		} ];
+		const mapdata = { group1: feature };
+		const apiResponse = {
+			query: {
+				pages: [ {
+					mapdata: JSON.stringify( mapdata )
+				} ]
+			}
+		};
+		const mwApi = jest.fn().mockResolvedValue( apiResponse );
 		const dataManager = dataManagerLib( {
-			extend
+			...wrappers,
+			mwApi
 		} );
 
-		expect( dataManager ).toHaveProperty( 'loadGroups' );
-		expect( dataManager ).toHaveProperty( 'load' );
-
-		// TODO: Test actual business logic
+		const result = await dataManager.loadGroups( [ 'group1' ] );
+		expect( result.length ).toBe( 1 );
+		expect( result[ 0 ].getGeoJSON() ).toStrictEqual( feature );
 	} );
 } );
