@@ -10,7 +10,7 @@ var dataLoaderLib = require( './DataLoader' ),
  * @param {Object} wrappers
  * @param {Object} [wrappers.clientStore]
  * @param {Function} wrappers.createPromise
- * @param {Function} [wrappers.debounce] Reference to e.g. {@see jQuery.debounce}
+ * @param {Function} [wrappers.debounce] Reference to e.g. {@see mw.util.debounce}
  * @param {Function} wrappers.extend Reference to e.g. {@see jQuery.extend}
  * @param {Function} wrappers.getJSON Reference to e.g. {@see jQuery.getJSON}
  * @param {Function} wrappers.isEmptyObject Reference to e.g. {@see jQuery.isEmptyObject}

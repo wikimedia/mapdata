@@ -119,7 +119,7 @@ var dataManager = require( './DataManager' )( {
    * @optional
    */
   debounce: function () {
-    return $.debounce.apply( $, arguments );
+    return mw.util.debounce.apply( mw.util, arguments );
   },
 
   /**
