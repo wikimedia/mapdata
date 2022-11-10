@@ -5,6 +5,7 @@
 	"main": "src/index.js",
 	"scripts": {
 		"lint": "eslint .",
+		"lint:fix": "eslint --fix .",
 		"test": "npm run lint && jest"
 	},
 	"files": [
