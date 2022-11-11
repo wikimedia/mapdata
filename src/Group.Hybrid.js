@@ -17,7 +17,6 @@
  * @param {Function} ExternalGroup Reference to the {@see Kartographer.Data.Group.External}
  *  constructor
  * @param {Kartographer.Data.DataStore} dataStore
- * @param {Function} [log]
  * @return {Function}
  */
 module.exports = function (
@@ -27,8 +26,7 @@ module.exports = function (
 	whenAllPromises,
 	Group,
 	ExternalGroup,
-	dataStore,
-	log
+	dataStore
 ) {
 
 	var HybridGroup = function () {
@@ -52,10 +50,6 @@ module.exports = function (
 	HybridGroup.prototype.load = function () {
 		return this.parse( this.getGeoJSON() ).then( function ( group ) {
 			return group.fetchExternalGroups();
-		}, function () {
-			if ( log ) {
-				log( 'warn', 'HybridGroup getGeoJSON failed: ' + JSON.stringify( arguments ) );
-			}
 		} );
 	};
 
@@ -74,10 +68,6 @@ module.exports = function (
 
 		return whenAllPromises( promises ).then( function () {
 			return group;
-		}, function () {
-			if ( log ) {
-				log( 'warn', 'HybridGroup fetchExternalGroups failed: ' + JSON.stringify( arguments ) );
-			}
 		} );
 	};
 

@@ -11,7 +11,6 @@
  * @param {Function} mwUri Reference to the {@see mw.Uri} constructor
  * @param {Function} mwHtmlElement Reference to the {@see mw.html.element} function
  * @param {Function} Group Reference to the {@see Kartographer.Data.Group} class
- * @param {Function} [log]
  * @return {Function}
  */
 module.exports = function (
@@ -21,8 +20,7 @@ module.exports = function (
 	mwMsg,
 	mwUri,
 	mwHtmlElement,
-	Group,
-	log
+	Group
 ) {
 
 	var ExternalGroup = function () {
@@ -132,11 +130,6 @@ module.exports = function (
 			if ( mwMsg ) {
 				group.parseAttribution();
 			}
-		}, function () {
-			if ( log ) {
-				log( 'warn', 'ExternalGroup getJSON failed: ' + JSON.stringify( arguments ) );
-			}
-			group.failed = true;
 		} );
 
 		return group.promise;

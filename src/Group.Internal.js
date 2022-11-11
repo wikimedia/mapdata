@@ -7,10 +7,9 @@
  * @param {Function} extend Reference to e.g. {@see jQuery.extend}
  * @param {Function} HybridGroup Reference to the {@see Kartographer.Data.Group.HybridGroup} class
  * @param {Kartographer.Data.DataLoader} dataLoader
- * @param {Function} [log]
  * @return {Function}
  */
-module.exports = function ( extend, HybridGroup, dataLoader, log ) {
+module.exports = function ( extend, HybridGroup, dataLoader ) {
 
 	var InternalGroup = function () {
 		HybridGroup.prototype.constructor.apply( this, arguments );
@@ -31,11 +30,6 @@ module.exports = function ( extend, HybridGroup, dataLoader, log ) {
 			return group.parse( apiGeoJSON ).then( function ( group ) {
 				return group.fetchExternalGroups();
 			} );
-		}, function () {
-			if ( log ) {
-				log( 'warn', 'InternalGroup fetchGroup failed: ' + JSON.stringify( arguments ) );
-			}
-			group.failed = true;
 		} );
 		return this.promise;
 	};

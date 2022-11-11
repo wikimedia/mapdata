@@ -50,8 +50,7 @@ module.exports = function ( wrappers ) {
 			wrappers.mwMsg,
 			wrappers.mwUri,
 			wrappers.mwHtmlElement,
-			Group,
-			wrappers.log
+			Group
 		),
 		dataStore = dataStoreLib(),
 		HybridGroup = hybridGroupLib(
@@ -61,14 +60,12 @@ module.exports = function ( wrappers ) {
 			wrappers.whenAllPromises,
 			Group,
 			ExternalGroup,
-			dataStore,
-			wrappers.log
+			dataStore
 		),
 		InternalGroup = internalGroupLib(
 			wrappers.extend,
 			HybridGroup,
-			dataLoader,
-			wrappers.log
+			dataLoader
 		),
 		DataManager = function () {};
 
@@ -97,9 +94,9 @@ module.exports = function ( wrappers ) {
 								'mapdata group load failed with error ' + err +
 								' for group ' + groupIds[ i ] );
 						}
-						// Note that we never reject the promise, so failed
-						// groups are merged into the result array with a
-						// `failed` property set to true.
+						// Note that we never reject the promise from here,
+						// failed groups are returned with a flag set.
+						group.failed = true;
 						return resolve();
 					}
 				);
@@ -120,10 +117,6 @@ module.exports = function ( wrappers ) {
 			}
 
 			return groupList;
-		}, function () {
-			if ( wrappers.log ) {
-				wrappers.log( 'warn', 'DataManager loadGroups failed: ' + JSON.stringify( arguments ) );
-			}
 		} );
 	};
 
@@ -145,10 +138,6 @@ module.exports = function ( wrappers ) {
 			}
 
 			return groupList.concat( group.externals );
-		}, function () {
-			if ( wrappers.log ) {
-				wrappers.log( 'warn', 'DataManager load failed: ' + JSON.stringify( arguments ) );
-			}
 		} );
 	};
 

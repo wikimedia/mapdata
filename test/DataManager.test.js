@@ -31,8 +31,7 @@ describe( 'DataManager', function () {
 		expect( result[ 0 ].getGeoJSON() ).toStrictEqual( feature );
 	} );
 
-	// Test demonstrates existing, incorrect behavior.
-	test( 'BROKEN: failures are logged and returned', async () => {
+	test( 'failures are logged and returned', async () => {
 		const feature = [ {
 			type: 'ExternalData',
 			url: null
@@ -54,10 +53,12 @@ describe( 'DataManager', function () {
 		} );
 
 		const result = await dataManager.loadGroups( [ 'group1' ] );
-		expect( log ).toHaveBeenCalledWith( 'warn', 'mapdata group load failed with error Error: ExternalData has no url for group undefined' );
-		expect( result.length ).toBe( 1 );
-		expect( result[ 0 ].id ).not.toBe( 'group1' );
-		expect( result[ 0 ].isExternal ).toBe( true );
-		expect( result[ 0 ].failed ).not.toBe( true );
+		expect( log ).toHaveBeenCalledWith( 'warn',
+			'mapdata group load failed with error Error: ExternalData has no url for group undefined' );
+		expect( result.length ).toBe( 2 );
+		expect( result[ 0 ].id ).toBe( 'group1' );
+		expect( result[ 0 ].isExternal ).toBe( false );
+		expect( result[ 0 ].failed ).toBe( true );
+		expect( result[ 1 ].isExternal ).toBe( true );
 	} );
 } );

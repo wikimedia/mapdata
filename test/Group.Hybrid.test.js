@@ -90,7 +90,7 @@ describe( 'HybridGroup', function () {
 		expect( fetch ).toHaveBeenCalled();
 	} );
 
-	test.skip( 'fetchExternalGroups bubbles errors up', async () => {
+	test( 'fetchExternalGroups bubbles errors up', async () => {
 		const geoJSON = {};
 		const group = createHybridGroup( null, geoJSON );
 		await group.parse( {} );

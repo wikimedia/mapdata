@@ -127,9 +127,6 @@ module.exports = function (
 				setPromises( groupsToLoad, rawMapData && JSON.parse( rawMapData ) || {} );
 			}
 		}, function ( err ) {
-			if ( log ) {
-				log( 'error', 'DataLoader request failed: ' + err.message + err.stack );
-			}
 			setPromises( groupsToLoad, undefined, err );
 		} );
 	};
