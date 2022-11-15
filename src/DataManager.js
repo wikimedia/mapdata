@@ -8,7 +8,7 @@ var dataLoaderLib = require( './DataLoader' ),
 /**
  * @class Kartographer.Data.DataManager
  * @param {Object} wrappers
- * @param {Object} [wrappers.clientStore]
+ * @param {Object} [wrappers.clientStore] External cache of groups, supplied by the caller.
  * @param {Function} wrappers.createPromise
  * @param {Function} [wrappers.debounce] Reference to e.g. {@see mw.util.debounce}
  * @param {Function} wrappers.extend Reference to e.g. {@see jQuery.extend}
@@ -22,7 +22,7 @@ var dataLoaderLib = require( './DataLoader' ),
  * @param {string} [wrappers.title] Will be ignored when revid is supplied
  * @param {string|false} [wrappers.revid] Either title or revid must be set. If false or missing,
  *  falls back to a title-only request.
- * @param {Function} wrappers.whenAllPromises Reference to e.g. {@see jQuery.when}
+ * @param {Function} wrappers.whenAllPromises Reference a function like {@see Promise.all}
  * @param {Function} [wrappers.log]
  * @constructor
  */
@@ -73,6 +73,8 @@ module.exports = function ( wrappers ) {
 		DataManager = function () {};
 
 	/**
+	 * Recursively fetch all mapdata and contained ExternalData.
+	 *
 	 * @param {string[]|string} groupIds List of group ids to load.
 	 * @return {Promise}
 	 */
@@ -126,6 +128,9 @@ module.exports = function ( wrappers ) {
 	};
 
 	/**
+	 * Shallow loader which will not recurse into external data.  Only used in
+	 * the browser context.
+	 *
 	 * @param {Object} geoJSON
 	 * @return {Promise}
 	 */

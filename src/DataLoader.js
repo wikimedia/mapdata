@@ -3,7 +3,7 @@
  * @param {Function} createPromise
  * @param {Function} createResolvedPromise
  * @param {Function} mwApi Reference to the {@see mw.Api} constructor
- * @param {Object} [clientStore]
+ * @param {Object} [clientStore] External cache for groups, supplied by the caller.
  * @param {string} [title] Will be ignored if revid is supplied.
  * @param {string|false} [revid] Either title or revid must be set. If false or missing, falls back
  *  to a title-only request.

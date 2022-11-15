@@ -28,6 +28,7 @@ module.exports = function (
 	var ExternalGroup = function () {
 		Group.prototype.constructor.apply( this, arguments );
 
+		/** Constant flag signaling that this group was defined in ExternalData. */
 		this.isExternal = true;
 	};
 

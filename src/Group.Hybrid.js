@@ -34,7 +34,9 @@ module.exports = function (
 	var HybridGroup = function () {
 		Group.prototype.constructor.apply( this, arguments );
 
+		/** ExternalData groups included by this group */
 		this.externals = [];
+		/** Constant flag signaling that this group was defined in mapframe data. */
 		this.isExternal = false;
 	};
 
