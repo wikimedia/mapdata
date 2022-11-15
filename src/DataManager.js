@@ -10,7 +10,6 @@ var dataLoaderLib = require( './DataLoader' ),
  * @param {Object} wrappers
  * @param {Object} [wrappers.clientStore] External cache of groups, supplied by the caller.
  * @param {Function} wrappers.createPromise
- * @param {Function} [wrappers.debounce] Reference to e.g. {@see mw.util.debounce}
  * @param {Function} wrappers.extend Reference to e.g. {@see jQuery.extend}
  * @param {Function} wrappers.getJSON Reference to e.g. {@see jQuery.getJSON}
  * @param {Function} wrappers.isEmptyObject Reference to e.g. {@see jQuery.isEmptyObject}
@@ -40,7 +39,6 @@ module.exports = function ( wrappers ) {
 			wrappers.clientStore,
 			wrappers.title,
 			wrappers.revid,
-			wrappers.debounce,
 			wrappers.log
 		),
 		ExternalGroup = externalGroupLib(

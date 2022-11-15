@@ -118,13 +118,6 @@ var dataManager = require( './DataManager' )( {
   /**
    * @optional
    */
-  debounce: function () {
-    return mw.util.debounce.apply( mw.util, arguments );
-  },
-
-  /**
-   * @optional
-   */
   mwMsg: function () {
     return mw.msg.apply( mw.msg, arguments );
   }
