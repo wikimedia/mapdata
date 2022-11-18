@@ -1,4 +1,4 @@
-var dataLoaderLib = require( './DataLoader' ),
+var dataLoaderLib = require( './MapdataLoader' ),
 	Group = require( './Group.js' ),
 	externalGroupLib = require( './Group.External' ),
 	dataStoreLib = require( './DataStore' ),

@@ -6,7 +6,7 @@
  *
  * @param {Function} extend Reference to e.g. {@see jQuery.extend}
  * @param {Function} HybridGroup Reference to the {@see Kartographer.Data.Group.HybridGroup} class
- * @param {Kartographer.Data.DataLoader} dataLoader
+ * @param {Kartographer.Data.MapdataLoader} dataLoader
  * @return {Function}
  */
 module.exports = function ( extend, HybridGroup, dataLoader ) {

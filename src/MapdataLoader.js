@@ -1,5 +1,7 @@
 /**
- * @class Kartographer.Data.DataLoader
+ * Fetches GeoJSON content for a mapframe or maplink tag from the Kartographer MediaWiki API
+ *
+ * @class Kartographer.Data.MapdataLoader
  * @param {Function} createPromise
  * @param {Function} createResolvedPromise
  * @param {Function} mwApi Reference to the {@see mw.Api} constructor
@@ -19,7 +21,7 @@ module.exports = function (
 	revid,
 	log
 ) {
-	var DataLoader = function () {
+	var MapdataLoader = function () {
 		/**
 		 * @type {Object.<string,Promise>} Hash of group ids and associated promises
 		 * @private
@@ -39,7 +41,7 @@ module.exports = function (
 	 * @param {string} groupId
 	 * @return {Promise}
 	 */
-	DataLoader.prototype.fetchGroup = function ( groupId ) {
+	MapdataLoader.prototype.fetchGroup = function ( groupId ) {
 		var promise = this.promiseByGroup[ groupId ],
 			resolveFunc, rejectFunc;
 		if ( !promise ) {
@@ -66,7 +68,7 @@ module.exports = function (
 	/**
 	 * @return {Promise}
 	 */
-	DataLoader.prototype.fetch = function () {
+	MapdataLoader.prototype.fetch = function () {
 		var loader = this,
 			groupsToLoad = loader.nextFetch;
 
@@ -113,7 +115,7 @@ module.exports = function (
 		return mwApi( params ).then( function ( data ) {
 			if ( !data.query || !data.query.pages || !data.query.pages[ 0 ] ) {
 				if ( log ) {
-					log( 'warn', 'DataLoader retrieved incomplete results: ' + JSON.stringify( data ) );
+					log( 'warn', 'MapdataLoader retrieved incomplete results: ' + JSON.stringify( data ) );
 				}
 				setPromises( groupsToLoad, {} );
 			} else {
@@ -125,5 +127,5 @@ module.exports = function (
 		} );
 	};
 
-	return new DataLoader();
+	return new MapdataLoader();
 };

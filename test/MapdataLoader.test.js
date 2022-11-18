@@ -1,13 +1,13 @@
 'use strict';
 
 const { createPromise, createResolvedPromise } = require( './util' );
-const DataLoader = require( '../src/DataLoader' );
+const MapdataLoader = require( '../src/MapdataLoader' );
 
-describe( 'DataLoader', function () {
+describe( 'MapdataLoader', function () {
 	test( 'fetch ignores when groups are empty', () => {
 		const mwApi = jest.fn();
 
-		const loader = new DataLoader( createPromise, createResolvedPromise, mwApi );
+		const loader = new MapdataLoader( createPromise, createResolvedPromise, mwApi );
 		loader.fetch();
 
 		expect( mwApi ).toHaveBeenCalledTimes( 0 );
@@ -21,7 +21,7 @@ describe( 'DataLoader', function () {
 		const title = 'A title';
 		const groupId = '123abc';
 
-		const loader = new DataLoader(
+		const loader = new MapdataLoader(
 			createPromise,
 			createResolvedPromise,
 			mwApi,
@@ -50,7 +50,7 @@ describe( 'DataLoader', function () {
 		const groupId = '123abc';
 		const revid = '123';
 
-		const loader = new DataLoader(
+		const loader = new MapdataLoader(
 			createPromise,
 			createResolvedPromise,
 			mwApi,
