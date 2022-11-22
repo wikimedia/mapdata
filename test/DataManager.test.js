@@ -107,9 +107,11 @@ describe( 'DataManager', function () {
 		expect( result[ 0 ].id ).toBe( 'group1' );
 		expect( result[ 0 ].isExternal ).toBe( false );
 		expect( result[ 0 ].failed ).toBe( true );
+		expect( result[ 0 ].failureReason )
+			.toStrictEqual( new Error( 'ExternalData has no url' ) );
 		// FIXME: This is a deceiving, broken group.
 		expect( result[ 1 ].isExternal ).toBe( true );
-		expect( result[ 1 ].failed ).toBeUndefined();
+		expect( result[ 1 ].failed ).toBe( false );
 		expect( log ).toHaveBeenCalledWith( 'warn',
 			'mapdata group load failed with error Error: ExternalData has no url for group undefined' );
 	} );
@@ -141,9 +143,11 @@ describe( 'DataManager', function () {
 		const result = await dataManager.loadGroups( [ 'group1' ] );
 		expect( result.length ).toBe( 2 );
 		expect( result[ 0 ].failed ).toBe( true );
+		expect( result[ 0 ].failureReason )
+			.toStrictEqual( new Error( 'Unknown externalData service "foo"' ) );
 		// FIXME: This is a deceiving, broken group.
 		expect( result[ 1 ].isExternal ).toBe( true );
-		expect( result[ 1 ].failed ).toBeUndefined();
+		expect( result[ 1 ].failed ).toBe( false );
 		expect( log ).toHaveBeenCalledWith( 'warn',
 			'mapdata group load failed with error Error: Unknown externalData service "foo" for group undefined' );
 	} );

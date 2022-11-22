@@ -40,7 +40,7 @@ describe( 'ExternalGroup', function () {
 		const group = createExternalGroup( geoJSON, fetchedGeodata );
 		group.fetch();
 
-		expect( group.failed ).not.toBe( true );
+		expect( group.failed ).toBe( false );
 		expect( group.geoJSON ).toHaveProperty( 'features' );
 
 		expect( group.geoJSON.features[ 0 ].properties ).toHaveProperty( 'baseProperty' );

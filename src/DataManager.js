@@ -94,7 +94,7 @@ module.exports = function ( wrappers ) {
 						}
 						// Note that we never reject the promise from here,
 						// failed groups are returned with a flag set.
-						group.failed = true;
+						group.fail( err );
 						return resolve();
 					}
 				);

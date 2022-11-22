@@ -14,4 +14,12 @@ describe( 'Group', function () {
 		expect( group.getGeoJSON() ).toBe( geoJSON );
 		expect( group.getAttribution() ).toBe( 'Example attribution' );
 	} );
+
+	test( 'mark failed', () => {
+		const group = new Group( 'group1' );
+		const err = new Error( 'Foo bar' );
+		group.fail( err );
+		expect( group.failed ).toBe( true );
+		expect( group.failureReason ).toStrictEqual( err );
+	} );
 } );

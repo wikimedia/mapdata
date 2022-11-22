@@ -10,7 +10,8 @@
 /**
  * @param {string} groupId Either a group name defined in the mapframe, or an
  *   automatically-generated hash of the group's contents.
- * @param {Object} [geoJSON=null] Geometry as an object.
+ * @param {Object|Object[]} [geoJSON=null] The group's geometry, or empty for
+ *   incomplete ExternalData.
  * @param {Object} [options={}] Additional options for the group.
  * @param {string} [options.attribution] Attribution to display on the map layer.
  * @constructor
@@ -19,6 +20,14 @@ var Group = function ( groupId, geoJSON, options ) {
 	this.id = groupId;
 	this.geoJSON = geoJSON || null;
 	this.options = options || {};
+	/**
+	 * {boolean} Flag is true if the group failed to fully load.
+	 */
+	this.failed = false;
+	/**
+	 * {Error|null} Details about any failure.
+	 */
+	this.failureReason = null;
 };
 
 /**
@@ -33,6 +42,16 @@ Group.prototype.getGeoJSON = function () {
  */
 Group.prototype.getAttribution = function () {
 	return this.options.attribution;
+};
+
+/**
+ * Set data to flag this group as failed.
+ *
+ * @param {Error} err
+ */
+Group.prototype.fail = function ( err ) {
+	this.failed = true;
+	this.failureReason = err;
 };
 
 module.exports = Group;
