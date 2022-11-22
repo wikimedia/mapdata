@@ -21,12 +21,24 @@ describe( 'DataManager', function () {
 			}
 		};
 		const mwApi = jest.fn().mockResolvedValue( apiResponse );
+		const title = 'Example title';
+		const revid = '123';
 		const dataManager = dataManagerLib( {
 			...wrappers,
-			mwApi
+			mwApi,
+			title,
+			revid
 		} );
 
 		const result = await dataManager.loadGroups( [ 'group1' ] );
+		expect( mwApi ).toBeCalledWith( {
+			action: 'query',
+			formatversion: '2',
+			revids: revid,
+			prop: 'mapdata',
+			mpdlimit: 'max',
+			mpdgroups: 'group1'
+		} );
 		expect( result.length ).toBe( 1 );
 		expect( result[ 0 ].getGeoJSON() ).toStrictEqual( feature );
 	} );
