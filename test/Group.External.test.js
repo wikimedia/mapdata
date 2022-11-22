@@ -2,11 +2,16 @@
 
 const Group = require( '../src/Group.js' );
 const externalGroupLib = require( '../src/Group.External' );
-const { extend, isPlainObject, isEmptyObject } = require( './util' );
+const { extend, isPlainObject, isEmptyObject, createPromise } = require( './util' );
+const ExternalDataLoader = require( '../src/ExternalDataLoader' );
 const ExternalDataParser = require( '../src/ExternalDataParser' );
 
 const createExternalGroup = ( geoJSON, fetchedGeodata ) => {
-	const getJSON = () => ( { then: ( fn ) => fn( fetchedGeodata ) } );
+	const mockGetJSON = () => ( { then: ( fn ) => fn( fetchedGeodata ) } );
+	const externalDataLoader = ExternalDataLoader(
+		mockGetJSON,
+		createPromise
+	);
 	const externalDataParser = ExternalDataParser(
 		isPlainObject,
 		isEmptyObject,
@@ -14,8 +19,8 @@ const createExternalGroup = ( geoJSON, fetchedGeodata ) => {
 	);
 	const ExternalGroup = externalGroupLib(
 		extend,
-		getJSON,
 		Group,
+		externalDataLoader,
 		externalDataParser
 	);
 	return new ExternalGroup( '', geoJSON );
@@ -57,7 +62,7 @@ describe( 'ExternalGroup', function () {
 
 	test( 'bubbles errors up', () => {
 		const group = createExternalGroup( {}, { features: {} } );
-		expect( () => group.fetch() )
+		expect( () => group.fetch() ).rejects
 			.toThrow( 'ExternalData has no url' );
 		expect( group.geoJSON ).not.toHaveProperty( 'features' );
 	} );

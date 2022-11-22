@@ -4,6 +4,7 @@ var dataLoaderLib = require( './MapdataLoader' ),
 	dataStoreLib = require( './DataStore' ),
 	hybridGroupLib = require( './Group.Hybrid' ),
 	internalGroupLib = require( './Group.Internal' ),
+	ExternalDataLoader = require( './ExternalDataLoader' ),
 	ExternalDataParser = require( './ExternalDataParser' );
 
 /**
@@ -40,6 +41,10 @@ module.exports = function ( wrappers ) {
 			wrappers.title,
 			wrappers.revid
 		),
+		externalDataLoader = ExternalDataLoader(
+			wrappers.getJSON,
+			wrappers.createPromise
+		),
 		externalDataParser = ExternalDataParser(
 			wrappers.isPlainObject,
 			wrappers.isEmptyObject,
@@ -50,8 +55,8 @@ module.exports = function ( wrappers ) {
 		),
 		ExternalGroup = externalGroupLib(
 			wrappers.extend,
-			wrappers.getJSON,
 			Group,
+			externalDataLoader,
 			externalDataParser
 		),
 		dataStore = dataStoreLib(),
