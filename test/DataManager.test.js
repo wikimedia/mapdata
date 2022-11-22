@@ -80,7 +80,7 @@ describe( 'DataManager', function () {
 		expect( result[ 0 ].getGeoJSON() ).toEqual( expect.objectContaining( externalResponse ) );
 	} );
 
-	test( 'failure from fetch is logged and returned', async () => {
+	test( 'failure from fetch is returned', async () => {
 		const feature = [ {
 			type: 'ExternalData',
 			url: null
@@ -93,11 +93,9 @@ describe( 'DataManager', function () {
 				} ]
 			}
 		};
-		const log = jest.fn();
 		const mwApi = jest.fn().mockResolvedValue( apiResponse );
 		const dataManager = dataManagerLib( {
 			...wrappers,
-			log,
 			mwApi
 		} );
 
@@ -112,11 +110,9 @@ describe( 'DataManager', function () {
 		// FIXME: This is a deceiving, broken group.
 		expect( result[ 1 ].isExternal ).toBe( true );
 		expect( result[ 1 ].failed ).toBe( false );
-		expect( log ).toHaveBeenCalledWith( 'warn',
-			'mapdata group load failed with error Error: ExternalData has no url for group undefined' );
 	} );
 
-	test( 'failure from parse is logged and returned', async () => {
+	test( 'failure from parse is returned', async () => {
 		const feature = [ {
 			type: 'ExternalData',
 			service: 'foo',
@@ -130,12 +126,10 @@ describe( 'DataManager', function () {
 				} ]
 			}
 		};
-		const log = jest.fn();
 		const mwApi = jest.fn().mockResolvedValue( apiResponse );
 		const getJSON = jest.fn().mockResolvedValue( {} );
 		const dataManager = dataManagerLib( {
 			...wrappers,
-			log,
 			mwApi,
 			getJSON
 		} );
@@ -148,7 +142,5 @@ describe( 'DataManager', function () {
 		// FIXME: This is a deceiving, broken group.
 		expect( result[ 1 ].isExternal ).toBe( true );
 		expect( result[ 1 ].failed ).toBe( false );
-		expect( log ).toHaveBeenCalledWith( 'warn',
-			'mapdata group load failed with error Error: Unknown externalData service "foo" for group undefined' );
 	} );
 } );

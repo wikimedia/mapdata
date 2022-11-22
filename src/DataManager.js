@@ -22,7 +22,6 @@ var dataLoaderLib = require( './MapdataLoader' ),
  * @param {string|false} [wrappers.revid] Either title or revid must be set. If false or missing,
  *  falls back to a title-only request.
  * @param {Function} wrappers.whenAllPromises Reference a function like {@see Promise.all}
- * @param {Function} [wrappers.log]
  * @constructor
  */
 module.exports = function ( wrappers ) {
@@ -38,8 +37,7 @@ module.exports = function ( wrappers ) {
 			wrappers.mwApi,
 			wrappers.clientStore,
 			wrappers.title,
-			wrappers.revid,
-			wrappers.log
+			wrappers.revid
 		),
 		ExternalGroup = externalGroupLib(
 			wrappers.extend,
@@ -87,11 +85,6 @@ module.exports = function ( wrappers ) {
 				group.fetch().then(
 					resolve,
 					function ( err ) {
-						if ( wrappers.log ) {
-							wrappers.log( 'warn',
-								'mapdata group load failed with error ' + err +
-								' for group ' + groupIds[ i ] );
-						}
 						// Note that we never reject the promise from here,
 						// failed groups are returned with a flag set.
 						group.fail( err );

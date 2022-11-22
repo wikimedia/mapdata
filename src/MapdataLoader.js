@@ -9,7 +9,6 @@
  * @param {string} [title] Will be ignored if revid is supplied.
  * @param {string|false} [revid] Either title or revid must be set. If false or missing, falls back
  *  to a title-only request.
- * @param {Function} [log]
  * @constructor
  */
 module.exports = function (
@@ -18,8 +17,7 @@ module.exports = function (
 	mwApi,
 	clientStore,
 	title,
-	revid,
-	log
+	revid
 ) {
 	var MapdataLoader = function () {
 		/**
@@ -114,10 +112,7 @@ module.exports = function (
 
 		return mwApi( params ).then( function ( data ) {
 			if ( !data.query || !data.query.pages || !data.query.pages[ 0 ] ) {
-				if ( log ) {
-					log( 'warn', 'MapdataLoader retrieved incomplete results: ' + JSON.stringify( data ) );
-				}
-				setPromises( groupsToLoad, {} );
+				setPromises( groupsToLoad, undefined, 'MapdataLoader retrieved incomplete results' );
 			} else {
 				var rawMapData = data.query.pages[ 0 ].mapdata;
 				setPromises( groupsToLoad, rawMapData && JSON.parse( rawMapData ) || {} );
