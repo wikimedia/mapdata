@@ -6,17 +6,12 @@
  * @param {Function} createResolvedPromise
  * @param {Function} mwApi Reference to the {@see mw.Api} constructor
  * @param {Object} [clientStore] External cache for groups, supplied by the caller.
- * @param {string} [title] Will be ignored if revid is supplied.
- * @param {string|false} [revid] Either title or revid must be set. If false or missing, falls back
- *  to a title-only request.
  */
 module.exports = function (
 	extend,
 	createResolvedPromise,
 	mwApi,
-	clientStore,
-	title,
-	revid
+	clientStore
 ) {
 	clientStore = clientStore || {};
 
@@ -24,9 +19,12 @@ module.exports = function (
 
 	/**
 	 * @param {string[]} groupIds
+	 * @param {string} [title] Will be ignored if revid is supplied.
+	 * @param {string|false} [revid] Either title or revid must be set. If false
+	 * or missing, falls back to a title-only request.
 	 * @return {Promise<Object>} Resolves to the returned mapdata, or rejects.
 	 */
-	MapdataLoader.prototype.fetchGroups = function ( groupIds ) {
+	MapdataLoader.prototype.fetchGroups = function ( groupIds, title, revid ) {
 		if ( !groupIds.length ) {
 			return createResolvedPromise( {} );
 		}

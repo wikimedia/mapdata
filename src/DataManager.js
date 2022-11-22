@@ -28,9 +28,6 @@ function toArray( data ) {
  * @param {Function} wrappers.mwHtmlElement Reference to the {@see mw.html.element} function
  * @param {Function} [wrappers.mwMsg] Reference to the {@see mw.msg} function
  * @param {Function} wrappers.mwUri Reference to the {@see mw.Uri} constructor
- * @param {string} [wrappers.title] Will be ignored when revid is supplied
- * @param {string|false} [wrappers.revid] Either title or revid must be set. If false or missing,
- *  falls back to a title-only request.
  * @param {Function} wrappers.whenAllPromises Reference a function like {@see Promise.all}
  * @constructor
  */
@@ -45,9 +42,7 @@ module.exports = function ( wrappers ) {
 			wrappers.extend,
 			createResolvedPromise,
 			wrappers.mwApi,
-			wrappers.clientStore,
-			wrappers.title,
-			wrappers.revid
+			wrappers.clientStore
 		),
 		externalDataLoader = ExternalDataLoader(
 			wrappers.getJSON,
@@ -114,13 +109,18 @@ module.exports = function ( wrappers ) {
 	 *
 	 * @param {string[]|string} groupIds List of group ids to load (will coerce
 	 * from a string if needed).
+	 * @param {string} [title] Will be ignored when revid is supplied
+	 * @param {string|false} [revid] Either title or revid must be set.
+	 * If false or missing, falls back to a title-only request.
 	 * @return {Promise<Group[]>} Resolves with a list of expanded Group objects.
 	 */
-	DataManager.prototype.loadGroups = function ( groupIds ) {
+	DataManager.prototype.loadGroups = function ( groupIds, title, revid ) {
 		groupIds = toArray( groupIds );
 		// Fetch mapdata for all groups from MediaWiki.
 		return dataLoader.fetchGroups(
-			groupIds
+			groupIds,
+			title,
+			revid
 		).then( function ( mapdata ) {
 			return groupIds.reduce( function ( groups, id ) {
 				var groupData = mapdata[ id ];

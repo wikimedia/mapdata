@@ -30,11 +30,9 @@ describe( 'MapdataLoader', function () {
 		const loader = mapdataLoaderFactory(
 			extend,
 			createResolvedPromise,
-			mwApi,
-			undefined,
-			title
+			mwApi
 		);
-		await loader.fetchGroups( [ groupId ] );
+		await loader.fetchGroups( [ groupId ], title );
 
 		expect( mwApi ).toHaveBeenCalledWith( {
 			action: 'query',
@@ -58,12 +56,9 @@ describe( 'MapdataLoader', function () {
 		const loader = mapdataLoaderFactory(
 			extend,
 			createResolvedPromise,
-			mwApi,
-			undefined,
-			title,
-			revid
+			mwApi
 		);
-		await loader.fetchGroups( [ groupId ] );
+		await loader.fetchGroups( [ groupId ], title, revid );
 
 		expect( mwApi ).toHaveBeenCalledWith( {
 			action: 'query',

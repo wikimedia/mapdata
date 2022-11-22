@@ -25,12 +25,10 @@ describe( 'DataManager loadGroups', () => {
 		const revid = '123';
 		const dataManager = dataManagerLib( {
 			...wrappers,
-			mwApi,
-			title,
-			revid
+			mwApi
 		} );
 
-		const result = await dataManager.loadGroups( [ 'group1' ] );
+		const result = await dataManager.loadGroups( [ 'group1' ], title, revid );
 		expect( mwApi ).toBeCalledWith( {
 			action: 'query',
 			formatversion: '2',
