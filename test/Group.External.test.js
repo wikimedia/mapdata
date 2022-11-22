@@ -2,18 +2,21 @@
 
 const Group = require( '../src/Group.js' );
 const externalGroupLib = require( '../src/Group.External' );
-const { extend, isEmptyObject } = require( './util' );
+const { extend, isPlainObject, isEmptyObject } = require( './util' );
+const ExternalDataParser = require( '../src/ExternalDataParser' );
 
 const createExternalGroup = ( geoJSON, fetchedGeodata ) => {
 	const getJSON = () => ( { then: ( fn ) => fn( fetchedGeodata ) } );
+	const externalDataParser = ExternalDataParser(
+		isPlainObject,
+		isEmptyObject,
+		extend
+	);
 	const ExternalGroup = externalGroupLib(
 		extend,
-		isEmptyObject,
 		getJSON,
-		undefined,
-		undefined,
-		undefined,
-		Group
+		Group,
+		externalDataParser
 	);
 	return new ExternalGroup( '', geoJSON );
 };

@@ -2,20 +2,22 @@
 
 const hybridGroupLib = require( '../src/Group.Hybrid' );
 const Group = require( '../src/Group' );
-const { extend, createResolvedPromise, isPlainObject, whenAllPromises } = require( './util' );
+const { extend, createResolvedPromise, whenAllPromises, isPlainObject } = require( './util' );
 const mockExternalDataClass = function ( key, geoJSON ) {
 	return { mock: true, key, geoJSON };
 };
 const dataStoreLib = require( '../src/DataStore' );
+const ExternalDataParser = require( '../src/ExternalDataParser' );
+const externalDataParser = ExternalDataParser( isPlainObject );
 const createHybridGroup = ( id, geoJSON, options ) => {
 	const HybridGroup = hybridGroupLib(
 		extend,
 		createResolvedPromise,
-		isPlainObject,
 		whenAllPromises,
 		Group,
 		mockExternalDataClass,
-		dataStoreLib()
+		dataStoreLib(),
+		externalDataParser
 	);
 	return new HybridGroup( id, geoJSON, options );
 };

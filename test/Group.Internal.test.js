@@ -17,7 +17,6 @@ describe( 'InternalGroup', function () {
 				extend,
 				undefined,
 				undefined,
-				undefined,
 				Group
 			)
 		);

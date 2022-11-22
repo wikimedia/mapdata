@@ -3,7 +3,8 @@ var dataLoaderLib = require( './MapdataLoader' ),
 	externalGroupLib = require( './Group.External' ),
 	dataStoreLib = require( './DataStore' ),
 	hybridGroupLib = require( './Group.Hybrid' ),
-	internalGroupLib = require( './Group.Internal' );
+	internalGroupLib = require( './Group.Internal' ),
+	ExternalDataParser = require( './ExternalDataParser' );
 
 /**
  * @class Kartographer.Data.DataManager
@@ -39,24 +40,29 @@ module.exports = function ( wrappers ) {
 			wrappers.title,
 			wrappers.revid
 		),
+		externalDataParser = ExternalDataParser(
+			wrappers.isPlainObject,
+			wrappers.isEmptyObject,
+			wrappers.extend,
+			wrappers.mwMsg,
+			wrappers.mwHtmlElement,
+			wrappers.mwUri
+		),
 		ExternalGroup = externalGroupLib(
 			wrappers.extend,
-			wrappers.isEmptyObject,
 			wrappers.getJSON,
-			wrappers.mwMsg,
-			wrappers.mwUri,
-			wrappers.mwHtmlElement,
-			Group
+			Group,
+			externalDataParser
 		),
 		dataStore = dataStoreLib(),
 		HybridGroup = hybridGroupLib(
 			wrappers.extend,
 			createResolvedPromise,
-			wrappers.isPlainObject,
 			wrappers.whenAllPromises,
 			Group,
 			ExternalGroup,
-			dataStore
+			dataStore,
+			externalDataParser
 		),
 		InternalGroup = internalGroupLib(
 			wrappers.extend,

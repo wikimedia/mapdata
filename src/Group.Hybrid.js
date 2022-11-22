@@ -11,22 +11,22 @@
  * @extends Kartographer.Data.Group
  * @param {Function} extend Reference to e.g. {@see jQuery.extend}
  * @param {Function} createResolvedPromise
- * @param {Function} isPlainObject Reference to e.g. {@see jQuery.isPlainObject}
  * @param {Function} whenAllPromises Reference to e.g. {@see jQuery.when}
  * @param {Function} Group Reference to the {@see Kartographer.Data.Group} class
  * @param {Function} ExternalGroup Reference to the {@see Kartographer.Data.Group.External}
  *  constructor
  * @param {Kartographer.Data.DataStore} dataStore
+ * @param {Kartographer.Data.ExternalDataParser} externalDataParser
  * @return {Function}
  */
 module.exports = function (
 	extend,
 	createResolvedPromise,
-	isPlainObject,
 	whenAllPromises,
 	Group,
 	ExternalGroup,
-	dataStore
+	dataStore,
+	externalDataParser
 ) {
 
 	var HybridGroup = function () {
@@ -39,10 +39,6 @@ module.exports = function (
 	};
 
 	extend( HybridGroup.prototype, Group.prototype );
-
-	function isExternalDataGroup( data ) {
-		return isPlainObject( data ) && data.type && data.type === 'ExternalData';
-	}
 
 	/**
 	 * @return {Promise}
@@ -95,7 +91,7 @@ module.exports = function (
 		if ( Array.isArray( apiGeoJSON ) ) {
 			geoJSON = [];
 			for ( i = 0; i < apiGeoJSON.length; i++ ) {
-				if ( isExternalDataGroup( apiGeoJSON[ i ] ) ) {
+				if ( externalDataParser.isExternalData( apiGeoJSON[ i ] ) ) {
 					externalKey = JSON.stringify( apiGeoJSON[ i ] );
 					group.externals.push(
 						dataStore.get( externalKey ) ||
@@ -105,7 +101,7 @@ module.exports = function (
 					geoJSON.push( apiGeoJSON[ i ] );
 				}
 			}
-		} else if ( isExternalDataGroup( apiGeoJSON ) ) {
+		} else if ( externalDataParser.isExternalData( apiGeoJSON ) ) {
 			externalKey = JSON.stringify( apiGeoJSON );
 			group.externals.push(
 				dataStore.get( externalKey ) ||
