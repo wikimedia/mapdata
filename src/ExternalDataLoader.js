@@ -1,13 +1,18 @@
 /**
- * @class Kartographer.Data.ExternalDataLoader
+ * Factory function returning an instance.
+ *
  * @param {Function} getJSON
  * @param {Function} createPromise
- * @constructor
+ * @return {Kartographer.Data.ExternalDataLoader}
  */
 module.exports = function (
 	getJSON,
 	createPromise
 ) {
+	/**
+	 * @class Kartographer.Data.ExternalDataLoader
+	 * @constructor
+	 */
 	var ExternalDataLoader = function () {};
 
 	/**

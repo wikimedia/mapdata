@@ -1,11 +1,11 @@
 /**
- * Fetches GeoJSON content for a mapframe or maplink tag from the Kartographer MediaWiki API
+ * Factory function returning an instance.
  *
- * @class Kartographer.Data.MapdataLoader
  * @param {Function} extend Reference to e.g. {@see jQuery.extend}
  * @param {Function} createResolvedPromise
  * @param {Function} mwApi Reference to the {@see mw.Api} constructor
  * @param {Object} [clientStore] External cache for groups, supplied by the caller.
+ * @return {Kartographer.Data.MapdataLoader}
  */
 module.exports = function (
 	extend,
@@ -15,6 +15,12 @@ module.exports = function (
 ) {
 	clientStore = clientStore || {};
 
+	/**
+	 * Fetches GeoJSON content for a mapframe or maplink tag from the Kartographer MediaWiki API
+	 *
+	 * @class Kartographer.Data.MapdataLoader
+	 * @constructor
+	 */
 	var MapdataLoader = function () {};
 
 	/**

@@ -16,7 +16,8 @@ function toArray( data ) {
 }
 
 /**
- * @class Kartographer.Data.DataManager
+ * Factory function returning an instance.
+ *
  * @param {Object} wrappers
  * @param {Object} [wrappers.clientStore] External cache of groups, supplied by the caller.
  * @param {Function} wrappers.createPromise
@@ -26,7 +27,7 @@ function toArray( data ) {
  * @param {Function} wrappers.isPlainObject Reference to e.g. {@see jQuery.isPlainObject}
  * @param {Function} wrappers.mwApi Reference to the {@see mw.Api} constructor
  * @param {Function} wrappers.whenAllPromises Reference a function like {@see Promise.all}
- * @constructor
+ * @return {Kartographer.Data.DataManager}
  */
 module.exports = function ( wrappers ) {
 
@@ -50,6 +51,10 @@ module.exports = function ( wrappers ) {
 			wrappers.isEmptyObject,
 			wrappers.extend
 		),
+		/**
+		 * @class Kartographer.Data.DataManager
+		 * @constructor
+		 */
 		DataManager = function () {};
 
 	/**

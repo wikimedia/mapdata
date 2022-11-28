@@ -1,16 +1,20 @@
 /**
- * @class Kartographer.Data.ExternalDataParser
+ * Factory function returning an instance.
  *
  * @param {Function} isPlainObject
  * @param {Function} isEmptyObject
  * @param {Function} extend
- * @constructor
+ * @return {Kartographer.Data.ExternalDataParser}
  */
 module.exports = function (
 	isPlainObject,
 	isEmptyObject,
 	extend
 ) {
+	/**
+	 * @class Kartographer.Data.ExternalDataParser
+	 * @constructor
+	 */
 	var ExternalDataParser = function () {};
 
 	/**
