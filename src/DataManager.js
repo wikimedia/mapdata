@@ -77,7 +77,7 @@ module.exports = function ( wrappers ) {
 		DataManager = function () {};
 
 	/**
-	 * Recursively fetch all mapdata and contained ExternalData.
+	 * Fetch all mapdata and contained ExternalData.
 	 *
 	 * @param {string[]|string} groupIds List of group ids to load.
 	 * @return {Promise}
@@ -123,8 +123,7 @@ module.exports = function ( wrappers ) {
 	};
 
 	/**
-	 * Shallow loader which will not recurse into external data.  Only used in
-	 * the browser context.
+	 * Load any ExternalData contained by the given geojson
 	 *
 	 * @param {Object} geoJSON
 	 * @return {Promise}
