@@ -3,7 +3,7 @@
 const wrappers = require( './util' );
 const dataManagerLib = require( '../src/DataManager' );
 
-describe( 'DataManager', function () {
+describe( 'DataManager loadGroups', () => {
 	test( 'basic functionality', async () => {
 		const feature = [ {
 			type: 'Feature',
@@ -74,10 +74,51 @@ describe( 'DataManager', function () {
 
 		const result = await dataManager.loadGroups( [ 'group1' ] );
 		expect( result.length ).toBe( 1 );
-		// FIXME: This is a weird and unuseful convention.
-		expect( result[ 0 ].id ).toStrictEqual( JSON.stringify( feature ) );
-		expect( result[ 0 ].isExternal ).toStrictEqual( true );
 		expect( result[ 0 ].getGeoJSON() ).toEqual( expect.objectContaining( externalResponse ) );
+	} );
+
+	test( 'mapdata network error is returned', async () => {
+		const mwApi = jest.fn().mockRejectedValue( new Error( 'Bad net' ) );
+		const dataManager = dataManagerLib( {
+			...wrappers,
+			mwApi
+		} );
+
+		const result = await dataManager.loadGroups( [ 'group1' ] );
+		expect( result.length ).toBe( 1 );
+		expect( result[ 0 ].failed ).toBe( true );
+		expect( result[ 0 ].failureReason.message ).toBe( 'Bad net' );
+	} );
+
+	test.skip( 'empty mapdata is returned as failed group', async () => {
+		const apiResponse = {
+			query: {
+				pages: [ {
+					mapdata: JSON.stringify( { group1: null } )
+				} ]
+			}
+		};
+		const mwApi = jest.fn().mockResolvedValue( apiResponse );
+		const dataManager = dataManagerLib( {
+			...wrappers,
+			mwApi
+		} );
+
+		// FIXME: Should handle with a failure rather than crashing hard.
+		expect( () => dataManager.loadGroups( [ 'group1' ] ) ).toThrow( 'Cannot convert undefined or null to object' );
+	} );
+
+	test( 'no mapdata in response throws exception', async () => {
+		const mwApi = jest.fn().mockResolvedValue( {} );
+		const dataManager = dataManagerLib( {
+			...wrappers,
+			mwApi
+		} );
+
+		const result = await dataManager.loadGroups( [ 'group1' ] );
+		expect( result.length ).toBe( 1 );
+		expect( result[ 0 ].failed ).toStrictEqual( true );
+		// FIXME: failureReason should explain the problem.
 	} );
 
 	test( 'failure from fetch is returned', async () => {

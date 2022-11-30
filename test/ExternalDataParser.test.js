@@ -1,9 +1,10 @@
 'use strict';
 
-const { isPlainObject } = require( './util' );
+const { isPlainObject, isEmptyObject, extend } = require( './util' );
 const externalDataParserLib = require( '../src/ExternalDataParser' );
+const Group = require( '../src/Group' );
 
-describe( 'ExternalDataParser isExternal handles', () => {
+describe( 'ExternalDataParser isExternalData', () => {
 	const parser = externalDataParserLib( isPlainObject );
 
 	[
@@ -35,11 +36,91 @@ describe( 'ExternalDataParser isExternal handles', () => {
 } );
 
 describe( 'ExternalDataParser parse handles', () => {
-	test.todo( 'page with data' );
-	test.todo( 'page without data' );
-	test.todo( 'geomask is transformed' );
-	test.todo( 'bad geomask' );
-	test.todo( 'geoshape' );
-	test.todo( 'bad geoshape' );
-	test.todo( 'unknown badness' );
+	const parser = externalDataParserLib(
+		isPlainObject,
+		isEmptyObject,
+		extend
+	);
+
+	test( 'page service with returned data', () => {
+		const group = new Group( '', {
+			service: 'page'
+		} );
+		const geodata = {
+			jsondata: {
+				data: {
+					type: 'Feature'
+				}
+			}
+		};
+		const parsed = parser.parse( group, geodata );
+		expect( parsed.getGeoJSON() ).toStrictEqual( {
+			service: 'page',
+			type: 'Feature'
+		} );
+	} );
+
+	test( 'page service with no data returned', () => {
+		const group = new Group( '', {
+			service: 'page'
+		} );
+		expect( () => parser.parse( group, undefined ) ).toThrow( 'Cannot read propert' );
+	} );
+
+	test( 'geomask is transformed', () => {
+		const group = new Group( '', {
+			service: 'geomask'
+		} );
+		const geodata = {
+			type: 'FeatureCollection',
+			features: [ {
+				geometry: {
+					type: 'Polygon',
+					coordinates: [ [ [ 0, 1 ], [ 2, 3 ] ] ]
+				}
+			} ]
+		};
+		const parsed = parser.parse( group, geodata );
+		expect( parsed.getGeoJSON() ).toStrictEqual( {
+			service: 'geomask',
+			type: 'Feature',
+			geometry: {
+				type: 'Polygon',
+				coordinates: [ [
+					[ 3600, -180 ],
+					[ 3600, 180 ],
+					[ -3600, 180 ],
+					[ -3600, -180 ],
+					[ 3600, -180 ]
+				], [
+					[ 0, 1 ],
+					[ 2, 3 ]
+				] ]
+			}
+		} );
+	} );
+
+	test( 'geoshape merges properties', () => {
+		const group = new Group( '', {
+			service: 'geoshape',
+			properties: { fill: '#abc' }
+		} );
+		const geodata = {
+			type: 'FeatureCollection',
+			features: [
+				{ properties: { fill: '#def' } },
+				{ properties: { stroke: '#321' } }
+			]
+		};
+		const parsed = parser.parse( group, geodata );
+		expect( parsed.getGeoJSON() ).toStrictEqual( {
+			service: 'geoshape',
+			type: 'FeatureCollection',
+			properties: { fill: '#abc' },
+			features: [
+				{ properties: { fill: '#def' } },
+				{ properties: { fill: '#abc', stroke: '#321' } }
+			]
+		} );
+	} );
 } );

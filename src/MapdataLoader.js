@@ -9,7 +9,6 @@
  * @param {string} [title] Will be ignored if revid is supplied.
  * @param {string|false} [revid] Either title or revid must be set. If false or missing, falls back
  *  to a title-only request.
- * @constructor
  */
 module.exports = function (
 	createPromise,
@@ -19,6 +18,9 @@ module.exports = function (
 	title,
 	revid
 ) {
+	/**
+	 * @constructor
+	 */
 	var MapdataLoader = function () {
 		/**
 		 * @type {Object.<string,Promise>} Hash of group ids and associated promises

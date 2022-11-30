@@ -1,19 +1,28 @@
 'use strict';
 
 const { createPromise, createResolvedPromise } = require( './util' );
-const MapdataLoader = require( '../src/MapdataLoader' );
+const mapdataLoaderFactory = require( '../src/MapdataLoader' );
 
 describe( 'MapdataLoader', function () {
-	test( 'fetch ignores when groups are empty', () => {
+	test( 'fetch falls through when groups are empty', async () => {
 		const mwApi = jest.fn();
 
-		const loader = new MapdataLoader( createPromise, createResolvedPromise, mwApi );
-		loader.fetch();
+		const loader = mapdataLoaderFactory( undefined, createResolvedPromise, mwApi );
+		await loader.fetch();
 
 		expect( mwApi ).toHaveBeenCalledTimes( 0 );
 	} );
 
-	test( 'fetch queries title and group', () => {
+	test( 'network error is bubbled up', () => {
+		const mwApi = jest.fn().mockRejectedValue( new Error( 'Bad net' ) );
+		const loader = mapdataLoaderFactory( createPromise, createResolvedPromise, mwApi );
+
+		const promise = loader.fetchGroup( 'group1' );
+		loader.fetch();
+		expect( promise ).rejects.toThrow( 'Bad net' );
+	} );
+
+	test( 'fetch queries title and group', async () => {
 		const apiCallback = {
 			then: jest.fn()
 		};
@@ -21,7 +30,7 @@ describe( 'MapdataLoader', function () {
 		const title = 'A title';
 		const groupId = '123abc';
 
-		const loader = new MapdataLoader(
+		const loader = mapdataLoaderFactory(
 			createPromise,
 			createResolvedPromise,
 			mwApi,
@@ -41,7 +50,7 @@ describe( 'MapdataLoader', function () {
 		} );
 	} );
 
-	test( 'fetch queries revid', () => {
+	test( 'fetch queries revid', async () => {
 		const apiCallback = {
 			then: jest.fn()
 		};
@@ -50,7 +59,7 @@ describe( 'MapdataLoader', function () {
 		const groupId = '123abc';
 		const revid = '123';
 
-		const loader = new MapdataLoader(
+		const loader = mapdataLoaderFactory(
 			createPromise,
 			createResolvedPromise,
 			mwApi,
