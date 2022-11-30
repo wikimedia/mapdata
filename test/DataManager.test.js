@@ -144,3 +144,95 @@ describe( 'DataManager', function () {
 		expect( result[ 1 ].failed ).toBe( false );
 	} );
 } );
+
+describe( 'DataManager load', () => {
+	test( 'happy ExternalData', async () => {
+		const inlineData = {
+			type: 'Feature',
+			geometry: {
+				type: 'Polygon',
+				coordinates: [ [
+					[ 1, 2 ], [ 3, 4 ]
+				] ]
+			}
+		};
+		const unexpandedExternalData = {
+			type: 'ExternalData',
+			service: 'geoshape',
+			url: 'http://a.test/'
+		};
+		const geoJSON = [
+			inlineData,
+			unexpandedExternalData
+		];
+		const externalResponse = {
+			type: 'Feature',
+			geometry: {
+				coordinates: [ 13, 47 ],
+				type: 'Point'
+			}
+		};
+		const getJSON = jest.fn().mockResolvedValue( externalResponse );
+		const dataManager = dataManagerLib( {
+			...wrappers,
+			getJSON
+		} );
+		const result = await dataManager.load( geoJSON );
+		expect( result.length ).toBe( 2 );
+		expect( result[ 1 ].getGeoJSON() ).toStrictEqual( {
+			...unexpandedExternalData,
+			...externalResponse
+		} );
+		expect( result[ 0 ].getGeoJSON() ).toStrictEqual( [ inlineData ] );
+	} );
+
+	test( 'mixed failure due to net error', () => {
+		const inlineData = {
+			type: 'Feature',
+			geometry: {
+				type: 'Polygon',
+				coordinates: [ [
+					[ 1, 2 ], [ 3, 4 ]
+				] ]
+			}
+		};
+		const unexpandedExternalData = {
+			type: 'ExternalData',
+			service: 'geoshape',
+			url: 'http://a.test/'
+		};
+		const geoJSON = [
+			inlineData,
+			unexpandedExternalData
+		];
+		const getJSON = jest.fn().mockRejectedValue( new Error( 'Bad net' ) );
+		const dataManager = dataManagerLib( {
+			...wrappers,
+			getJSON
+		} );
+		expect( () => dataManager.load( geoJSON ) ).rejects.toThrow( 'Bad net' );
+	} );
+
+	test( 'mixed failure due to invalid ExternalData', () => {
+		const inlineData = {
+			type: 'Feature',
+			geometry: {
+				type: 'Polygon',
+				coordinates: [ [
+					[ 1, 2 ], [ 3, 4 ]
+				] ]
+			}
+		};
+		const unexpandedExternalData = { type: 'ExternalData' };
+		const geoJSON = [
+			inlineData,
+			unexpandedExternalData
+		];
+		const getJSON = jest.fn();
+		const dataManager = dataManagerLib( {
+			...wrappers,
+			getJSON
+		} );
+		expect( () => dataManager.load( geoJSON ) ).rejects.toThrow( 'ExternalData has no url' );
+	} );
+} );
