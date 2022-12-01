@@ -1,25 +1,19 @@
 /**
- * Group parent class.
- *
- * Contains the data fields common to every subclass of Group.
- *
  * @class Kartographer.Data.Group
- * @abstract
  */
 
 /**
- * @param {string} groupId Either a group name defined in the mapframe, or an
- *   automatically-generated hash of the group's contents.
- * @param {Object|Object[]} [geoJSON=null] The group's geometry, or empty for
- *   incomplete ExternalData.
- * @param {Object} [options={}] Additional options for the group.
- * @param {string} [options.attribution] Attribution to display on the map layer.
+ * @param {Object|Object[]} [geoJSON] The group's geometry, or empty for
+ * incomplete ExternalData.
  * @constructor
  */
-var Group = function ( groupId, geoJSON, options ) {
-	this.id = groupId;
+var Group = function ( geoJSON ) {
 	this.geoJSON = geoJSON || null;
-	this.options = options || {};
+	/**
+	 * {Object} Additional options for the group.
+	 * {string} [options.attribution] Attribution to display on the map layer.
+	 */
+	this.options = {};
 	/**
 	 * {boolean} Flag is true if the group failed to fully load.
 	 */

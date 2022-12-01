@@ -1,11 +1,19 @@
 var dataLoaderLib = require( './MapdataLoader' ),
-	Group = require( './Group.js' ),
-	externalGroupLib = require( './Group.External' ),
-	dataStoreLib = require( './DataStore' ),
-	hybridGroupLib = require( './Group.Hybrid' ),
-	internalGroupLib = require( './Group.Internal' ),
+	Group = require( './Group' ),
 	ExternalDataLoader = require( './ExternalDataLoader' ),
 	ExternalDataParser = require( './ExternalDataParser' );
+
+/**
+ * @param {Array|Object} data
+ * @return {Array} Data wrapped in an array if necessary.
+ */
+function toArray( data ) {
+	if ( Array.isArray( data ) ) {
+		return data;
+	} else {
+		return [ data ];
+	}
+}
 
 /**
  * @class Kartographer.Data.DataManager
@@ -34,7 +42,7 @@ module.exports = function ( wrappers ) {
 			} );
 		},
 		dataLoader = dataLoaderLib(
-			wrappers.createPromise,
+			wrappers.extend,
 			createResolvedPromise,
 			wrappers.mwApi,
 			wrappers.clientStore,
@@ -53,93 +61,100 @@ module.exports = function ( wrappers ) {
 			wrappers.mwHtmlElement,
 			wrappers.mwUri
 		),
-		ExternalGroup = externalGroupLib(
-			wrappers.extend,
-			Group,
-			externalDataLoader,
-			externalDataParser
-		),
-		dataStore = dataStoreLib(),
-		HybridGroup = hybridGroupLib(
-			wrappers.extend,
-			createResolvedPromise,
-			wrappers.whenAllPromises,
-			Group,
-			ExternalGroup,
-			dataStore,
-			externalDataParser
-		),
-		InternalGroup = internalGroupLib(
-			wrappers.extend,
-			HybridGroup,
-			dataLoader
-		),
 		DataManager = function () {};
+
+	/**
+	 * Restructure the geoJSON from a single group, splitting out external data
+	 * each into a separate group, and leaving any plain data bundled together.
+	 *
+	 * @param {Object|Object[]} geoJSON
+	 * @return {Kartographer.Data.Group[]}
+	 */
+	function splitExternalGroups( geoJSON ) {
+		var groups = [];
+		var plainData = [];
+		toArray( geoJSON ).forEach( function ( data ) {
+			if ( externalDataParser.isExternalData( data ) ) {
+				groups.push( new Group( data ) );
+			} else {
+				plainData.push( data );
+			}
+		} );
+		if ( plainData.length ) {
+			groups.push( new Group( plainData ) );
+		}
+		return groups;
+	}
+
+	/**
+	 * Expand ExternalData for the group
+	 *
+	 * @param {Kartographer.Data.Group} group
+	 * @return {Kartographer.Data.Group[]} groups The original group, plus any
+	 * retrieved external data each as a separate group.
+	 */
+	function fetchExternalData( group ) {
+		if ( !externalDataParser.isExternalData( group.getGeoJSON() ) ) {
+			return createResolvedPromise( group );
+		}
+		return externalDataLoader.fetch( group )
+			.then( function ( data ) {
+				// Side-effect of parse is to update the group.
+				externalDataParser.parse( group, data );
+				return group;
+			} )
+			.catch( function ( err ) {
+				group.fail( err );
+				return group;
+			} );
+	}
 
 	/**
 	 * Fetch all mapdata and contained ExternalData.
 	 *
-	 * @param {string[]|string} groupIds List of group ids to load.
-	 * @return {Promise}
+	 * @param {string[]|string} groupIds List of group ids to load (will coerce
+	 * from a string if needed).
+	 * @return {Promise<Group[]>} Resolves with a list of expanded Group objects.
 	 */
 	DataManager.prototype.loadGroups = function ( groupIds ) {
-		var promises = [];
+		groupIds = toArray( groupIds );
+		// Fetch mapdata for all groups from MediaWiki.
+		return dataLoader.fetchGroups(
+			groupIds
+		).then( function ( mapdata ) {
+			return groupIds.reduce( function ( groups, id ) {
+				var groupData = mapdata[ id ];
 
-		if ( !Array.isArray( groupIds ) ) {
-			groupIds = [ groupIds ];
-		}
-		for ( var i = 0; i < groupIds.length; i++ ) {
-			var group = dataStore.get( groupIds[ i ] ) ||
-				dataStore.add( new InternalGroup( groupIds[ i ] ) );
-			// eslint-disable-next-line no-loop-func
-			promises.push( wrappers.createPromise( function ( resolve ) {
-				group.fetch().then(
-					resolve,
-					function ( err ) {
-						// Note that we never reject the promise from here,
-						// failed groups are returned with a flag set.
-						group.fail( err );
-						return resolve();
-					}
-				);
-			} ) );
-		}
-
-		dataLoader.fetch();
-
-		return wrappers.whenAllPromises( promises ).then( function () {
-			var groupList = [];
-
-			for ( var i = 0; i < groupIds.length; i++ ) {
-				var group = dataStore.get( groupIds[ i ] );
-				if ( group.failed || !wrappers.isEmptyObject( group.getGeoJSON() ) ) {
-					groupList = groupList.concat( group );
+				// Handle failed groups by replacing with an error.
+				if ( !groupData ) {
+					var group = new Group();
+					group.fail( new Error( 'Received empty response for group "' + id + '"' ) );
+					groups.push( group );
+					return groups;
 				}
-				groupList = groupList.concat( group.externals );
-			}
 
-			return groupList;
-		} );
+				return groups.concat( splitExternalGroups( groupData ) );
+			}, [] );
+		} ).then( function ( groups ) {
+			return groups.map( fetchExternalData );
+		} ).then(
+			wrappers.whenAllPromises
+		);
 	};
 
 	/**
 	 * Load any ExternalData contained by the given geojson
 	 *
-	 * @param {Object} geoJSON
-	 * @return {Promise}
+	 * @param {Object|Object[]} geoJSON
+	 * @return {Promise<Kartographer.Data.Group[]>}
 	 */
 	DataManager.prototype.load = function ( geoJSON ) {
-		var group = new HybridGroup( null, geoJSON );
-
-		return group.load().then( function () {
-			var groupList = [];
-
-			if ( !wrappers.isEmptyObject( group.getGeoJSON() ) ) {
-				groupList = groupList.concat( group );
-			}
-
-			return groupList.concat( group.externals );
-		} );
+		return wrappers.whenAllPromises(
+			splitExternalGroups( geoJSON )
+				.map( function ( group ) {
+					return fetchExternalData( group );
+				} )
+		);
 	};
 
 	return new DataManager();

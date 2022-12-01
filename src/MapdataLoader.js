@@ -2,7 +2,7 @@
  * Fetches GeoJSON content for a mapframe or maplink tag from the Kartographer MediaWiki API
  *
  * @class Kartographer.Data.MapdataLoader
- * @param {Function} createPromise
+ * @param {Function} extend Reference to e.g. {@see jQuery.extend}
  * @param {Function} createResolvedPromise
  * @param {Function} mwApi Reference to the {@see mw.Api} constructor
  * @param {Object} [clientStore] External cache for groups, supplied by the caller.
@@ -11,94 +11,36 @@
  *  to a title-only request.
  */
 module.exports = function (
-	createPromise,
+	extend,
 	createResolvedPromise,
 	mwApi,
 	clientStore,
 	title,
 	revid
 ) {
-	/**
-	 * @constructor
-	 */
-	var MapdataLoader = function () {
-		/**
-		 * @type {Object.<string,Promise>} Hash of group ids and associated promises
-		 * @private
-		 */
-		this.promiseByGroup = {};
-
-		/**
-		 * @type {string[]} List of group ids to fetch next time {@link #fetch} is called
-		 * @private
-		 */
-		this.nextFetch = [];
-	};
-
 	clientStore = clientStore || {};
 
+	var MapdataLoader = function () {};
+
 	/**
-	 * @param {string} groupId
-	 * @return {Promise}
+	 * @param {string[]} groupIds
+	 * @return {Promise<Object>} Resolves to the returned mapdata, or rejects.
 	 */
-	MapdataLoader.prototype.fetchGroup = function ( groupId ) {
-		var promise = this.promiseByGroup[ groupId ],
-			resolveFunc, rejectFunc;
-		if ( !promise ) {
+	MapdataLoader.prototype.fetchGroups = function ( groupIds ) {
+		if ( !groupIds.length ) {
+			return createResolvedPromise( {} );
+		}
+		var cachedResults = {};
+		var fetchGroups = [];
+		groupIds.forEach( function ( groupId ) {
 			if ( clientStore[ groupId ] ) {
-				promise = createResolvedPromise( clientStore[ groupId ] );
+				cachedResults[ groupId ] = clientStore[ groupId ];
 			} else {
-				// FIXME: this is a horrible hack
-				// The resolve and reject functions are attached to the promise object's instance
-				// so that they can be called from the fetch function later
-				this.nextFetch.push( groupId );
-				promise = createPromise( function ( resolve, reject ) {
-					resolveFunc = resolve;
-					rejectFunc = reject;
-				} );
-				promise.mwResolve = resolveFunc;
-				promise.mwReject = rejectFunc;
+				fetchGroups.push( groupId );
 			}
-
-			this.promiseByGroup[ groupId ] = promise;
-		}
-		return promise;
-	};
-
-	/**
-	 * @return {Promise}
-	 */
-	MapdataLoader.prototype.fetch = function () {
-		var loader = this,
-			groupsToLoad = loader.nextFetch;
-
-		if ( !groupsToLoad.length ) {
-			return createResolvedPromise();
-		}
-
-		loader.nextFetch = [];
-
-		/**
-		 * FIXME: we need to fix this horrid hack
-		 * http://stackoverflow.com/questions/39970101/combine-multiple-debounce-promises-in-js
-		 *
-		 * @param {string[]} groupsToLoad
-		 * @param {Object.<string,Object>} values Map of group id to GeoJSON
-		 * @param {Object} [err] MediaWiki API error
-		 */
-		function setPromises( groupsToLoad, values, err ) {
-			for ( var i = 0; i < groupsToLoad.length; i++ ) {
-				var promise = loader.promiseByGroup[ groupsToLoad[ i ] ];
-				if ( promise.mwResolve ) {
-					if ( err ) {
-						promise.mwReject( err );
-					} else {
-						promise.mwResolve( values[ groupsToLoad[ i ] ] || {} );
-					}
-					delete promise.mwResolve;
-					delete promise.mwReject;
-				}
-			}
+		} );
+		if ( fetchGroups.length === 0 ) {
+			return createResolvedPromise( cachedResults );
 		}
 
 		var params = {
@@ -108,19 +50,12 @@ module.exports = function (
 			revids: revid,
 			prop: 'mapdata',
 			mpdlimit: 'max',
-			mpdgroups: groupsToLoad.join( '|' )
+			mpdgroups: fetchGroups.join( '|' )
 		};
 		delete params[ revid ? 'titles' : 'revids' ];
 
 		return mwApi( params ).then( function ( data ) {
-			if ( !data.query || !data.query.pages || !data.query.pages[ 0 ] ) {
-				setPromises( groupsToLoad, undefined, 'MapdataLoader retrieved incomplete results' );
-			} else {
-				var rawMapData = data.query.pages[ 0 ].mapdata;
-				setPromises( groupsToLoad, rawMapData && JSON.parse( rawMapData ) || {} );
-			}
-		}, function ( err ) {
-			setPromises( groupsToLoad, undefined, err );
+			return extend( cachedResults, JSON.parse( data.query.pages[ 0 ].mapdata ) );
 		} );
 	};
 

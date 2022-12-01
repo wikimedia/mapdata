@@ -43,7 +43,7 @@ describe( 'ExternalDataParser parse handles', () => {
 	);
 
 	test( 'page service with returned data', () => {
-		const group = new Group( '', {
+		const group = new Group( {
 			service: 'page'
 		} );
 		const geodata = {
@@ -61,14 +61,14 @@ describe( 'ExternalDataParser parse handles', () => {
 	} );
 
 	test( 'page service with no data returned', () => {
-		const group = new Group( '', {
+		const group = new Group( {
 			service: 'page'
 		} );
 		expect( () => parser.parse( group, undefined ) ).toThrow( 'Cannot read propert' );
 	} );
 
 	test( 'geomask is transformed', () => {
-		const group = new Group( '', {
+		const group = new Group( {
 			service: 'geomask'
 		} );
 		const geodata = {
@@ -101,7 +101,7 @@ describe( 'ExternalDataParser parse handles', () => {
 	} );
 
 	test( 'geoshape merges properties', () => {
-		const group = new Group( '', {
+		const group = new Group( {
 			service: 'geoshape',
 			properties: { fill: '#abc' }
 		} );

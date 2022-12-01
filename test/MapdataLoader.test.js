@@ -1,6 +1,6 @@
 'use strict';
 
-const { createPromise, createResolvedPromise } = require( './util' );
+const { createResolvedPromise, extend } = require( './util' );
 const mapdataLoaderFactory = require( '../src/MapdataLoader' );
 
 describe( 'MapdataLoader', function () {
@@ -8,18 +8,15 @@ describe( 'MapdataLoader', function () {
 		const mwApi = jest.fn();
 
 		const loader = mapdataLoaderFactory( undefined, createResolvedPromise, mwApi );
-		await loader.fetch();
+		await loader.fetchGroups( [] );
 
 		expect( mwApi ).toHaveBeenCalledTimes( 0 );
 	} );
 
 	test( 'network error is bubbled up', () => {
 		const mwApi = jest.fn().mockRejectedValue( new Error( 'Bad net' ) );
-		const loader = mapdataLoaderFactory( createPromise, createResolvedPromise, mwApi );
-
-		const promise = loader.fetchGroup( 'group1' );
-		loader.fetch();
-		expect( promise ).rejects.toThrow( 'Bad net' );
+		const loader = mapdataLoaderFactory( undefined, undefined, mwApi );
+		expect( () => loader.fetchGroups( [ 'group1' ] ) ).rejects.toThrow( 'Bad net' );
 	} );
 
 	test( 'fetch queries title and group', async () => {
@@ -31,14 +28,13 @@ describe( 'MapdataLoader', function () {
 		const groupId = '123abc';
 
 		const loader = mapdataLoaderFactory(
-			createPromise,
+			extend,
 			createResolvedPromise,
 			mwApi,
 			undefined,
 			title
 		);
-		loader.fetchGroup( groupId );
-		loader.fetch();
+		await loader.fetchGroups( [ groupId ] );
 
 		expect( mwApi ).toHaveBeenCalledWith( {
 			action: 'query',
@@ -60,15 +56,14 @@ describe( 'MapdataLoader', function () {
 		const revid = '123';
 
 		const loader = mapdataLoaderFactory(
-			createPromise,
+			extend,
 			createResolvedPromise,
 			mwApi,
 			undefined,
 			title,
 			revid
 		);
-		loader.fetchGroup( groupId );
-		loader.fetch();
+		await loader.fetchGroups( [ groupId ] );
 
 		expect( mwApi ).toHaveBeenCalledWith( {
 			action: 'query',

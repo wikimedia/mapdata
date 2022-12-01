@@ -3,20 +3,22 @@
 const Group = require( '../src/Group' );
 
 describe( 'Group', function () {
-	test( 'basic functionality', () => {
-		const id = '_example',
-			geoJSON = { id },
-			options = { attribution: 'Example attribution' };
+	test( 'named group', () => {
+		const geoJSON = { foo: 'bar' };
+		const group = new Group( geoJSON );
 
-		const group = new Group( id, geoJSON, options );
+		expect( group.getGeoJSON() ).toStrictEqual( geoJSON );
+	} );
 
-		expect( group.id ).toBe( id );
-		expect( group.getGeoJSON() ).toBe( geoJSON );
-		expect( group.getAttribution() ).toBe( 'Example attribution' );
+	test( 'ExternalData group', () => {
+		const geoJSON = { foo: 'bar' };
+		const group = new Group( geoJSON );
+
+		expect( group.getGeoJSON() ).toStrictEqual( geoJSON );
 	} );
 
 	test( 'mark failed', () => {
-		const group = new Group( 'group1' );
+		const group = new Group();
 		const err = new Error( 'Foo bar' );
 		group.fail( err );
 		expect( group.failed ).toBe( true );

@@ -47,10 +47,7 @@ module.exports = function (
 		switch ( data.service ) {
 
 			case 'page':
-				if ( geodata.jsondata && geodata.jsondata.data ) {
-					extend( data, geodata.jsondata.data );
-				}
-				// FIXME: error reporting, at least to console.log
+				extend( data, geodata.jsondata.data );
 				break;
 
 			case 'geomask':

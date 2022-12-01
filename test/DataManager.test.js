@@ -77,20 +77,17 @@ describe( 'DataManager loadGroups', () => {
 		expect( result[ 0 ].getGeoJSON() ).toEqual( expect.objectContaining( externalResponse ) );
 	} );
 
-	test( 'mapdata network error is returned', async () => {
+	test( 'mapdata network error is returned', () => {
 		const mwApi = jest.fn().mockRejectedValue( new Error( 'Bad net' ) );
 		const dataManager = dataManagerLib( {
 			...wrappers,
 			mwApi
 		} );
 
-		const result = await dataManager.loadGroups( [ 'group1' ] );
-		expect( result.length ).toBe( 1 );
-		expect( result[ 0 ].failed ).toBe( true );
-		expect( result[ 0 ].failureReason.message ).toBe( 'Bad net' );
+		expect( () => dataManager.loadGroups( [ 'group1' ] ) ).rejects.toThrow( 'Bad net' );
 	} );
 
-	test.skip( 'empty mapdata is returned as failed group', async () => {
+	test( 'empty mapdata is returned as failed group', async () => {
 		const apiResponse = {
 			query: {
 				pages: [ {
@@ -104,21 +101,22 @@ describe( 'DataManager loadGroups', () => {
 			mwApi
 		} );
 
-		// FIXME: Should handle with a failure rather than crashing hard.
-		expect( () => dataManager.loadGroups( [ 'group1' ] ) ).toThrow( 'Cannot convert undefined or null to object' );
+		const result = await dataManager.loadGroups( [ 'group1' ] );
+		expect( result.length ).toBe( 1 );
+		expect( result[ 0 ].failed ).toStrictEqual( true );
+		expect( result[ 0 ].failureReason )
+			.toStrictEqual( new Error( 'Received empty response for group "group1"' ) );
 	} );
 
-	test( 'no mapdata in response throws exception', async () => {
+	test( 'no mapdata in response throws exception', () => {
 		const mwApi = jest.fn().mockResolvedValue( {} );
 		const dataManager = dataManagerLib( {
 			...wrappers,
 			mwApi
 		} );
 
-		const result = await dataManager.loadGroups( [ 'group1' ] );
-		expect( result.length ).toBe( 1 );
-		expect( result[ 0 ].failed ).toStrictEqual( true );
-		// FIXME: failureReason should explain the problem.
+		expect( () => dataManager.loadGroups( [ 'group1' ] ) )
+			.rejects.toThrow( 'Cannot read propert' );
 	} );
 
 	test( 'failure from fetch is returned', async () => {
@@ -141,16 +139,10 @@ describe( 'DataManager loadGroups', () => {
 		} );
 
 		const result = await dataManager.loadGroups( [ 'group1' ] );
-
-		expect( result.length ).toBe( 2 );
-		expect( result[ 0 ].id ).toBe( 'group1' );
-		expect( result[ 0 ].isExternal ).toBe( false );
+		expect( result.length ).toBe( 1 );
 		expect( result[ 0 ].failed ).toBe( true );
 		expect( result[ 0 ].failureReason )
 			.toStrictEqual( new Error( 'ExternalData has no url' ) );
-		// FIXME: This is a deceiving, broken group.
-		expect( result[ 1 ].isExternal ).toBe( true );
-		expect( result[ 1 ].failed ).toBe( false );
 	} );
 
 	test( 'failure from parse is returned', async () => {
@@ -176,13 +168,10 @@ describe( 'DataManager loadGroups', () => {
 		} );
 
 		const result = await dataManager.loadGroups( [ 'group1' ] );
-		expect( result.length ).toBe( 2 );
+		expect( result.length ).toBe( 1 );
 		expect( result[ 0 ].failed ).toBe( true );
 		expect( result[ 0 ].failureReason )
 			.toStrictEqual( new Error( 'Unknown externalData service "foo"' ) );
-		// FIXME: This is a deceiving, broken group.
-		expect( result[ 1 ].isExternal ).toBe( true );
-		expect( result[ 1 ].failed ).toBe( false );
 	} );
 } );
 
@@ -220,14 +209,14 @@ describe( 'DataManager load', () => {
 		} );
 		const result = await dataManager.load( geoJSON );
 		expect( result.length ).toBe( 2 );
-		expect( result[ 1 ].getGeoJSON() ).toStrictEqual( {
+		expect( result[ 0 ].getGeoJSON() ).toStrictEqual( {
 			...unexpandedExternalData,
 			...externalResponse
 		} );
-		expect( result[ 0 ].getGeoJSON() ).toStrictEqual( [ inlineData ] );
+		expect( result[ 1 ].getGeoJSON() ).toStrictEqual( [ inlineData ] );
 	} );
 
-	test( 'mixed failure due to net error', () => {
+	test( 'mixed failure due to net error', async () => {
 		const inlineData = {
 			type: 'Feature',
 			geometry: {
@@ -251,10 +240,16 @@ describe( 'DataManager load', () => {
 			...wrappers,
 			getJSON
 		} );
-		expect( () => dataManager.load( geoJSON ) ).rejects.toThrow( 'Bad net' );
+		const result = await dataManager.load( geoJSON );
+		expect( result.length ).toBe( 2 );
+		expect( result[ 0 ].failed ).toBe( true );
+		expect( result[ 0 ].failureReason.message ).toStrictEqual( 'Bad net' );
+		expect( result[ 0 ].getGeoJSON() ).toStrictEqual( unexpandedExternalData );
+		expect( result[ 1 ].failed ).toBe( false );
+		expect( result[ 1 ].getGeoJSON() ).toStrictEqual( [ inlineData ] );
 	} );
 
-	test( 'mixed failure due to invalid ExternalData', () => {
+	test( 'mixed failure due to invalid ExternalData', async () => {
 		const inlineData = {
 			type: 'Feature',
 			geometry: {
@@ -274,6 +269,13 @@ describe( 'DataManager load', () => {
 			...wrappers,
 			getJSON
 		} );
-		expect( () => dataManager.load( geoJSON ) ).rejects.toThrow( 'ExternalData has no url' );
+		const result = await dataManager.load( geoJSON );
+		expect( getJSON ).not.toBeCalled();
+		expect( result.length ).toBe( 2 );
+		expect( result[ 0 ].failed ).toBe( true );
+		expect( result[ 0 ].failureReason.message ).toStrictEqual( 'ExternalData has no url' );
+		expect( result[ 0 ].getGeoJSON() ).toStrictEqual( unexpandedExternalData );
+		expect( result[ 1 ].failed ).toBe( false );
+		expect( result[ 1 ].getGeoJSON() ).toStrictEqual( [ inlineData ] );
 	} );
 } );
