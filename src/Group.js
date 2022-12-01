@@ -4,16 +4,11 @@
 
 /**
  * @param {Object|Object[]} [geoJSON] The group's geometry, or empty for
- * incomplete ExternalData.
+ *   incomplete ExternalData.
  * @constructor
  */
 var Group = function ( geoJSON ) {
 	this.geoJSON = geoJSON || null;
-	/**
-	 * {Object} Additional options for the group.
-	 * {string} [options.attribution] Attribution to display on the map layer.
-	 */
-	this.options = {};
 	/**
 	 * {boolean} Flag is true if the group failed to fully load.
 	 */
@@ -29,13 +24,6 @@ var Group = function ( geoJSON ) {
  */
 Group.prototype.getGeoJSON = function () {
 	return this.geoJSON;
-};
-
-/**
- * @return {string} Group annotation
- */
-Group.prototype.getAttribution = function () {
-	return this.options.attribution;
 };
 
 /**

@@ -25,9 +25,6 @@ function toArray( data ) {
  * @param {Function} wrappers.isEmptyObject Reference to e.g. {@see jQuery.isEmptyObject}
  * @param {Function} wrappers.isPlainObject Reference to e.g. {@see jQuery.isPlainObject}
  * @param {Function} wrappers.mwApi Reference to the {@see mw.Api} constructor
- * @param {Function} wrappers.mwHtmlElement Reference to the {@see mw.html.element} function
- * @param {Function} [wrappers.mwMsg] Reference to the {@see mw.msg} function
- * @param {Function} wrappers.mwUri Reference to the {@see mw.Uri} constructor
  * @param {Function} wrappers.whenAllPromises Reference a function like {@see Promise.all}
  * @constructor
  */
@@ -51,10 +48,7 @@ module.exports = function ( wrappers ) {
 		externalDataParser = ExternalDataParser(
 			wrappers.isPlainObject,
 			wrappers.isEmptyObject,
-			wrappers.extend,
-			wrappers.mwMsg,
-			wrappers.mwHtmlElement,
-			wrappers.mwUri
+			wrappers.extend
 		),
 		DataManager = function () {};
 

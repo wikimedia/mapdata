@@ -4,18 +4,12 @@
  * @param {Function} isPlainObject
  * @param {Function} isEmptyObject
  * @param {Function} extend
- * @param {Function} mwMsg
- * @param {Function} mwHtmlElement
- * @param {Function} mwUri
  * @constructor
  */
 module.exports = function (
 	isPlainObject,
 	isEmptyObject,
-	extend,
-	mwMsg,
-	mwHtmlElement,
-	mwUri
+	extend
 ) {
 	var ExternalDataParser = function () {};
 
@@ -25,7 +19,7 @@ module.exports = function (
 	 */
 	ExternalDataParser.prototype.isExternalData = function ( geoJSON ) {
 		return isPlainObject( geoJSON ) &&
-			geoJSON.type && geoJSON.type === 'ExternalData';
+			geoJSON.type === 'ExternalData';
 	};
 
 	/**
@@ -115,40 +109,7 @@ module.exports = function (
 				throw new Error( 'Unknown externalData service "' + data.service + '"' );
 		}
 
-		if ( mwMsg ) {
-			this.parseAttribution( group );
-		}
-
 		return group;
-	};
-
-	/**
-	 * Synthesize an attribution block for Commons map data.
-	 *
-	 * @param {Kartographer.Data.Group} group (modified in-place)
-	 */
-	ExternalDataParser.prototype.parseAttribution = function ( group ) {
-		// TODO: rewrite without side-effects.
-		var links = [],
-			uri = mwUri( group.geoJSON.url );
-
-		// FIXME: Needs to handle full URLs.
-		if ( group.geoJSON.service === 'page' ) {
-			links.push(
-				mwHtmlElement( 'a',
-					{
-						target: '_blank',
-						href: '//commons.wikimedia.org/wiki/Data:' + encodeURIComponent( uri.query.title )
-					},
-					uri.query.title
-				)
-			);
-			group.attribution = mwMsg(
-				'kartographer-attribution-externaldata',
-				mwMsg( 'project-localized-name-commonswiki' ),
-				links
-			);
-		}
 	};
 
 	return new ExternalDataParser();
