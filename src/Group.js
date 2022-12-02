@@ -14,7 +14,7 @@ var Group = function ( geoJSON ) {
 	 */
 	this.failed = false;
 	/**
-	 * {Error|null} Details about any failure.
+	 * {Error|null} Details about a failure, if any.
 	 */
 	this.failureReason = null;
 };

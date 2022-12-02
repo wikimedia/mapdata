@@ -53,6 +53,14 @@ module.exports = function (
 		delete params[ revid ? 'titles' : 'revids' ];
 
 		return mwApi( params ).then( function ( data ) {
+			if ( data && data.error ) {
+				throw new Error( 'Mapdata error: ' + ( data.error.info || data.error.code ) );
+			}
+			if ( !data || !data.query || !data.query.pages ||
+				!data.query.pages[ 0 ] || !data.query.pages[ 0 ].mapdata
+			) {
+				throw new Error( 'Invalid mapdata response for ' + JSON.stringify( params ) );
+			}
 			return extend( cachedResults, JSON.parse( data.query.pages[ 0 ].mapdata ) );
 		} );
 	};

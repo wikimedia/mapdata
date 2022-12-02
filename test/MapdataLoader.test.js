@@ -19,11 +19,22 @@ describe( 'MapdataLoader', function () {
 		expect( () => loader.fetchGroups( [ 'group1' ] ) ).rejects.toThrow( 'Bad net' );
 	} );
 
-	test( 'fetch queries title and group', async () => {
-		const apiCallback = {
-			then: jest.fn()
+	test( 'api error is returned', () => {
+		const apiError = {
+			error: {
+				code: 'kartographer-conflicting-revids',
+				info: 'Foo bar'
+			}
 		};
-		const mwApi = jest.fn( () => apiCallback );
+		const mwApi = jest.fn().mockResolvedValue( apiError );
+		const loader = mapdataLoaderFactory( undefined, undefined, mwApi );
+		expect( () => loader.fetchGroups( [ 'group1' ] ) ).rejects
+			.toThrow( 'Mapdata error: Foo bar' );
+	} );
+
+	test( 'fetch queries title and group', async () => {
+		const minimalMapdata = { query: { pages: [ { mapdata: '{}' } ] } };
+		const mwApi = jest.fn().mockResolvedValue( minimalMapdata );
 		const title = 'A title';
 		const groupId = '123abc';
 
@@ -45,10 +56,8 @@ describe( 'MapdataLoader', function () {
 	} );
 
 	test( 'fetch queries revid', async () => {
-		const apiCallback = {
-			then: jest.fn()
-		};
-		const mwApi = jest.fn( () => apiCallback );
+		const minimalMapdata = { query: { pages: [ { mapdata: '{}' } ] } };
+		const mwApi = jest.fn().mockResolvedValue( minimalMapdata );
 		const title = 'A title';
 		const groupId = '123abc';
 		const revid = '123';

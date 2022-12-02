@@ -114,7 +114,7 @@ describe( 'DataManager loadGroups', () => {
 		} );
 
 		expect( () => dataManager.loadGroups( [ 'group1' ] ) )
-			.rejects.toThrow( 'Cannot read propert' );
+			.rejects.toThrow( 'Invalid mapdata response' );
 	} );
 
 	test( 'failure from fetch is returned', async () => {
