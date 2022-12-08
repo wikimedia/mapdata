@@ -24,10 +24,6 @@ npm install git+https://gerrit.wikimedia.org/r/mapdata --save
 * `isPlainObject`: A reference to e.g. `jQuery.isPlainObject`
 * `extend`: A reference to e.g. `jQuery.extend`
 * `getJSON`: A reference to e.g. `jQuery.getJSON`
-* `mwApi`: A reference to the `mw.Api` constructor
-* `mwHtmlElement`: A reference to the `mw.html.element` function
-* `mwUri`: A reference to the `mw.Uri` constructor
-* `title`
 
 ## Example for use on client-side
 
@@ -89,53 +85,15 @@ var dataManager = require( './DataManager' )( {
    */
   mwApi: function ( data ) {
     return new mw.Api()[ 'get' ]( data );
-  },
-
-  /**
-   * @required
-   */
-  title: mw.config.get( 'wgPageName' ),
-
-  /**
-   * @optional
-   */
-  mwHtmlElement: function () {
-    return mw.html.element.apply( mw.html, arguments );
-  },
-
-  /**
-   * @optional
-   */
-  mwUri: function ( data ) {
-    return new mw.Uri( data );
-  },
-
-  /**
-   * @optional
-   */
-  clientStore: mw.config.get( 'wgKartographerLiveData' ),
-
-  /**
-   * @optional
-   */
-  mwMsg: function () {
-    return mw.msg.apply( mw.msg, arguments );
   }
 } );
 
 // Download and build map geojson for a list of groups:
-DataManager.loadGroups( groupIds ).then( function ( dataGroups ) {
+DataManager.loadGroups( groupIds, title, revid ).then( function ( dataGroups ) {
   var mapGeoJSON, group;
 
-  for (var i = 0; i < dataGroups.length; i++ ) {
-    group = dataGroups[ i ];
-
-    if (dataGroups.length > 1) {
-      mapGeoJSON = mapGeoJSON || [];
-      mapGeoJSON.push( group.getGeoJSON() );
-    } else {
-      mapGeoJSON = group.getGeoJSON();
-    }
-  }
+  dataGroups.forEach( function ( group ) {
+    mapGeoJSON.push( group.getGeoJSON() );
+  } );
 } );
 ```
