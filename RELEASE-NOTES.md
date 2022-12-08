@@ -1,5 +1,15 @@
 # Wikimedia MapData release notes
 
+### Version 0.8.0 (2022-12-08)
+`c0f48fd..3d08807`
+* Returns a list of groups rather than an object keyed on group ID.
+* Title and revid are parameters, DataManager has no state.
+* Errors are returned as group.failureReason, no logging done by this library.
+* Attribution is no longer calculated by this library.
+* Group class hierarchy is simplified.
+* Fetching and parsing ExternalData split into dedicated classes.
+* Drop manual debounce.
+
 ### Version 0.7.2 (2022-09-19)
 `1f8041d..c0f48fd`
 * Fix failure when API gives incomplete results
