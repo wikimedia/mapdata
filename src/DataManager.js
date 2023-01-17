@@ -62,9 +62,10 @@ module.exports = function ( wrappers ) {
 	 * each into a separate group, and leaving any plain data bundled together.
 	 *
 	 * @param {Object|Object[]} geoJSON
+	 * @param {string} [name] Name to give the remaining, inline group.
 	 * @return {Kartographer.Data.Group[]}
 	 */
-	function splitExternalGroups( geoJSON ) {
+	function splitExternalGroups( geoJSON, name ) {
 		var groups = [];
 		var plainData = [];
 		toArray( geoJSON ).forEach( function ( data ) {
@@ -75,7 +76,9 @@ module.exports = function ( wrappers ) {
 			}
 		} );
 		if ( plainData.length ) {
-			groups.push( new Group( plainData ) );
+			var group = new Group( plainData );
+			group.name = name;
+			groups.push( group );
 		}
 		return groups;
 	}
@@ -132,27 +135,12 @@ module.exports = function ( wrappers ) {
 					return groups;
 				}
 
-				return groups.concat( splitExternalGroups( groupData ) );
+				return groups.concat( splitExternalGroups( groupData, id ) );
 			}, [] );
 		} ).then( function ( groups ) {
 			return groups.map( fetchExternalData );
 		} ).then(
 			wrappers.whenAllPromises
-		);
-	};
-
-	/**
-	 * Load any ExternalData contained by the given geojson
-	 *
-	 * @param {Object|Object[]} geoJSON
-	 * @return {Promise<Kartographer.Data.Group[]>}
-	 */
-	DataManager.prototype.load = function ( geoJSON ) {
-		return wrappers.whenAllPromises(
-			splitExternalGroups( geoJSON )
-				.map( function ( group ) {
-					return fetchExternalData( group );
-				} )
 		);
 	};
 
