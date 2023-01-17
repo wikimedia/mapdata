@@ -1,5 +1,9 @@
 # Wikimedia MapData release notes
 
+### Version 0.8.1 (2023-01-17)
+* Return group `name` for inline groups.
+* Delete `load` interface function, the last usage has also been removed from Kartographer.
+
 ### Version 0.8.0 (2022-12-08)
 `c0f48fd..3d08807`
 * Returns a list of groups rather than an object keyed on group ID.

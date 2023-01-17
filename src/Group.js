@@ -1,6 +1,8 @@
 /**
  * @class Kartographer.Data.Group
  * @property {Object|Object[]|null} geoJSON
+ * @property {string|null} name Empty for ExternalData, otherwise this is the
+ *   group key in mapdata.
  * @property {boolean} failed Flag is true if the group failed to fully load.
  * @property {Error|null} failureReason Details about a failure, if any.
  *
@@ -10,6 +12,7 @@
  */
 var Group = function ( geoJSON ) {
 	this.geoJSON = geoJSON || null;
+	this.name = null;
 	this.failed = false;
 	this.failureReason = null;
 };
