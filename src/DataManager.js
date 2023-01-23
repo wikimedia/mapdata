@@ -25,7 +25,7 @@ function toArray( data ) {
  * @param {Function} wrappers.getJSON Reference to e.g. {@see jQuery.getJSON}
  * @param {Function} wrappers.isEmptyObject Reference to e.g. {@see jQuery.isEmptyObject}
  * @param {Function} wrappers.isPlainObject Reference to e.g. {@see jQuery.isPlainObject}
- * @param {Function} wrappers.mwApi Reference to the {@see mw.Api} constructor
+ * @param {Function} wrappers.mwApi Reference to {@see mw.Api.get}
  * @param {Function} wrappers.whenAllPromises Reference a function like {@see Promise.all}
  * @return {Kartographer.Data.DataManager}
  */
