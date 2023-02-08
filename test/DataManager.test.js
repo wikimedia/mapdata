@@ -62,7 +62,9 @@ describe( 'DataManager loadGroups', () => {
 			geometry: {
 				coordinates: [ 13, 47 ],
 				type: 'Point'
-			}
+			},
+			service: 'geoshape',
+			url: 'http://a.test/'
 		};
 		const getJSON = jest.fn().mockResolvedValue( externalResponse );
 		const dataManager = dataManagerLib( {
@@ -73,8 +75,8 @@ describe( 'DataManager loadGroups', () => {
 
 		const result = await dataManager.loadGroups( [ 'group1' ] );
 		expect( result.length ).toBe( 1 );
-		expect( result[ 0 ].getGeoJSON() ).toEqual( expect.objectContaining( externalResponse ) );
-		expect( result[ 0 ].name ).toBe( null );
+		expect( result[ 0 ].getGeoJSON() ).toEqual( [ externalResponse ] );
+		expect( result[ 0 ].name ).toBe( 'group1' );
 	} );
 
 	test( 'mixed ExternalData and inline feature', async () => {
@@ -118,11 +120,10 @@ describe( 'DataManager loadGroups', () => {
 		} );
 
 		const result = await dataManager.loadGroups( [ 'group1' ] );
-		expect( result.length ).toBe( 2 );
-		expect( result[ 0 ].getGeoJSON() ).toEqual( expect.objectContaining( externalResponse ) );
-		expect( result[ 0 ].name ).toBe( null );
-		expect( result[ 1 ].getGeoJSON() ).toEqual( [ inlineFeature ] );
-		expect( result[ 1 ].name ).toBe( 'group1' );
+		expect( result.length ).toBe( 1 );
+		expect( result[ 0 ].getGeoJSON() ).toEqual(
+			[ inlineFeature, expect.objectContaining( externalResponse ) ] );
+		expect( result[ 0 ].name ).toBe( 'group1' );
 	} );
 
 	test( 'mapdata network error is returned', () => {
@@ -187,9 +188,9 @@ describe( 'DataManager loadGroups', () => {
 		} );
 
 		const result = await dataManager.loadGroups( [ 'group1' ] );
-		expect( result.length ).toBe( 1 );
-		expect( result[ 0 ].failed ).toBe( true );
-		expect( result[ 0 ].failureReason )
+		expect( result.length ).toBe( 2 );
+		expect( result[ 1 ].failed ).toBe( true );
+		expect( result[ 1 ].failureReason )
 			.toStrictEqual( new Error( 'ExternalData has no url' ) );
 	} );
 
@@ -216,9 +217,36 @@ describe( 'DataManager loadGroups', () => {
 		} );
 
 		const result = await dataManager.loadGroups( [ 'group1' ] );
-		expect( result.length ).toBe( 1 );
-		expect( result[ 0 ].failed ).toBe( true );
-		expect( result[ 0 ].failureReason )
+		expect( result.length ).toBe( 2 );
+		expect( result[ 1 ].failed ).toBe( true );
+		expect( result[ 1 ].failureReason )
 			.toStrictEqual( new Error( 'Unknown externalData service "foo"' ) );
+	} );
+} );
+
+describe( 'DataManager loadExternalData', () => {
+	test( 'happy ExternalData', async () => {
+		const geoJSON = {
+			type: 'ExternalData',
+			service: 'geoshape',
+			url: 'http://a.test/'
+		};
+		const externalResponse = {
+			type: 'Feature',
+			geometry: {
+				coordinates: [ 13, 47 ],
+				type: 'Point'
+			},
+			service: 'geoshape',
+			url: 'http://a.test/'
+		};
+		const getJSON = jest.fn().mockResolvedValue( externalResponse );
+		const dataManager = dataManagerLib( {
+			...wrappers,
+			getJSON
+		} );
+
+		const result = await dataManager.loadExternalData( geoJSON );
+		expect( result[ 0 ].getGeoJSON() ).toEqual( [ externalResponse ] );
 	} );
 } );

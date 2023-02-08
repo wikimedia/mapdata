@@ -1,5 +1,10 @@
 # Wikimedia MapData release notes
 
+### Version 0.9.0 (2023-02-09)
+* Expand ExternalData in its original position in the GeoJSON structure.
+* Reintroduce a public interface for expanding ExternalData in GeoJSON coming
+from sources other than mapdata.  This used to be `load` and is now `loadExternalData`.
+
 ### Version 0.8.1 (2023-01-17)
 * Return group `name` for inline groups.
 * Delete `load` interface function, the last usage has also been removed from Kartographer.

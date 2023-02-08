@@ -53,53 +53,55 @@ module.exports = function ( wrappers ) {
 		);
 
 	/**
-	 * Restructure the geoJSON from a single group, splitting out external data
-	 * each into a separate group, and leaving any plain data bundled together.
+	 * Expand GeoJSON by fetching any linked ExternalData
 	 *
 	 * @param {Object|Object[]} geoJSON
-	 * @param {string} [name] Name to give the remaining, inline group.
-	 * @return {Kartographer.Data.Group[]}
-	 * @private
+	 * @param {string} [name] Group ID to assign to the name field, if applicable.
+	 * @return {Promise<Group[]>} resolves to a list of expanded groups.  The
+	 *   first group contains all successful data, and subsequent groups are a
+	 *   stub holding failure metadata.
+	 * @public
 	 */
-	function splitExternalGroups( geoJSON, name ) {
-		var groups = [];
-		var plainData = [];
-		toArray( geoJSON ).forEach( function ( data ) {
-			if ( externalDataParser.isExternalData( data ) ) {
-				groups.push( new Group( data ) );
-			} else {
-				plainData.push( data );
-			}
-		} );
-		if ( plainData.length ) {
-			var group = new Group( plainData );
-			group.name = name;
-			groups.push( group );
-		}
-		return groups;
+	function loadExternalData( geoJSON, name ) {
+		var expandedData = [],
+			failures = [];
+
+		var fetchThreads = toArray( geoJSON )
+			.map( function ( data ) {
+				return fetchExternalData( data )
+					.then( Array.prototype.push.bind( expandedData ) )
+					.catch( Array.prototype.push.bind( failures ) );
+			} );
+
+		return wrappers.whenAllPromises( fetchThreads )
+			.then( function () {
+				var group = new Group( expandedData );
+				if ( name ) {
+					group.name = name;
+				}
+				return [ group ].concat(
+					failures.map( function ( err ) {
+						var errGroup = new Group();
+						errGroup.fail( err );
+						return errGroup;
+					} ) );
+			} );
 	}
 
 	/**
 	 * Fetch external data, if needed.
 	 *
-	 * @param {Kartographer.Data.Group} group
-	 * @return {Kartographer.Data.Group[]} groups The original group, plus any
-	 * retrieved external data each as a separate group.
+	 * @param {Object} geoJSON to expand
+	 * @return {Promise<Object>} Expanded GeoJSON including external data
 	 * @private
 	 */
-	function fetchExternalData( group ) {
-		if ( !externalDataParser.isExternalData( group.getGeoJSON() ) ) {
-			return createResolvedPromise( group );
+	function fetchExternalData( geoJSON ) {
+		if ( !externalDataParser.isExternalData( geoJSON ) ) {
+			return createResolvedPromise( geoJSON );
 		}
-		return externalDataLoader.fetch( group.getGeoJSON() )
-			.then( function ( data ) {
-				// Side-effect of parse is to update the group.
-				externalDataParser.parse( group.getGeoJSON(), data );
-				return group;
-			} )
-			.catch( function ( err ) {
-				group.fail( err );
-				return group;
+		return externalDataLoader.fetch( geoJSON )
+			.then( function ( externalData ) {
+				return externalDataParser.parse( geoJSON, externalData );
 			} );
 	}
 
@@ -123,27 +125,28 @@ module.exports = function ( wrappers ) {
 			title,
 			revid
 		).then( function ( mapdata ) {
-			return groupIds.reduce( function ( groups, id ) {
+			return groupIds.map( function ( id ) {
 				var groupData = mapdata[ id ];
 
-				// Handle failed groups by replacing with an error.
+				// Handle failed groups by replacing an error in its place.
 				if ( !groupData ) {
 					var group = new Group();
 					group.fail( new Error( 'Received empty response for group "' + id + '"' ) );
-					groups.push( group );
-					return groups;
+					return group;
 				}
 
-				return groups.concat( splitExternalGroups( groupData, id ) );
-			}, [] );
-		} ).then( function ( groups ) {
-			return groups.map( fetchExternalData );
+				return loadExternalData( groupData, id );
+			} );
 		} ).then(
 			wrappers.whenAllPromises
-		);
+		).then( function ( groupLists ) {
+			// Flatten
+			return [].concat.apply( [], groupLists );
+		} );
 	}
 
 	return {
+		loadExternalData: loadExternalData,
 		loadGroups: loadGroups
 	};
 };
