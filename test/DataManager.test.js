@@ -39,6 +39,7 @@ describe( 'DataManager loadGroups', () => {
 		} );
 		expect( result.length ).toBe( 1 );
 		expect( result[ 0 ].getGeoJSON() ).toStrictEqual( feature );
+		expect( result[ 0 ].name ).toBe( 'group1' );
 	} );
 
 	test( 'happy ExternalData', async () => {
@@ -73,6 +74,55 @@ describe( 'DataManager loadGroups', () => {
 		const result = await dataManager.loadGroups( [ 'group1' ] );
 		expect( result.length ).toBe( 1 );
 		expect( result[ 0 ].getGeoJSON() ).toEqual( expect.objectContaining( externalResponse ) );
+		expect( result[ 0 ].name ).toBe( null );
+	} );
+
+	test( 'mixed ExternalData and inline feature', async () => {
+		const inlineFeature = {
+			type: 'Feature',
+			geometry: {
+				coordinates: [ 12, 34 ],
+				type: 'Point'
+			}
+		};
+		const externalFeature = {
+			type: 'ExternalData',
+			service: 'geoshape',
+			url: 'http://a.test/'
+		};
+		const geoJSON = [
+			externalFeature,
+			inlineFeature
+		];
+		const mapdata = { group1: geoJSON };
+		const apiResponse = {
+			query: {
+				pages: [ {
+					mapdata: JSON.stringify( mapdata )
+				} ]
+			}
+		};
+		const mwApi = jest.fn().mockResolvedValue( apiResponse );
+		const externalResponse = {
+			type: 'Feature',
+			geometry: {
+				coordinates: [ 56, 78 ],
+				type: 'Point'
+			}
+		};
+		const getJSON = jest.fn().mockResolvedValue( externalResponse );
+		const dataManager = dataManagerLib( {
+			...wrappers,
+			mwApi,
+			getJSON
+		} );
+
+		const result = await dataManager.loadGroups( [ 'group1' ] );
+		expect( result.length ).toBe( 2 );
+		expect( result[ 0 ].getGeoJSON() ).toEqual( expect.objectContaining( externalResponse ) );
+		expect( result[ 0 ].name ).toBe( null );
+		expect( result[ 1 ].getGeoJSON() ).toEqual( [ inlineFeature ] );
+		expect( result[ 1 ].name ).toBe( 'group1' );
 	} );
 
 	test( 'mapdata network error is returned', () => {
