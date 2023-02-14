@@ -32,20 +32,20 @@ module.exports = function (
 	 * FIXME: Wouldn't this be a job for the mapdata API?
 	 *
 	 * @param {Kartographer.Data.Group} group (modified in-place)
-	 * @param {Object} geodata
+	 * @param {Object} externalData
 	 * @return {Kartographer.Data.Group} Expanded group.
 	 */
-	ExternalDataParser.prototype.parse = function ( group, geodata ) {
-		var data = group.getGeoJSON();
-		var baseProps = data.properties,
+	ExternalDataParser.prototype.parse = function ( group, externalData ) {
+		var geoJSON = group.getGeoJSON();
+		var baseProps = geoJSON.properties,
 			geometry,
 			coordinates,
 			i, j;
 
-		switch ( data.service ) {
+		switch ( geoJSON.service ) {
 
 			case 'page':
-				extend( data, geodata.jsondata.data );
+				extend( geoJSON, externalData.jsondata.data );
 				break;
 
 			case 'geomask':
@@ -58,8 +58,8 @@ module.exports = function (
 					[ -3600, -180 ],
 					[ 3600, -180 ]
 				] ];
-				for ( i = 0; i < geodata.features.length; i++ ) {
-					geometry = geodata.features[ i ].geometry;
+				for ( i = 0; i < externalData.features.length; i++ ) {
+					geometry = externalData.features[ i ].geometry;
 					if ( !geometry ) {
 						continue;
 					}
@@ -75,8 +75,8 @@ module.exports = function (
 							break;
 					}
 				}
-				data.type = 'Feature';
-				data.geometry = {
+				geoJSON.type = 'Feature';
+				geoJSON.geometry = {
 					type: 'Polygon',
 					coordinates: coordinates
 				};
@@ -87,30 +87,30 @@ module.exports = function (
 			case 'geoline':
 
 				// HACK: workaround for T144777 - we should be using topojson instead
-				extend( data, geodata );
+				extend( geoJSON, externalData );
 
-				// data.type = 'FeatureCollection';
-				// data.features = [];
-				// $.each( geodata.objects, function ( key ) {
-				// data.features.push( topojson.feature( geodata, geodata.objects[ key ] ) );
+				// geoJSON.type = 'FeatureCollection';
+				// geoJSON.features = [];
+				// $.each( externalData.objects, function ( key ) {
+				// geoJSON.features.push( topojson.feature( externalData, externalData.objects[ key ] ) );
 				// } );
 
 				// Each feature returned from geoshape service may contain "properties"
 				// If externalData element has properties, merge with properties in the feature
 				if ( baseProps ) {
-					for ( i = 0; i < data.features.length; i++ ) {
-						if ( isEmptyObject( data.features[ i ].properties ) ) {
-							data.features[ i ].properties = baseProps;
+					for ( i = 0; i < geoJSON.features.length; i++ ) {
+						if ( isEmptyObject( geoJSON.features[ i ].properties ) ) {
+							geoJSON.features[ i ].properties = baseProps;
 						} else {
-							data.features[ i ].properties = extend( {}, baseProps,
-								data.features[ i ].properties );
+							geoJSON.features[ i ].properties = extend( {}, baseProps,
+								geoJSON.features[ i ].properties );
 						}
 					}
 				}
 				break;
 
 			default:
-				throw new Error( 'Unknown externalData service "' + data.service + '"' );
+				throw new Error( 'Unknown externalData service "' + geoJSON.service + '"' );
 		}
 
 		return group;

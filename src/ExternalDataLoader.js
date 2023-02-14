@@ -20,15 +20,15 @@ module.exports = function (
 	 * @return {Promise} Resolved with the raw, externally-fetched data.
 	 */
 	ExternalDataLoader.prototype.fetch = function ( group ) {
-		var data = group.getGeoJSON();
+		var geoJSON = group.getGeoJSON();
 
-		if ( !data || !data.url ) {
+		if ( !geoJSON || !geoJSON.url ) {
 			return createPromise( function ( _resolve, reject ) {
 				reject( new Error( 'ExternalData has no url' ) );
 			} );
 		}
 
-		return getJSON( data.url );
+		return getJSON( geoJSON.url );
 	};
 
 	return new ExternalDataLoader();
