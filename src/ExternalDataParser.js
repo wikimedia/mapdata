@@ -4,27 +4,22 @@
  * @param {Function} isPlainObject
  * @param {Function} isEmptyObject
  * @param {Function} extend
- * @return {Kartographer.Data.ExternalDataParser}
+ * @return {Object}
  */
 module.exports = function (
 	isPlainObject,
 	isEmptyObject,
 	extend
 ) {
-	/**
-	 * @class Kartographer.Data.ExternalDataParser
-	 * @constructor
-	 */
-	var ExternalDataParser = function () {};
 
 	/**
 	 * @param {Object|null} geoJSON
 	 * @return {boolean} True if this is an ExternalData
 	 */
-	ExternalDataParser.prototype.isExternalData = function ( geoJSON ) {
+	function isExternalData( geoJSON ) {
 		return isPlainObject( geoJSON ) &&
 			geoJSON.type === 'ExternalData';
-	};
+	}
 
 	/**
 	 * Transform returned GeoJSON depending on the type of ExternalData.
@@ -35,7 +30,7 @@ module.exports = function (
 	 * @param {Object} externalData
 	 * @return {Kartographer.Data.Group} Expanded group.
 	 */
-	ExternalDataParser.prototype.parse = function ( group, externalData ) {
+	function parse( group, externalData ) {
 		var geoJSON = group.getGeoJSON();
 		var baseProps = geoJSON.properties,
 			geometry,
@@ -114,7 +109,10 @@ module.exports = function (
 		}
 
 		return group;
-	};
+	}
 
-	return new ExternalDataParser();
+	return {
+		isExternalData: isExternalData,
+		parse: parse
+	};
 };

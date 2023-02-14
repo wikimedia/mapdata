@@ -27,7 +27,7 @@ function toArray( data ) {
  * @param {Function} wrappers.isPlainObject Reference to e.g. {@see jQuery.isPlainObject}
  * @param {Function} wrappers.mwApi Reference to the {@see mw.Api} constructor
  * @param {Function} wrappers.whenAllPromises Reference a function like {@see Promise.all}
- * @return {Kartographer.Data.DataManager}
+ * @return {Object}
  */
 module.exports = function ( wrappers ) {
 
@@ -50,12 +50,7 @@ module.exports = function ( wrappers ) {
 			wrappers.isPlainObject,
 			wrappers.isEmptyObject,
 			wrappers.extend
-		),
-		/**
-		 * @class Kartographer.Data.DataManager
-		 * @constructor
-		 */
-		DataManager = function () {};
+		);
 
 	/**
 	 * Restructure the geoJSON from a single group, splitting out external data
@@ -116,7 +111,7 @@ module.exports = function ( wrappers ) {
 	 * If false or missing, falls back to a title-only request.
 	 * @return {Promise<Group[]>} Resolves with a list of expanded Group objects.
 	 */
-	DataManager.prototype.loadGroups = function ( groupIds, title, revid ) {
+	function loadGroups( groupIds, title, revid ) {
 		groupIds = toArray( groupIds );
 		// Fetch mapdata for all groups from MediaWiki.
 		return dataLoader.fetchGroups(
@@ -142,7 +137,9 @@ module.exports = function ( wrappers ) {
 		} ).then(
 			wrappers.whenAllPromises
 		);
-	};
+	}
 
-	return new DataManager();
+	return {
+		loadGroups: loadGroups
+	};
 };
