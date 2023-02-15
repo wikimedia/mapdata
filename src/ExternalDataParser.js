@@ -15,6 +15,7 @@ module.exports = function (
 	/**
 	 * @param {Object|null} geoJSON
 	 * @return {boolean} True if this is an ExternalData
+	 * @public
 	 */
 	function isExternalData( geoJSON ) {
 		return isPlainObject( geoJSON ) &&
@@ -26,12 +27,12 @@ module.exports = function (
 	 *
 	 * FIXME: Wouldn't this be a job for the mapdata API?
 	 *
-	 * @param {Kartographer.Data.Group} group (modified in-place)
-	 * @param {Object} externalData
-	 * @return {Kartographer.Data.Group} Expanded group.
+	 * @param {Object} geoJSON (modified in-place)
+	 * @param {Object} externalData fetched ExternalData blob
+	 * @return {Object} Expanded geoJSON
+	 * @public
 	 */
-	function parse( group, externalData ) {
-		var geoJSON = group.getGeoJSON();
+	function parse( geoJSON, externalData ) {
 		var baseProps = geoJSON.properties,
 			geometry,
 			coordinates,
@@ -108,7 +109,7 @@ module.exports = function (
 				throw new Error( 'Unknown externalData service "' + geoJSON.service + '"' );
 		}
 
-		return group;
+		return geoJSON;
 	}
 
 	return {

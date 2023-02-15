@@ -59,6 +59,7 @@ module.exports = function ( wrappers ) {
 	 * @param {Object|Object[]} geoJSON
 	 * @param {string} [name] Name to give the remaining, inline group.
 	 * @return {Kartographer.Data.Group[]}
+	 * @private
 	 */
 	function splitExternalGroups( geoJSON, name ) {
 		var groups = [];
@@ -79,20 +80,21 @@ module.exports = function ( wrappers ) {
 	}
 
 	/**
-	 * Expand ExternalData for the group
+	 * Fetch external data, if needed.
 	 *
 	 * @param {Kartographer.Data.Group} group
 	 * @return {Kartographer.Data.Group[]} groups The original group, plus any
 	 * retrieved external data each as a separate group.
+	 * @private
 	 */
 	function fetchExternalData( group ) {
 		if ( !externalDataParser.isExternalData( group.getGeoJSON() ) ) {
 			return createResolvedPromise( group );
 		}
-		return externalDataLoader.fetch( group )
+		return externalDataLoader.fetch( group.getGeoJSON() )
 			.then( function ( data ) {
 				// Side-effect of parse is to update the group.
-				externalDataParser.parse( group, data );
+				externalDataParser.parse( group.getGeoJSON(), data );
 				return group;
 			} )
 			.catch( function ( err ) {
@@ -102,7 +104,8 @@ module.exports = function ( wrappers ) {
 	}
 
 	/**
-	 * Fetch all mapdata and contained ExternalData.
+	 * Fetch all mapdata and contained ExternalData for a list of group ids.
+	 * Note that unused groups not included in groupIds will not be fetched.
 	 *
 	 * @param {string[]|string} groupIds List of group ids to load (will coerce
 	 * from a string if needed).
@@ -110,6 +113,7 @@ module.exports = function ( wrappers ) {
 	 * @param {string|false} [revid] Either title or revid must be set.
 	 * If false or missing, falls back to a title-only request.
 	 * @return {Promise<Group[]>} Resolves with a list of expanded Group objects.
+	 * @public
 	 */
 	function loadGroups( groupIds, title, revid ) {
 		groupIds = toArray( groupIds );

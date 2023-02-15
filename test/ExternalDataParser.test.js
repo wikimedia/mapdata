@@ -2,7 +2,6 @@
 
 const { isPlainObject, isEmptyObject, extend } = require( './util' );
 const externalDataParserLib = require( '../src/ExternalDataParser' );
-const Group = require( '../src/Group' );
 
 describe( 'ExternalDataParser isExternalData', () => {
 	const parser = externalDataParserLib( isPlainObject );
@@ -43,9 +42,9 @@ describe( 'ExternalDataParser parse handles', () => {
 	);
 
 	test( 'page service with returned data', () => {
-		const group = new Group( {
+		const group = {
 			service: 'page'
-		} );
+		};
 		const geodata = {
 			jsondata: {
 				data: {
@@ -54,23 +53,23 @@ describe( 'ExternalDataParser parse handles', () => {
 			}
 		};
 		const parsed = parser.parse( group, geodata );
-		expect( parsed.getGeoJSON() ).toStrictEqual( {
+		expect( parsed ).toStrictEqual( {
 			service: 'page',
 			type: 'Feature'
 		} );
 	} );
 
 	test( 'page service with no data returned', () => {
-		const group = new Group( {
+		const group = {
 			service: 'page'
-		} );
+		};
 		expect( () => parser.parse( group, undefined ) ).toThrow( 'Cannot read propert' );
 	} );
 
 	test( 'geomask is transformed', () => {
-		const group = new Group( {
+		const group = {
 			service: 'geomask'
-		} );
+		};
 		const geodata = {
 			type: 'FeatureCollection',
 			features: [ {
@@ -81,7 +80,7 @@ describe( 'ExternalDataParser parse handles', () => {
 			} ]
 		};
 		const parsed = parser.parse( group, geodata );
-		expect( parsed.getGeoJSON() ).toStrictEqual( {
+		expect( parsed ).toStrictEqual( {
 			service: 'geomask',
 			type: 'Feature',
 			geometry: {
@@ -101,10 +100,10 @@ describe( 'ExternalDataParser parse handles', () => {
 	} );
 
 	test( 'geoshape merges properties', () => {
-		const group = new Group( {
+		const group = {
 			service: 'geoshape',
 			properties: { fill: '#abc' }
-		} );
+		};
 		const geodata = {
 			type: 'FeatureCollection',
 			features: [
@@ -113,7 +112,7 @@ describe( 'ExternalDataParser parse handles', () => {
 			]
 		};
 		const parsed = parser.parse( group, geodata );
-		expect( parsed.getGeoJSON() ).toStrictEqual( {
+		expect( parsed ).toStrictEqual( {
 			service: 'geoshape',
 			type: 'FeatureCollection',
 			properties: { fill: '#abc' },

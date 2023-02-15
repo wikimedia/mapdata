@@ -16,12 +16,10 @@ module.exports = function (
 	var ExternalDataLoader = function () {};
 
 	/**
-	 * @param {Kartographer.Data.Group} group
+	 * @param {Object} geoJSON
 	 * @return {Promise} Resolved with the raw, externally-fetched data.
 	 */
-	ExternalDataLoader.prototype.fetch = function ( group ) {
-		var geoJSON = group.getGeoJSON();
-
+	ExternalDataLoader.prototype.fetch = function ( geoJSON ) {
 		if ( !geoJSON || !geoJSON.url ) {
 			return createPromise( function ( _resolve, reject ) {
 				reject( new Error( 'ExternalData has no url' ) );
