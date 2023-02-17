@@ -28,9 +28,10 @@ module.exports = function (
 	 * @param {string} [title] Will be ignored if revid is supplied.
 	 * @param {string|false} [revid] Either title or revid must be set. If false
 	 * or missing, falls back to a title-only request.
+	 * @param {string|false} [lang] Language, used for variants
 	 * @return {Promise<Object>} Resolves to the returned mapdata, or rejects.
 	 */
-	MapdataLoader.prototype.fetchGroups = function ( groupIds, title, revid ) {
+	MapdataLoader.prototype.fetchGroups = function ( groupIds, title, revid, lang ) {
 		if ( !groupIds.length ) {
 			return createResolvedPromise( {} );
 		}
@@ -57,6 +58,9 @@ module.exports = function (
 			mpdgroups: fetchGroups.join( '|' )
 		};
 		delete params[ revid ? 'titles' : 'revids' ];
+		if ( lang ) {
+			params.uselang = lang;
+		}
 
 		return mwApi( params ).then( function ( data ) {
 			if ( data && data.error ) {

@@ -78,4 +78,30 @@ describe( 'MapdataLoader', function () {
 			mpdgroups: groupId
 		} );
 	} );
+
+	test( 'fetch queries uselang', async () => {
+		const minimalMapdata = { query: { pages: [ { mapdata: '{}' } ] } };
+		const mwApi = jest.fn().mockResolvedValue( minimalMapdata );
+		const title = 'A title';
+		const groupId = '123abc';
+		const revid = '123';
+		const lang = 'en-x-piglatin';
+
+		const loader = mapdataLoaderFactory(
+			extend,
+			createResolvedPromise,
+			mwApi
+		);
+		await loader.fetchGroups( [ groupId ], title, revid, lang );
+
+		expect( mwApi ).toHaveBeenCalledWith( {
+			action: 'query',
+			formatversion: '2',
+			revids: revid,
+			prop: 'mapdata',
+			mpdlimit: 'max',
+			mpdgroups: groupId,
+			uselang: lang
+		} );
+	} );
 } );
