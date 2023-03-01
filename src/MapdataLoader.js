@@ -3,7 +3,7 @@
  *
  * @param {Function} extend Reference to e.g. {@see jQuery.extend}
  * @param {Function} createResolvedPromise
- * @param {Function} mwApi Reference to the {@see mw.Api} constructor
+ * @param {Function} mwApi Reference to {@see mw.Api.get}
  * @param {Object} [clientStore] External cache for groups, supplied by the caller.
  * @return {Kartographer.Data.MapdataLoader}
  */
