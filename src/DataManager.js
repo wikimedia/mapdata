@@ -114,16 +114,18 @@ module.exports = function ( wrappers ) {
 	 * @param {string} [title] Will be ignored when revid is supplied
 	 * @param {string|false} [revid] Either title or revid must be set.
 	 * If false or missing, falls back to a title-only request.
+	 * @param {string|false} [lang] Language, used for variants
 	 * @return {Promise<Group[]>} Resolves with a list of expanded Group objects.
 	 * @public
 	 */
-	function loadGroups( groupIds, title, revid ) {
+	function loadGroups( groupIds, title, revid, lang ) {
 		groupIds = toArray( groupIds );
-		// Fetch mapdata for all groups from MediaWiki.
+		// Fetch mapdata from MediaWiki.
 		return dataLoader.fetchGroups(
 			groupIds,
 			title,
-			revid
+			revid,
+			lang
 		).then( function ( mapdata ) {
 			return groupIds.map( function ( id ) {
 				var groupData = mapdata[ id ];

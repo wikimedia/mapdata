@@ -1,16 +1,22 @@
 # Wikimedia MapData release notes
 
+### Version 0.9.1 (2023-03-13)
+`46c411e..`
+* Wire language through to MediaWiki
+
 ### Version 0.9.0 (2023-02-09)
+`524ca04..46c411e`
 * Expand ExternalData in its original position in the GeoJSON structure.
 * Reintroduce a public interface for expanding ExternalData in GeoJSON coming
 from sources other than mapdata.  This used to be `load` and is now `loadExternalData`.
 
 ### Version 0.8.1 (2023-01-17)
+`36065d0..524ca04`
 * Return group `name` for inline groups.
 * Delete `load` interface function, the last usage has also been removed from Kartographer.
 
 ### Version 0.8.0 (2022-12-08)
-`c0f48fd..3d08807`
+`a73ae6b..36065d0`
 * Returns a list of groups rather than an object keyed on group ID.
 * Title and revid are parameters, DataManager has no state.
 * Errors are returned as group.failureReason, no logging done by this library.
@@ -20,16 +26,16 @@ from sources other than mapdata.  This used to be `load` and is now `loadExterna
 * Drop manual debounce.
 
 ### Version 0.7.2 (2022-09-19)
-`1f8041d..c0f48fd`
+`13d4b55..a73ae6b`
 * Fix failure when API gives incomplete results
 
 ### Version 0.7.1 (2022-09-15)
-`db825a12..1f8041d`
+`cb948ab..13d4b55`
 * Log failing promises everywhere
 * Add basic jest tests for all classes
 
 ### Version 0.7.0 (2022-08-24)
-`6189f444..db825a12`
+`6189f444..cb948ab`
 * Add basic jest tests for Group.External.js
 * Added geopoints
 
