@@ -55,7 +55,7 @@ module.exports = function (
 			revids: revid,
 			prop: 'mapdata',
 			mpdlimit: 'max',
-			mpdgroups: fetchGroups.join( '|' )
+			mpdgroups: fetchGroups
 		};
 		delete params[ revid ? 'titles' : 'revids' ];
 		if ( lang ) {

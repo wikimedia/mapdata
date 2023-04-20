@@ -35,7 +35,7 @@ describe( 'DataManager loadGroups', () => {
 			revids: revid,
 			prop: 'mapdata',
 			mpdlimit: 'max',
-			mpdgroups: 'group1'
+			mpdgroups: [ 'group1' ]
 		} );
 		expect( result.length ).toBe( 1 );
 		expect( result[ 0 ].getGeoJSON() ).toStrictEqual( feature );
