@@ -133,6 +133,7 @@ module.exports = function ( wrappers ) {
 				// Handle failed groups by replacing an error in its place.
 				if ( !groupData ) {
 					var group = new Group();
+					group.name = id;
 					group.fail( new Error( 'Received empty response for group "' + id + '"' ) );
 					return group;
 				}

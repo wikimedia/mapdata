@@ -1,7 +1,11 @@
 # Wikimedia MapData release notes
 
+### Version 0.9.2 (2023-04-20)
+`4019594b..`
+* Properly expose the name of failed groups.
+
 ### Version 0.9.1 (2023-03-13)
-`46c411e..`
+`46c411e..4019594b`
 * Wire language through to MediaWiki
 
 ### Version 0.9.0 (2023-02-09)
