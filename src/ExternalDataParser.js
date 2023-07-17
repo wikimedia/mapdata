@@ -45,15 +45,7 @@ module.exports = function (
 				break;
 
 			case 'geomask':
-				// Mask-out the entire world 10 times east and west,
-				// and add each result geometry as a hole
-				coordinates = [ [
-					[ 3600, -180 ],
-					[ 3600, 180 ],
-					[ -3600, 180 ],
-					[ -3600, -180 ],
-					[ 3600, -180 ]
-				] ];
+				coordinates = [];
 				for ( i = 0; i < externalData.features.length; i++ ) {
 					geometry = externalData.features[ i ].geometry;
 					if ( !geometry ) {
@@ -71,11 +63,24 @@ module.exports = function (
 							break;
 					}
 				}
-				geoJSON.type = 'Feature';
-				geoJSON.geometry = {
-					type: 'Polygon',
-					coordinates: coordinates
-				};
+
+				if ( coordinates.length ) {
+					// Mask-out the entire world 10 times east and west,
+					// and add each result geometry as a hole
+					coordinates.unshift( [
+						[ 3600, -180 ],
+						[ 3600, 180 ],
+						[ -3600, 180 ],
+						[ -3600, -180 ],
+						[ 3600, -180 ]
+					] );
+
+					geoJSON.type = 'Feature';
+					geoJSON.geometry = {
+						type: 'Polygon',
+						coordinates: coordinates
+					};
+				}
 				break;
 
 			case 'geoshape':
