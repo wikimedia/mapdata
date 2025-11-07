@@ -51,7 +51,8 @@ describe( 'MapdataLoader', function () {
 			titles: title,
 			prop: 'mapdata',
 			mpdlimit: 'max',
-			mpdgroups: [ groupId ]
+			mpdgroups: [ groupId ],
+			mpdparser: 'legacy'
 		} );
 	} );
 
@@ -75,7 +76,8 @@ describe( 'MapdataLoader', function () {
 			revids: revid,
 			prop: 'mapdata',
 			mpdlimit: 'max',
-			mpdgroups: [ groupId ]
+			mpdgroups: [ groupId ],
+			mpdparser: 'legacy'
 		} );
 	} );
 
@@ -101,6 +103,7 @@ describe( 'MapdataLoader', function () {
 			prop: 'mapdata',
 			mpdlimit: 'max',
 			mpdgroups: [ groupId ],
+			mpdparser: 'legacy',
 			uselang: lang
 		} );
 	} );

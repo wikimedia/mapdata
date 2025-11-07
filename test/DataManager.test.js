@@ -28,14 +28,15 @@ describe( 'DataManager loadGroups', () => {
 			mwApi
 		} );
 
-		const result = await dataManager.loadGroups( [ 'group1' ], title, revid );
+		const result = await dataManager.loadGroups( [ 'group1' ], title, revid, false, 'parsoid' );
 		expect( mwApi ).toBeCalledWith( {
 			action: 'query',
 			formatversion: '2',
 			revids: revid,
 			prop: 'mapdata',
 			mpdlimit: 'max',
-			mpdgroups: [ 'group1' ]
+			mpdgroups: [ 'group1' ],
+			mpdparser: 'parsoid'
 		} );
 		expect( result.length ).toBe( 1 );
 		expect( result[ 0 ].getGeoJSON() ).toStrictEqual( feature );

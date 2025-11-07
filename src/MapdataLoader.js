@@ -29,9 +29,10 @@ module.exports = function (
 	 * @param {string|false} [revid] Either title or revid must be set. If false
 	 * or missing, falls back to a title-only request.
 	 * @param {string|false} [lang] Language, used for variants
+	 * @param {string|false} [parser] parser used to generate the image query (parsoid|legacy)
 	 * @return {Promise<Object>} Resolves to the returned mapdata, or rejects.
 	 */
-	MapdataLoader.prototype.fetchGroups = function ( groupIds, title, revid, lang ) {
+	MapdataLoader.prototype.fetchGroups = function ( groupIds, title, revid, lang, parser ) {
 		if ( !groupIds.length ) {
 			return createResolvedPromise( {} );
 		}
@@ -47,6 +48,9 @@ module.exports = function (
 		if ( fetchGroups.length === 0 ) {
 			return createResolvedPromise( cachedResults );
 		}
+		if ( !parser ) {
+			parser = 'legacy';
+		}
 
 		var params = {
 			action: 'query',
@@ -55,7 +59,8 @@ module.exports = function (
 			revids: revid,
 			prop: 'mapdata',
 			mpdlimit: 'max',
-			mpdgroups: fetchGroups
+			mpdgroups: fetchGroups,
+			mpdparser: parser
 		};
 		delete params[ revid ? 'titles' : 'revids' ];
 		if ( lang ) {

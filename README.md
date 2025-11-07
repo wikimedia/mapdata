@@ -89,7 +89,7 @@ var dataManager = require( './DataManager' )( {
 } );
 
 // Download and build map geojson for a list of groups:
-DataManager.loadGroups( groupIds, title, revid ).then( function ( dataGroups ) {
+DataManager.loadGroups( groupIds, title, revid, lang, parser ).then( function ( dataGroups ) {
   var mapGeoJSON, group;
 
   dataGroups.forEach( function ( group ) {
